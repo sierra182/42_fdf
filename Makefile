@@ -15,12 +15,13 @@ FT_PRINTF_DIR = ft_printf
 GNL_DIR = gnl
 SRC_DIR = sources
 HEADERS_DIR = include
-
+MLX = mlx_linux
 #BONUS_DIR = bonus
 #SRCS_BONUS_DIR = $(BONUS_DIR)/sources
 
 CC = cc
-CFLAGS = -I$(LIBFT_DIR) -I$(FT_PRINTF_DIR) -I$(HEADERS_DIR) -Wall -Wextra -Werror
+CFLAGS = -I$(LIBFT_DIR) -I$(FT_PRINTF_DIR) -I$(HEADERS_DIR) -I$(MLX) -O3 -Wall -Wextra -Werror 
+LDFLAGS = -L$(MLX) -lmlx_Linux -lXext -lX11 -lm -lz
 #CFLAGS_BONUS = -I$(GNL_DIR)
 
 SOURCES = $(SRC_DIR)/main.c 
@@ -56,7 +57,7 @@ ft_printf: emoticon
 
 $(NAME) : $(OBJECTS) 
 	@echo "\n\033[0;32m linking $(NAME) objects with $(LIBFTPRINTF)...\033[0m 🚀\n\n 💗 💎 💎 💗\n"
-	@$(CC) $(OBJECTS) $(LIBFTPRINTF) -o $@
+	@$(CC) $(OBJECTS) $(LDFLAGS) $(LIBFTPRINTF) -o $@
 
 bonus: ft_printf $(NAME_BONUS)
 	@echo " 💎 🧯 🔥 😵\n"
