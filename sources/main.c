@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/07 10:11:58 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/07 15:54:33 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <stdlib.h> 
 #include "mlx.h"
 
+#include <unistd.h>
 void	input_handle(char *argv[])
 {
 	int	fd;
@@ -28,12 +29,16 @@ int	main(int argc, char *argv[])
 {
 	void	*mlx_connect;
 	void	*mlx_window;
-	
+
 	if (argc != 2)
 		return (1);
-	input_handle();  // fd
-	mlx_connect = mlx_init(); // mlx
-	mlx_new_window(mlx_connect, 500, 500, "Alpha");
-	mlx_loop(mlx_connect);		
+	//input_handle();  // fd
+	mlx_connect = mlx_init(); // mlx // err...
+	mlx_window = mlx_new_window(mlx_connect, 500, 500, "Alpha");
+	//mlx_loop(mlx_connect);	
+		
+	mlx_destroy_window(mlx_connect, mlx_window);
+	mlx_destroy_display(mlx_connect);
+	free(mlx_connect);	
 	return (0);
 }
