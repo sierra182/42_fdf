@@ -18,7 +18,7 @@ size_t	ft_wc(char *s)
 	size_t	n_word;
 
 	n_word = 0;
-	while (*s)
+	while (s && *s)
 	{
 		flag = 0;
 		while ((*s && !ft_isspace(*s++) && ++flag) || (flag && !++n_word))
