@@ -20,7 +20,7 @@ MLX = mlx_linux
 #SRCS_BONUS_DIR = $(BONUS_DIR)/sources
 
 CC = cc
-CFLAGS = -I$(LIBFT_DIR) -I$(FT_PRINTF_DIR) -I$(HEADERS_DIR) -I$(MLX) -O3 -Wall -Wextra -Werror 
+CFLAGS = -I$(LIBFT_DIR) -I$(FT_PRINTF_DIR) -I$(HEADERS_DIR) -I$(MLX) -O3 #-Wall -Wextra -Werror 
 LDFLAGS = -L$(MLX) -lmlx_Linux -lXext -lX11 -lm -lz
 #CFLAGS_BONUS = -I$(GNL_DIR)
 
