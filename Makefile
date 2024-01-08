@@ -24,7 +24,7 @@ CFLAGS = -I$(LIBFT_DIR) -I$(GNL_DIR) -I$(FT_PRINTF_DIR) -I$(HEADERS_DIR) -I$(MLX
 LDFLAGS = -L$(MLX) -lmlx_Linux -lXext -lX11 -lm -lz
 #CFLAGS_BONUS = -I$(GNL_DIR)
 
-SOURCES = $(SRC_DIR)/main.c $(GNL_DIR)/get_next_line.c $(GNL_DIR)/get_next_line_utils.c
+SOURCES = $(SRC_DIR)/main.c $(SRC_DIR)/setup.c $(GNL_DIR)/get_next_line.c $(GNL_DIR)/get_next_line_utils.c
 #SOURCES_BONUS = 
 
 OBJECTS = $(SOURCES:.c=.o)
