@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/07 21:44:45 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/08 07:56:43 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 #include "mlx.h"
 
 #include <unistd.h>
+
+
 
 int	**create_matrix(int fd)
 {
@@ -57,13 +59,13 @@ void	input_handle(char *argv[])
 	
 	
 	line = "";
-	while (line)
-	{
-		line = get_next_line(fd);
-		split_line = ft_split(line);
-		while (split_line)
-			matrix[ft_atoi(line);
-	}	
+	// while (line)
+	// {
+	// 	line = get_next_line(fd);
+	// 	split_line = ft_split(line);
+	// 	while (split_line)
+	// 		matrix[ft_atoi(line);
+	// }	
 	
 }
 
