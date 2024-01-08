@@ -6,7 +6,7 @@
 /*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/08 13:31:16 by svidot           ###   ########.fr       */
+/*   Updated: 2024/01/08 13:45:14 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,7 @@ void	input_handle(char *argv[])
 	fill_pt_arr(fd, pt_arr);
 	close(fd);
 	print_pt_arr(pt_arr);
-	//free_ptr_arr((void *) pt_arr);
+	free_ptr_arr((void **) pt_arr);
 }
 
 int	main(int argc, char *argv[])

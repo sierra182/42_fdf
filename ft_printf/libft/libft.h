@@ -6,7 +6,7 @@
 /*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 14:15:23 by svidot            #+#    #+#             */
-/*   Updated: 2023/12/21 16:44:58 by svidot           ###   ########.fr       */
+/*   Updated: 2024/01/08 13:41:17 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,4 +70,6 @@ int		ft_strcmp(const char *s1, const char *s2);
 int		ft_isspace(int c);
 size_t	ft_wc(char *s);
 char	*ft_delchar(char *s);
+void	free_ptr_arr(void **arr);
+
 #endif
