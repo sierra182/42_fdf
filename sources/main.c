@@ -6,7 +6,7 @@
 /*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/08 13:45:14 by svidot           ###   ########.fr       */
+/*   Updated: 2024/01/08 14:15:11 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,17 +63,17 @@ void	fill_pt_arr(int fd, t_point **pt_arr)
 		split_line_sav = split_line;
 		while (*split_line && **split_line != '\n')
 		{
-			*pt_arr = (t_point *) malloc(sizeof(t_point)); //
+			*pt_arr = (t_point *) ft_calloc(1, sizeof(t_point)); //
 			(*pt_arr)->x = col;
 			(*pt_arr)->y = row;
 			(*pt_arr)->z = ft_atoi(*split_line);
-			pt_arr++;
 			col++;
+			pt_arr++;
 			split_line++;
 		}
 		row++;
 		free(line);
-		free(split_line_sav);
+		free_ptr_arr((void **) split_line_sav);
 		line = get_next_line(fd);
 	}	
 }
@@ -99,18 +99,7 @@ void	print_pt_arr(t_point *pt_arr[])
 		pt_arr++;
 	}
 }
-void	free_ptr_arr(void **arr)
-{
-	int	i;
 
-	if (arr)
-	{
-		i = 0;
-		while (arr[i])
-			free(arr[i++]);
-		free(arr);
-	}
-}
 void	input_handle(char *argv[])
 {
 	t_point	**pt_arr;
@@ -131,8 +120,8 @@ void	input_handle(char *argv[])
 	}
 	fill_pt_arr(fd, pt_arr);
 	close(fd);
-	print_pt_arr(pt_arr);
-	free_ptr_arr((void **) pt_arr);
+	print_pt_arr(pt_arr);	//
+	free_ptr_arr((void **) pt_arr); //
 }
 
 int	main(int argc, char *argv[])
