@@ -6,7 +6,7 @@
 /*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/09 12:33:59 by svidot           ###   ########.fr       */
+/*   Updated: 2024/01/09 14:59:09 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,9 @@ void	print_pt_arr(t_point *pt_arr[])
 {
 	while (*pt_arr)
 	{
-		ft_printf("x: %d, y: %d, z:%d, nx: %d, ny: %d, nz: %d\n", 
-			(*pt_arr)->x, (*pt_arr)->y, (*pt_arr)->z, (*pt_arr)->new_x, (*pt_arr)->new_y, (*pt_arr)->new_z);
+		if ((*pt_arr)->z > 0)
+			ft_printf("x: %d, y: %d, z:%d, nx: %d, ny: %d, nz: %d\n", 
+				(*pt_arr)->x, (*pt_arr)->y, (*pt_arr)->z, (*pt_arr)->new_x, (*pt_arr)->new_y, (*pt_arr)->new_z);
 		pt_arr++;
 	}
 	ft_printf("\n");
@@ -51,7 +52,36 @@ void	init_matrix(int	matrix[][MTX])
 		i++;
 	}
 }
-
+void	apply_matrix(int matrix[][MTX], t_point	**pt_arr)
+{
+	const int coef_t = matrix[MTX - 1][MTX - 1];
+	int	i;
+	int	j;
+	
+	while (*pt_arr)
+	{
+		i = 0;
+		while (i < MTX - 1)
+		{
+			j = 0;
+			while (j < MTX - 1)
+			{
+				if (i == 0)
+					(*pt_arr)->new_x += matrix[i][j] * (*pt_arr)->x;									
+				if (i == 1)
+					(*pt_arr)->new_y += matrix[i][j] * (*pt_arr)->y;
+				if (i == 2)
+					(*pt_arr)->new_z += matrix[i][j] * (*pt_arr)->z;
+				j++;
+			}
+			i++;
+		}
+		(*pt_arr)->new_x += matrix[0][j] * coef_t;
+		(*pt_arr)->new_y += matrix[1][j] * coef_t;
+		(*pt_arr)->new_z += matrix[2][j] * coef_t;
+		pt_arr++;
+	}
+}
 void	set_matrix_scale(int matrix[][MTX], int scale)
 {
 	int	i;
@@ -71,40 +101,58 @@ void	set_matrix_scale(int matrix[][MTX], int scale)
 	}
 }
 
-void	apply_matrix(int matrix[][MTX], t_point	**pt_arr)
-{
-	int	i;
-	int	j;
-		
-	while (*pt_arr)
-	{
-		i = 0;
-		while (i < MTX - 1)
-		{
-			j = 0;
-			while (j < MTX - 1)
-			{	
-				if (i == 0)			
-					(*pt_arr)->new_x += matrix[i][j] * (*pt_arr)->x;
-				if (i == 1)			
-					(*pt_arr)->new_y += matrix[i][j] * (*pt_arr)->y;
-				if (i == 2)			
-					(*pt_arr)->new_z += matrix[i][j] * (*pt_arr)->z;
-				j++;
-			}
-			i++;
-		}	
-		pt_arr++;
-	}
-}
-
 void	create_matrix_scale(t_point	**pt_arr)
 {
 	int	m_scl[MTX][MTX];
 	
 	init_matrix(m_scl);
-	set_matrix_scale(m_scl, 4);
-	apply_matrix(m_scl, pt_arr);
+	set_matrix_scale(m_scl, 20);
+	apply_matrix(m_scl, pt_arr);	
+}
+// void	apply_matrix(int matrix[][MTX], t_point	**pt_arr)
+// {
+// 	int	i;
+// 	int	j;
+		
+// 	while (*pt_arr)
+// 	{
+// 		i = 0;
+// 		while (i < MTX - 1)
+// 		{
+// 			j = 0;
+// 			while (j < MTX - 1)
+// 			{
+// 				if (i == 0)
+// 					(*pt_arr)->new_x += matrix[i][j] * (*pt_arr)->x;									
+// 				if (i == 1)
+// 					(*pt_arr)->new_y += matrix[i][j] * (*pt_arr)->y;
+// 				if (i == 2)
+// 					(*pt_arr)->new_z += matrix[i][j] * (*pt_arr)->z;
+// 				j++;
+// 			}
+// 			i++;
+// 		}	
+// 		pt_arr++;
+// 	}
+// }
+
+void	set_matrix_translate(int matrix[][MTX], int x, int y, int z)
+{
+	if (x)	
+		matrix[0][MTX - 1] = x;
+	if (y)	
+		matrix[1][MTX - 1] = y;
+	if (z)	
+		matrix[2][MTX - 1] = z;
+}
+
+void	create_matrix_translate(t_point	**pt_arr)
+{
+	int	m_trs[MTX][MTX];
+	
+	init_matrix(m_trs);
+	set_matrix_translate(m_trs, 0, 250, 0);
+	apply_matrix(m_trs, pt_arr);
 }
 
 int	main(int argc, char *argv[])
@@ -124,6 +172,8 @@ int	main(int argc, char *argv[])
 		return (free_ptr_arr((void **) pt_arr),
 			mlx_destroy_display(mlx_connect), free(mlx_connect), 1);
 	
+	print_pt_arr(pt_arr);
+	create_matrix_translate(pt_arr);
 	print_pt_arr(pt_arr);
 	create_matrix_scale(pt_arr);
 	print_pt_arr(pt_arr);
