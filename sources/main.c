@@ -6,7 +6,7 @@
 /*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/09 14:59:09 by svidot           ###   ########.fr       */
+/*   Updated: 2024/01/09 15:31:15 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,7 @@ void	create_matrix_scale(t_point	**pt_arr)
 	set_matrix_scale(m_scl, 20);
 	apply_matrix(m_scl, pt_arr);	
 }
+
 // void	apply_matrix(int matrix[][MTX], t_point	**pt_arr)
 // {
 // 	int	i;
@@ -137,13 +138,10 @@ void	create_matrix_scale(t_point	**pt_arr)
 // }
 
 void	set_matrix_translate(int matrix[][MTX], int x, int y, int z)
-{
-	if (x)	
-		matrix[0][MTX - 1] = x;
-	if (y)	
-		matrix[1][MTX - 1] = y;
-	if (z)	
-		matrix[2][MTX - 1] = z;
+{	
+	matrix[0][MTX - 1] = x;	
+	matrix[1][MTX - 1] = y;		
+	matrix[2][MTX - 1] = z;
 }
 
 void	create_matrix_translate(t_point	**pt_arr)
@@ -173,9 +171,9 @@ int	main(int argc, char *argv[])
 			mlx_destroy_display(mlx_connect), free(mlx_connect), 1);
 	
 	print_pt_arr(pt_arr);
-	create_matrix_translate(pt_arr);
-	print_pt_arr(pt_arr);
 	create_matrix_scale(pt_arr);
+	print_pt_arr(pt_arr);
+	create_matrix_translate(pt_arr);
 	print_pt_arr(pt_arr);
 	while (*pt_arr)
 	{
