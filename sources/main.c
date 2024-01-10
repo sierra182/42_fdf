@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/09 17:22:44 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/10 11:53:59 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ void	init_matrix(int	matrix[][MTX])
 		i++;
 	}
 }
+
 void	apply_matrix(int matrix[][MTX], t_point	**pt_arr)
 {
 	const int coef_t = matrix[MTX - 1][MTX - 1];
@@ -82,6 +83,7 @@ void	apply_matrix(int matrix[][MTX], t_point	**pt_arr)
 		pt_arr++;
 	}
 }
+
 void	set_matrix_scale(int matrix[][MTX], int scale)
 {
 	int	i;
@@ -110,33 +112,6 @@ void	create_matrix_scale(t_point	**pt_arr)
 	apply_matrix(m_scl, pt_arr);	
 }
 
-// void	apply_matrix(int matrix[][MTX], t_point	**pt_arr)
-// {
-// 	int	i;
-// 	int	j;
-		
-// 	while (*pt_arr)
-// 	{
-// 		i = 0;
-// 		while (i < MTX - 1)
-// 		{
-// 			j = 0;
-// 			while (j < MTX - 1)
-// 			{
-// 				if (i == 0)
-// 					(*pt_arr)->new_x += matrix[i][j] * (*pt_arr)->x;						
-// 				if (i == 1)
-// 					(*pt_arr)->new_y += matrix[i][j] * (*pt_arr)->y;
-// 				if (i == 2)
-// 					(*pt_arr)->new_z += matrix[i][j] * (*pt_arr)->z;
-// 				j++;
-// 			}
-// 			i++;
-// 		}
-// 		pt_arr++;
-// 	}
-// }
-
 void	set_matrix_translate(int matrix[][MTX], int x, int y, int z)
 {
 	matrix[0][MTX - 1] = x;
@@ -151,6 +126,75 @@ void	create_matrix_translate(t_point	**pt_arr)
 	init_matrix(m_trs);
 	set_matrix_translate(m_trs, 0, 250, 0);
 	apply_matrix(m_trs, pt_arr);
+}
+
+int	multiply_rowbycol(int row[], int m2[][MTX], int col)
+{
+	int	i;
+	int	j;
+	int	rslt;
+	
+	rslt = 0;
+	i = 0;
+	while (i < MTX)
+	{
+		rslt += row[i] * m2[i][col];
+		i++;
+	}
+	return (rslt);
+}
+
+void	merge_matrix(int m1[][MTX], int m2[][MTX], int mf[][MTX])
+{
+	int	i;
+	int	j;
+	
+	i = 0;
+	while (i < MTX)
+	{
+		j = 0;
+		while (j < MTX)
+		{			
+			mf[i][j] = multiply_rowbycol(m1[i], m2, j);
+			j++;
+		}
+		i++;
+	}
+
+}
+
+void	printf_matrix(int matrix[][MTX])
+{
+	int	i;
+	int	j;
+	
+	i = 0;
+	while (i < MTX)
+	{
+		j = 0;
+		while (j < MTX)
+		{			
+			ft_printf("%d ", matrix[i][j]);
+			j++;
+		}
+		ft_printf("\n");
+		i++;
+	}
+	ft_printf("\n");
+}
+
+void	global_matrix(t_point **pt_arr)
+{
+	int	m_scl[MTX][MTX];
+	int	m_trs[MTX][MTX];
+	int	m_fnl[MTX][MTX];
+	
+	init_matrix(m_scl); printf_matrix(m_scl);
+	init_matrix(m_trs); printf_matrix(m_trs);
+	set_matrix_scale(m_scl, 2); printf_matrix(m_scl);
+	set_matrix_translate(m_trs, 0, 100, 0); printf_matrix(m_trs);
+	merge_matrix(m_trs, m_scl, m_fnl); printf_matrix(m_fnl);
+	apply_matrix(m_fnl, pt_arr);	
 }
 
 int	main(int argc, char *argv[])
@@ -171,9 +215,10 @@ int	main(int argc, char *argv[])
 			mlx_destroy_display(mlx_connect), free(mlx_connect), 1);
 
 	print_pt_arr(pt_arr);
-	create_matrix_scale(pt_arr);
-	print_pt_arr(pt_arr);
-	create_matrix_translate(pt_arr);
+	global_matrix(pt_arr);
+	//create_matrix_scale(pt_arr);
+	//print_pt_arr(pt_arr);
+	//create_matrix_translate(pt_arr);
 	print_pt_arr(pt_arr);
 	while (*pt_arr)
 	{
