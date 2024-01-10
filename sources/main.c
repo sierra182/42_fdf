@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
+/*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/10 15:27:53 by svidot           ###   ########.fr       */
+/*   Updated: 2024/01/10 18:57:37 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "setup.h"
 #include <math.h>
 
+#include <stdio.h>
 t_point	**input_handle(char *argv[]);
 
 void	print_pt_arr(t_point *pt_arr[])
@@ -119,9 +120,11 @@ void	set_matrix_translate(double matrix[][MTX], double x, double y, double z)
 	matrix[1][MTX - 1] = y;
 	matrix[2][MTX - 1] = z;
 }
+#define M_PI 3.14159265358979323846
 
 void	set_matrix_rotation(double matrix[][MTX], double angle, int *axe)
 {
+	angle *= M_PI / 180.0;	 
 	if (axe[0])
 	{		
 		matrix[1][1] = cos(angle);
@@ -200,13 +203,13 @@ void	printf_matrix(double matrix[][MTX])
 		j = 0;
 		while (j < MTX)
 		{			
-			ft_printf("%f ", matrix[i][j]);
+			printf("%f ", matrix[i][j]);
 			j++;
 		}
-		ft_printf("\n");
+		printf("\n");
 		i++;
 	}
-	ft_printf("\n");
+	printf("\n");
 }
 
 void	global_matrix(t_point **pt_arr)
@@ -217,17 +220,17 @@ void	global_matrix(t_point **pt_arr)
 	double	m_fnl[MTX][MTX];
 	double	m_fnl_tmp[MTX][MTX];
 	
-	init_matrix(m_scl); printf_matrix(m_scl);
-	init_matrix(m_trs); printf_matrix(m_trs);
-	init_matrix(m_rtt); //printf_matrix(m_rtt);
-	set_matrix_scale(m_scl, 10); printf_matrix(m_scl);
-	set_matrix_translate(m_trs, 100.0, 100.0, 0.0); printf_matrix(m_trs);
-	set_matrix_rotation(m_rtt, 1.0, (int []) {0, 0, 1});
-	merge_matrix( m_trs, m_rtt, m_fnl); printf_matrix(m_fnl);
+	init_matrix(m_scl); //printf_matrix(m_scl);
+	init_matrix(m_trs); //printf_matrix(m_trs);
+	init_matrix(m_rtt); // printf_matrix(m_rtt);
+	set_matrix_scale(m_scl, 4.0); printf_matrix(m_scl);
+	set_matrix_translate(m_trs, 50.0, 150.0, 0.0); printf_matrix(m_trs);
+	set_matrix_rotation(m_rtt, 90.0, (int []) {1, 0, 0}); printf_matrix(m_rtt);
+	merge_matrix( m_rtt, m_trs, m_fnl_tmp); printf_matrix(m_fnl_tmp);
 		
 	//set_matrix_translate(m_trs, 10.0, 0.0, 0.0); printf_matrix(m_trs);
-//	merge_matrix(m_fnl_tmp, m_rtt, m_fnl); printf_matrix(m_fnl);
-	apply_matrix(m_fnl, pt_arr);	
+	//merge_matrix(m_fnl_tmp, m_trs, m_fnl); printf_matrix(m_fnl);
+	apply_matrix(m_fnl_tmp, pt_arr);	
 }
 
 int	main(int argc, char *argv[])
