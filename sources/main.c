@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/10 18:57:37 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/10 19:48:37 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,8 +224,8 @@ void	global_matrix(t_point **pt_arr)
 	init_matrix(m_trs); //printf_matrix(m_trs);
 	init_matrix(m_rtt); // printf_matrix(m_rtt);
 	set_matrix_scale(m_scl, 4.0); printf_matrix(m_scl);
-	set_matrix_translate(m_trs, 50.0, 150.0, 0.0); printf_matrix(m_trs);
-	set_matrix_rotation(m_rtt, 90.0, (int []) {1, 0, 0}); printf_matrix(m_rtt);
+	set_matrix_translate(m_trs, 50.0, -60.0, 0.0); printf_matrix(m_trs);
+	set_matrix_rotation(m_rtt, 120.0, (int []) {0, 0, 1}); printf_matrix(m_rtt);
 	merge_matrix( m_rtt, m_trs, m_fnl_tmp); printf_matrix(m_fnl_tmp);
 		
 	//set_matrix_translate(m_trs, 10.0, 0.0, 0.0); printf_matrix(m_trs);
