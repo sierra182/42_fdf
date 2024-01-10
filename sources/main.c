@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
+/*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/09 15:31:15 by svidot           ###   ########.fr       */
+/*   Updated: 2024/01/09 17:22:44 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ void	create_matrix_scale(t_point	**pt_arr)
 // 			while (j < MTX - 1)
 // 			{
 // 				if (i == 0)
-// 					(*pt_arr)->new_x += matrix[i][j] * (*pt_arr)->x;									
+// 					(*pt_arr)->new_x += matrix[i][j] * (*pt_arr)->x;						
 // 				if (i == 1)
 // 					(*pt_arr)->new_y += matrix[i][j] * (*pt_arr)->y;
 // 				if (i == 2)
@@ -132,22 +132,22 @@ void	create_matrix_scale(t_point	**pt_arr)
 // 				j++;
 // 			}
 // 			i++;
-// 		}	
+// 		}
 // 		pt_arr++;
 // 	}
 // }
 
 void	set_matrix_translate(int matrix[][MTX], int x, int y, int z)
-{	
-	matrix[0][MTX - 1] = x;	
-	matrix[1][MTX - 1] = y;		
+{
+	matrix[0][MTX - 1] = x;
+	matrix[1][MTX - 1] = y;
 	matrix[2][MTX - 1] = z;
 }
 
 void	create_matrix_translate(t_point	**pt_arr)
 {
 	int	m_trs[MTX][MTX];
-	
+
 	init_matrix(m_trs);
 	set_matrix_translate(m_trs, 0, 250, 0);
 	apply_matrix(m_trs, pt_arr);
@@ -169,7 +169,7 @@ int	main(int argc, char *argv[])
 	if (!mlx_window)
 		return (free_ptr_arr((void **) pt_arr),
 			mlx_destroy_display(mlx_connect), free(mlx_connect), 1);
-	
+
 	print_pt_arr(pt_arr);
 	create_matrix_scale(pt_arr);
 	print_pt_arr(pt_arr);
@@ -179,7 +179,7 @@ int	main(int argc, char *argv[])
 	{
 		//int		mlx_pixel_put(void *mlx_ptr, void *win_ptr, int x, int y, int color);
 		if ((*pt_arr)->z > 0)
-			mlx_pixel_put(mlx_connect, mlx_window, (*pt_arr)->new_x, (*pt_arr)->new_y, *(int *)(unsigned char [4]){255, 0, 0, 255});	
+			mlx_pixel_put(mlx_connect, mlx_window, (*pt_arr)->new_x, (*pt_arr)->new_y, *(int *)(unsigned char [4]){255, 0, 0, 255});
 		pt_arr++;
 	}
 
