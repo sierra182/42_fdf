@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/10 19:48:37 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/12 11:52:22 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	init_matrix(double matrix[][MTX])
 	}
 }
 
-void	apply_matrix(double matrix[][MTX], t_point	**pt_arr)
+void	apply_matrix_ex(double matrix[][MTX], t_point	**pt_arr)
 {
 	const int coef_t = matrix[MTX - 1][MTX - 1];
 	int	i;
@@ -86,6 +86,103 @@ void	apply_matrix(double matrix[][MTX], t_point	**pt_arr)
 	}
 }
 
+void	apply_matrix2(double matrix[][MTX], t_point	**pt_arr)
+{
+	const int coef_t = matrix[MTX - 1][MTX - 1];
+	int	i;
+	int	j;
+	
+	while (*pt_arr)
+	{
+		i = 0;
+		while (i < MTX - 1)
+		{
+			j = 0;
+			while (j < MTX - 1)
+			{
+				if (i == 0)
+					(*pt_arr)->new_x += matrix[i][j] * (*pt_arr)->x;									
+				if (i == 1)
+					(*pt_arr)->new_y += matrix[i][j] * (*pt_arr)->y;
+				if (i == 2)
+					(*pt_arr)->new_z += matrix[i][j] * (*pt_arr)->z;
+				j++;
+			}
+			i++;
+		}
+		(*pt_arr)->new_x += matrix[0][j] * coef_t;
+		(*pt_arr)->new_y += matrix[1][j] * coef_t;
+		(*pt_arr)->new_z += matrix[2][j] * coef_t;
+		pt_arr++;
+	}
+}
+
+void	apply_matrix(double matrix[][MTX], t_point **pt_arr)
+{
+	const int coef_t = matrix[MTX - 1][MTX - 1];
+	int	i;
+	int	j;
+	
+	while (*pt_arr)
+	{
+		i = 0;
+		while (i < MTX)
+		{
+			j = 0;
+			while (j < MTX)
+			{
+				if (i == 0)
+				{
+					if (j == 0)
+						(*pt_arr)->new_x += matrix[i][j] * (*pt_arr)->x;
+					if (j == 1)
+						(*pt_arr)->new_x += matrix[i][j] * (*pt_arr)->y;
+					if (j == 2)
+						(*pt_arr)->new_x += matrix[i][j] * (*pt_arr)->z;
+					if (j == 3)
+						(*pt_arr)->new_x += matrix[i][j] * coef_t;						
+				}
+				if (i == 1)
+				{					
+					if (j == 0)
+						(*pt_arr)->new_y += matrix[i][j] * (*pt_arr)->x;
+					if (j == 1)
+						(*pt_arr)->new_y += matrix[i][j] * (*pt_arr)->y;
+					if (j == 2)
+						(*pt_arr)->new_y += matrix[i][j] * (*pt_arr)->z;
+					if (j == 3)
+						(*pt_arr)->new_y += matrix[i][j] * coef_t;
+				}
+				if (i == 2)
+				{
+					
+					if (j == 0)
+						(*pt_arr)->new_z += matrix[i][j] * (*pt_arr)->x;
+					if (j == 1)
+						(*pt_arr)->new_z += matrix[i][j] * (*pt_arr)->y;
+					if (j == 2)
+						(*pt_arr)->new_z += matrix[i][j] * (*pt_arr)->z;
+					if (j == 3)
+						(*pt_arr)->new_z += matrix[i][j] * coef_t;
+				}
+				j++;
+			}
+			i++;
+		}
+		pt_arr++;
+	}
+}
+void	apply_m(t_point **pt_arr)
+{		
+	while (*pt_arr)
+	{
+		(*pt_arr)->x = (*pt_arr)->new_x;
+		(*pt_arr)->y = (*pt_arr)->new_y;
+		(*pt_arr)->z = (*pt_arr)->new_z;
+		pt_arr++;
+	}
+}
+			
 void	set_matrix_scale(double matrix[][MTX], double scale)
 {
 	int	i;
@@ -133,7 +230,7 @@ void	set_matrix_rotation(double matrix[][MTX], double angle, int *axe)
 		matrix[2][2] = cos(angle);	
 	}
 	else if (axe[1])
-	{
+	{ 
 		matrix[0][0] = cos(angle);
 		matrix[0][2] = sin(angle);
 		matrix[2][0] = -sin(angle);
@@ -223,16 +320,26 @@ void	global_matrix(t_point **pt_arr)
 	init_matrix(m_scl); //printf_matrix(m_scl);
 	init_matrix(m_trs); //printf_matrix(m_trs);
 	init_matrix(m_rtt); // printf_matrix(m_rtt);
-	set_matrix_scale(m_scl, 4.0); printf_matrix(m_scl);
-	set_matrix_translate(m_trs, 50.0, -60.0, 0.0); printf_matrix(m_trs);
-	set_matrix_rotation(m_rtt, 120.0, (int []) {0, 0, 1}); printf_matrix(m_rtt);
-	merge_matrix( m_rtt, m_trs, m_fnl_tmp); printf_matrix(m_fnl_tmp);
-		
+	set_matrix_scale(m_scl, 18.0); printf_matrix(m_scl);
+	set_matrix_translate(m_trs, 8.0, 20.0, 0.0); printf_matrix(m_trs);
+	set_matrix_rotation(m_rtt, 55.0, (int []) {1, 0, 0}); printf_matrix(m_rtt);
+	merge_matrix(m_rtt, m_scl, m_fnl_tmp); printf_matrix(m_fnl);
+	//merge_matrix(m_fnl, m_rtt, m_fnl_tmp); printf_matrix(m_fnl_tmp);
+	init_matrix(m_rtt);	
+	set_matrix_rotation(m_rtt, 12.0, (int []) {0, 0, 1}); printf_matrix(m_rtt);
 	//set_matrix_translate(m_trs, 10.0, 0.0, 0.0); printf_matrix(m_trs);
-	//merge_matrix(m_fnl_tmp, m_trs, m_fnl); printf_matrix(m_fnl);
-	apply_matrix(m_fnl_tmp, pt_arr);	
+	merge_matrix(m_fnl_tmp, m_rtt, m_fnl); printf_matrix(m_fnl_tmp);
+	merge_matrix(m_fnl, m_trs, m_fnl_tmp); printf_matrix(m_fnl_tmp);
+	apply_matrix(m_fnl_tmp, pt_arr);
+//	apply_m(pt_arr);
+//	apply_matrix2(m_rtt, pt_arr);
+//	apply_m(pt_arr);
+//	apply_matrix2(m_trs, pt_arr);
+	
+	
+	//apply_rotation(m_rtt, pt_arr);	
 }
-
+#include <unistd.h>
 int	main(int argc, char *argv[])
 {
 	void	*mlx_connect;
@@ -258,9 +365,12 @@ int	main(int argc, char *argv[])
 	print_pt_arr(pt_arr);
 	while (*pt_arr)
 	{
+		//sleep(.5);
 		//int		mlx_pixel_put(void *mlx_ptr, void *win_ptr, int x, int y, int color);
 		if ((*pt_arr)->z > 0)
 			mlx_pixel_put(mlx_connect, mlx_window, (*pt_arr)->new_x, (*pt_arr)->new_y, *(int *)(unsigned char [4]){255, 0, 0, 255});
+		if ((*pt_arr)->z == 0)
+			mlx_pixel_put(mlx_connect, mlx_window, (*pt_arr)->new_x, (*pt_arr)->new_y, *(int *)(unsigned char [4]){0, 255, 0, 255});
 		pt_arr++;
 	}
 
