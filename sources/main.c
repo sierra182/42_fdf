@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/12 15:45:14 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/12 21:36:51 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -296,7 +296,6 @@ void	merge_matrix(double m1[][MTX], double m2[][MTX], double mf[][MTX])
 		}
 		i++;
 	}
-
 }
 
 void	printf_matrix(double matrix[][MTX])
@@ -351,8 +350,8 @@ void print_pixels(t_point **pt_arr)
 		pt_arr++;
 	}
 }
-#define WIDTH 500
-#define HEIGHT 500
+#define WIDTH 1000
+#define HEIGHT 700
 void	print_img(t_point **pt_arr)
 {
 	void *img_ptr;
@@ -360,16 +359,16 @@ void	print_img(t_point **pt_arr)
     int bpp; 
     int size_line;
   	int pxl_pos;
+	int truc = 400;
 	
 	img_ptr = mlx_new_image(mlx_connect, WIDTH, HEIGHT);   
     img_data = mlx_get_data_addr(img_ptr, &bpp, &size_line, &(int){0});
 	while (*pt_arr)
-	{//ft_printf("IINN YEE\n");
-		if ((*pt_arr)->new_x  >= 0 && (*pt_arr)->new_x  <= WIDTH && (*pt_arr)->new_y  >= 0 && (*pt_arr)->new_y  <= HEIGHT)
+	{
+		if ((*pt_arr)->new_x + truc >= 0 && (*pt_arr)->new_x + truc <= WIDTH && (*pt_arr)->new_y + truc >= 0 && (*pt_arr)->new_y + truc <= HEIGHT)
 		{			
-			pxl_pos = ((*pt_arr)->new_y * size_line) + ((*pt_arr)->new_x * (bpp / 8));
-			if ((*pt_arr)->z)  
-		//ft_printf("IINN YOU\n");	
+			pxl_pos = (((*pt_arr)->new_y + truc) * size_line) + (((*pt_arr)->new_x + truc) * (bpp / 8));
+			if ((*pt_arr)->z)  		
 				*(int *)(img_data + pxl_pos) = 0x00FF0000;
 			else	
 				*(int *)(img_data + pxl_pos) = 0x0000FF00;
@@ -385,37 +384,45 @@ void	global_matrix(t_point **pt_arr)
 {
 	double	m_scl[MTX][MTX];
 	double	m_trs[MTX][MTX];
-	double	m_rtt[MTX][MTX];
+	double	m_rtt_x[MTX][MTX];
+	double	m_rtt_y[MTX][MTX];
 	double	m_fnl[MTX][MTX];
 	double	m_fnl_tmp[MTX][MTX];
 	
 	init_matrix(m_scl); //printf_matrix(m_scl);
 	init_matrix(m_trs); //printf_matrix(m_trs);
-	init_matrix(m_rtt); // printf_matrix(m_rtt);
-	set_matrix_scale(m_scl, 4.0); printf_matrix(m_scl);
-	set_matrix_translate(m_trs, 0.0, 0.0, 0.0); printf_matrix(m_trs);
+	init_matrix(m_rtt_x); // printf_matrix(m_rtt);
+	init_matrix(m_rtt_y);
+	
+	set_matrix_scale(m_scl, 7.0); printf_matrix(m_scl);
+	set_matrix_translate(m_trs, -100.0, -100.0, -100.0); printf_matrix(m_trs);
+		
+	set_matrix_rotation(m_rtt_x, 75, (int []) {1, 0, 0});	 
+//	set_matrix_rotation(m_rtt_y, 42, (int []) {0, 1, 0});
+	merge_matrix(m_rtt_x, m_rtt_y, m_fnl_tmp);
+	
 	int i;
 	i = 1;
 	while (i)
 	{
-		//ft_printf("YEE %d\n", i);
-		usleep(500);
-		//clear_screen();
-		set_matrix_rotation(m_rtt, i, (int []) {0, 0, 1});
-		merge_matrix(m_rtt, m_scl, m_fnl_tmp);
-		//init_matrix(m_rtt);	
+		usleep(46000);
+	//	set_matrix_rotation(m_rtt_x, i, (int []) {1, 0, 0});	 
+		set_matrix_rotation(m_rtt_y, i, (int []) {0, 1, 0});
+		merge_matrix(m_rtt_y, m_rtt_x, m_fnl_tmp);	
 		//set_matrix_rotation(m_rtt, 12.0, (int []) {0, 0, 1}); 
-		//merge_matrix(m_fnl_tmp, m_rtt, m_fnl);
-		merge_matrix(m_fnl_tmp, m_trs, m_fnl); 
+		merge_matrix(m_fnl_tmp, m_scl, m_fnl);
+		//merge_matrix(m_fnl, m_trs, m_fnl_tmp); 
 		apply_matrix(m_fnl, pt_arr);
+		//apply_m(pt_arr);
+			//	apply_matrix(m_trs, pt_arr);
+		//merge_matrix(m_fnl_tmp, m_scl, m_fnl);
 		//print_pixels(pt_arr);
 		print_img(pt_arr);
 		//ft_printf("YOU\n");
 		i++;
-		if (i == 360)
+		if (i == 361)
 			i = 1;
 	}
-		
 	
 	//merge_matrix(m_fnl, m_rtt, m_fnl_tmp); printf_matrix(m_fnl_tmp);
 	//set_matrix_translate(m_trs, 10.0, 0.0, 0.0); printf_matrix(m_trs);
@@ -450,7 +457,6 @@ int	main(int argc, char *argv[])
 	//print_pt_arr(pt_arr);
 	//create_matrix_translate(pt_arr);
 	print_pt_arr(pt_arr);
-
 	mlx_loop(mlx_connect);
 
 	free_ptr_arr((void **) pt_arr);
