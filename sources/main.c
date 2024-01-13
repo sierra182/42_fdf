@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/13 12:35:55 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/13 14:11:54 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -415,35 +415,73 @@ void	draw_line(int x, int y, int xp, int yp)
 	int	dx;
 	int dy;
 	int error;
+	int h_dir;
+	int v_dir;
 	
 	if (x > xp)
+	{
+		h_dir = 0;
 		dx = x - xp;
+	}
 	else
+	{
+		h_dir = 1;
 		dx = xp - x;
+	}
 	if (y > yp)
+	{
+		v_dir = 0;
 		dy = y - yp;
+	}
 	else
+	{
+		v_dir = 1;
 		dy = yp - y;
+	}
 	if (dx > dy)
 	{
     	error = dy * 2 - dx;	
-		while (x <= xp)
+		while (x != xp)
 		{
+			if (h_dir)
+				x++;
+			else
+				x--;
+			if (error < 0)
+			{
+				if (v_dir)
+					y++;
+				else 
+					y--;
+				error += dy * 2;
+			}		
 			put_pxl(x, y);
-			x++;
+			error -= dx * 2;
 		}
 	}
 	else
 	{
     	error = dx * 2 - dy;
-		while (y <= yp)
+		while (y != yp)
 		{
+			if (v_dir)
+				y++;
+			else
+				y--;			
+			if (error < 0)
+			{
+				if (h_dir)
+					x++;
+				else 
+					x--;
+				error += dx * 2;
+			}		
 			put_pxl(x, y);
-			y++;
+			error -= dy * 2;
 		}
-	}	
-	
+	}		
 }
+
 #include <unistd.h>
 void	global_matrix(t_point **pt_arr)
 {
