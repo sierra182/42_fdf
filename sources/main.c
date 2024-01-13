@@ -6,7 +6,7 @@
 /*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/13 16:45:51 by svidot           ###   ########.fr       */
+/*   Updated: 2024/01/13 16:55:36 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -406,24 +406,13 @@ void	draw_line(int x, int y, int xp, int yp, char *img_data, int bpp, int size_l
     	error = dy * 2 - dx;	
 		while (x != xp)
 		{
-			if (h_dir == 1)
-				x++;
-			else if (h_dir == -1)
-				x--;
+			put_pxl(x, y, img_data, bpp, size_line);
 			if (error <= 0)
 			{
-				if (v_dir == 1)
-				{
-					
-					y++;
-				}
-				else if (v_dir == -1)
-				{				
-					y--;
-				} 
+				y += v_dir;
 				error += dy * 2;
 			}		
-			put_pxl(x, y, img_data, bpp, size_line);
+			x += h_dir;
 			error -= dx * 2;
 		}
 	}
@@ -432,19 +421,13 @@ void	draw_line(int x, int y, int xp, int yp, char *img_data, int bpp, int size_l
     	error = dx * 2 - dy;
 		while (y != yp)
 		{
-			if (v_dir == 1)
-				y++;
-			else if (v_dir == -1)
-				y--;			
+			put_pxl(x, y, img_data, bpp, size_line);
 			if (error <= 0)
 			{
-				if (h_dir == 1)
-					x++;
-				else if (h_dir == -1)
-					x--;
+				x += h_dir;
 				error += dx * 2;
 			}		
-			put_pxl(x, y, img_data, bpp, size_line);
+			y += v_dir;			
 			error -= dy * 2;
 		}
 	}		
