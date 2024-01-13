@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/12 21:36:51 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/13 11:21:07 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -359,7 +359,7 @@ void	print_img(t_point **pt_arr)
     int bpp; 
     int size_line;
   	int pxl_pos;
-	int truc = 400;
+	int truc = 0;//200;
 	
 	img_ptr = mlx_new_image(mlx_connect, WIDTH, HEIGHT);   
     img_data = mlx_get_data_addr(img_ptr, &bpp, &size_line, &(int){0});
@@ -379,6 +379,38 @@ void	print_img(t_point **pt_arr)
 	mlx_destroy_image(mlx_connect, img_ptr);
 }
 
+double	x_average(t_point **pt_arr)
+{
+	double	sum;
+	int	i;
+		
+	i = 0;
+	sum = 0.0;
+	while (*pt_arr)
+	{
+		sum += (*pt_arr)->x;
+		i++;
+		pt_arr++;
+	}
+	return (sum / i);	
+}
+
+double	y_average(t_point **pt_arr)
+{
+	double	sum;
+	int	i;
+		
+	i = 0;
+	sum = 0;
+	while (*pt_arr)
+	{
+		sum += (*pt_arr)->y;
+		i++;
+		pt_arr++;
+	}
+	return (sum / i);	
+}
+
 #include <unistd.h>
 void	global_matrix(t_point **pt_arr)
 {
@@ -395,11 +427,14 @@ void	global_matrix(t_point **pt_arr)
 	init_matrix(m_rtt_y);
 	
 	set_matrix_scale(m_scl, 7.0); printf_matrix(m_scl);
-	set_matrix_translate(m_trs, -100.0, -100.0, -100.0); printf_matrix(m_trs);
-		
-	set_matrix_rotation(m_rtt_x, 75, (int []) {1, 0, 0});	 
+	set_matrix_translate(m_trs, -x_average(pt_arr), -y_average(pt_arr), 0.0); printf_matrix(m_trs);
+		double	m_trs2[MTX][MTX];
+	init_matrix(m_trs2);
+	set_matrix_translate(m_trs2, 400, 200, 0.0); printf_matrix(m_trs);
+
+//	set_matrix_rotation(m_rtt_x, 75, (int []) {1, 0, 0});	 
 //	set_matrix_rotation(m_rtt_y, 42, (int []) {0, 1, 0});
-	merge_matrix(m_rtt_x, m_rtt_y, m_fnl_tmp);
+//	merge_matrix(m_rtt_x, m_rtt_y, m_fnl_tmp);
 	
 	int i;
 	i = 1;
@@ -407,10 +442,11 @@ void	global_matrix(t_point **pt_arr)
 	{
 		usleep(46000);
 	//	set_matrix_rotation(m_rtt_x, i, (int []) {1, 0, 0});	 
-		set_matrix_rotation(m_rtt_y, i, (int []) {0, 1, 0});
-		merge_matrix(m_rtt_y, m_rtt_x, m_fnl_tmp);	
+		set_matrix_rotation(m_rtt_y, i, (int []) {0, 0, 1});
+		merge_matrix(m_trs2, m_scl, m_fnl_tmp);
+		merge_matrix(m_fnl_tmp, m_rtt_y, m_fnl);	
 		//set_matrix_rotation(m_rtt, 12.0, (int []) {0, 0, 1}); 
-		merge_matrix(m_fnl_tmp, m_scl, m_fnl);
+		merge_matrix(m_fnl, m_trs, m_fnl);
 		//merge_matrix(m_fnl, m_trs, m_fnl_tmp); 
 		apply_matrix(m_fnl, pt_arr);
 		//apply_m(pt_arr);
