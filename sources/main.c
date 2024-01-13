@@ -6,7 +6,7 @@
 /*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/13 11:21:07 by svidot           ###   ########.fr       */
+/*   Updated: 2024/01/13 11:57:29 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -410,7 +410,36 @@ double	y_average(t_point **pt_arr)
 	}
 	return (sum / i);	
 }
+void	draw_line(int x, int y, int xp, int yp)
+{
+	int	dx;
+	int dy;
 
+	dx = x - xp;
+	dy = y - yp;
+	if (dx >= 0)
+	{
+		if (dy >= 0)
+		{
+			
+		}
+		else
+		{
+			
+		}
+	}
+	else 
+	{
+		if (dy >= 0)
+		{
+			
+		}
+		else
+		{
+			
+		}	
+	}
+}
 #include <unistd.h>
 void	global_matrix(t_point **pt_arr)
 {
