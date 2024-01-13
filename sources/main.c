@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
+/*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/13 11:57:29 by svidot           ###   ########.fr       */
+/*   Updated: 2024/01/13 12:35:55 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -414,31 +414,35 @@ void	draw_line(int x, int y, int xp, int yp)
 {
 	int	dx;
 	int dy;
-
-	dx = x - xp;
-	dy = y - yp;
-	if (dx >= 0)
+	int error;
+	
+	if (x > xp)
+		dx = x - xp;
+	else
+		dx = xp - x;
+	if (y > yp)
+		dy = y - yp;
+	else
+		dy = yp - y;
+	if (dx > dy)
 	{
-		if (dy >= 0)
+    	error = dy * 2 - dx;	
+		while (x <= xp)
 		{
-			
-		}
-		else
-		{
-			
+			put_pxl(x, y);
+			x++;
 		}
 	}
-	else 
+	else
 	{
-		if (dy >= 0)
+    	error = dx * 2 - dy;
+		while (y <= yp)
 		{
-			
+			put_pxl(x, y);
+			y++;
 		}
-		else
-		{
-			
-		}	
-	}
+	}	
+	
 }
 #include <unistd.h>
 void	global_matrix(t_point **pt_arr)
