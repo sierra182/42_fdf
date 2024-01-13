@@ -6,7 +6,7 @@
 /*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/13 16:18:17 by svidot           ###   ########.fr       */
+/*   Updated: 2024/01/13 16:45:51 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -410,16 +410,15 @@ void	draw_line(int x, int y, int xp, int yp, char *img_data, int bpp, int size_l
 				x++;
 			else if (h_dir == -1)
 				x--;
-			if (error < 0)
-			{ //ft_printf("he!\n");
+			if (error <= 0)
+			{
 				if (v_dir == 1)
 				{
-					//ft_printf("hou!\n");
+					
 					y++;
 				}
 				else if (v_dir == -1)
-				{
-					//ft_printf("kii!\n");
+				{				
 					y--;
 				} 
 				error += dy * 2;
@@ -437,7 +436,7 @@ void	draw_line(int x, int y, int xp, int yp, char *img_data, int bpp, int size_l
 				y++;
 			else if (v_dir == -1)
 				y--;			
-			if (error < 0)
+			if (error <= 0)
 			{
 				if (h_dir == 1)
 					x++;
