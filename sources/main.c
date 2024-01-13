@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/13 22:48:53 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/13 23:00:06 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -539,20 +539,21 @@ void	global_matrix(t_point **pt_arr)
 	init_matrix(m_rtt_x); // printf_matrix(m_rtt);
 	init_matrix(m_rtt_y);
 	
-	set_matrix_scale(m_scl, 40.0); printf_matrix(m_scl);
+	set_matrix_scale(m_scl, 10.0); printf_matrix(m_scl);
 	set_matrix_translate(m_trs, -x_average(pt_arr), -y_average(pt_arr), 0.0); printf_matrix(m_trs);
 		double	m_trs2[MTX][MTX];
 	init_matrix(m_trs2);
-	set_matrix_translate(m_trs2, 500.0, 800.0, 0.0); printf_matrix(m_trs);
+	set_matrix_translate(m_trs2, 100.0, 800.0, 0.0); printf_matrix(m_trs);
 	set_matrix_persp(m_persp, 60.0, WIDTH / HEIGHT, 1.0, 2.0);
 	set_matrix_rotation(m_rtt_x, 75, (int []) {1, 0, 0});	 
 	set_matrix_rotation(m_rtt_y, 82, (int []) {0, 1, 0});
 	
 	//merge_matrix(m_trs2, m_persp, m_fnl_tmp);
-	merge_matrix(m_persp, m_trs2, m_fnl_tmp);
-	merge_matrix(m_fnl_tmp, m_rtt_y, m_fnl);
-	merge_matrix(m_fnl, m_rtt_x, m_fnl_tmp);
-	merge_matrix(m_fnl_tmp, m_scl, m_fnl);
+//	merge_matrix(m_persp, m_trs2, m_fnl_tmp);
+	merge_matrix(m_trs2, m_rtt_y, m_fnl);
+//	merge_matrix(m_fnl, m_rtt_x, m_fnl_tmp);
+	merge_matrix(m_fnl, m_scl, m_fnl_tmp);
+	merge_matrix(m_fnl_tmp, m_persp, m_fnl);
 	apply_matrix(m_fnl, pt_arr);
 	print_img(pt_arr);
 	// int i;
