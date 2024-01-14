@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/13 23:00:06 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/14 22:13:01 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,7 +193,7 @@ void	apply_m(t_point **pt_arr)
 	}
 }
 			
-void	set_matrix_scale(double matrix[][MTX], double scale)
+void	set_matrix_scale(double matrix[][MTX], double scale[])
 {
 	int	i;
 	int	j;
@@ -205,20 +205,11 @@ void	set_matrix_scale(double matrix[][MTX], double scale)
 		while (j < MTX - 1)
 		{
 			if (i == j)
-				matrix[i][j] = scale;			
+				matrix[i][j] = scale[i];			
 			j++;
 		}
 		i++;
 	}
-}
-
-void	create_matrix_scale(t_point	**pt_arr)
-{
-	double	m_scl[MTX][MTX];
-	
-	init_matrix(m_scl);
-	set_matrix_scale(m_scl, 20.0);
-	apply_matrix(m_scl, pt_arr);	
 }
 
 void	set_matrix_translate(double matrix[][MTX], double x, double y, double z)
@@ -266,15 +257,6 @@ void	set_matrix_persp(double matrix[][MTX], double fov, double aspect, double z_
 	matrix[3][2] = -1;
 	matrix[MTX - 1][MTX - 1] = 0;
 	
-}
-
-void	create_matrix_translate(t_point	**pt_arr)
-{
-	double	m_trs[MTX][MTX];
-
-	init_matrix(m_trs);
-	set_matrix_translate(m_trs, 0.0, 250.0, 0.0);
-	apply_matrix(m_trs, pt_arr);
 }
 
 double	multiply_rowbycol(double row[], double m2[][MTX], int col)
@@ -357,26 +339,31 @@ void print_pixels(t_point **pt_arr)
 		//sleep(.5);
 		//int		mlx_pixel_put(void *mlx_ptr, void *win_ptr, int x, int y, int color);
 		if ((*pt_arr)->z > 0)
-			mlx_pixel_put(mlx_connect, mlx_window, (*pt_arr)->new_x, (*pt_arr)->new_y, *(int *)(unsigned char [4]){255, 0, 0, 255});
+			mlx_pixel_put(mlx_connect, mlx_window, (*pt_arr)->new_x, (*pt_arr)->new_y, *(int *)(unsigned char [4]){255, 255, 255, 255});
 		if ((*pt_arr)->z == 0)
-			mlx_pixel_put(mlx_connect, mlx_window, (*pt_arr)->new_x, (*pt_arr)->new_y, *(int *)(unsigned char [4]){0, 255, 0, 255});
+			mlx_pixel_put(mlx_connect, mlx_window, (*pt_arr)->new_x, (*pt_arr)->new_y, *(int *)(unsigned char [4]){255, 255, 255, 255});
 		pt_arr++;
 	}
 }
 #define WIDTH 1000
 #define HEIGHT 700
 
-void	put_pxl(int x, int y, char *img_data, int bpp, int size_line)
+void	put_pxl(int x, int y, int z, char *img_data, int bpp, int size_line)
 {
 	int	pxl_pos;
 	
 	if (x >= 0 && x <= WIDTH && y >= 0 && y <= HEIGHT)
 	{
 		pxl_pos = (x * bpp / 8 + y * size_line);
-		*(int *)(img_data + pxl_pos) = 0x00FF0000;			
+		if (!z)
+			*(int *)(img_data + pxl_pos) = 0x00FF0000;
+		else if (z < 0)
+			*(int *)(img_data + pxl_pos) = 0x0000FF00;
+		else
+			*(int *)(img_data + pxl_pos) = 0x000000FF;
 	}
 }
-void	draw_line(int x, int y, int xp, int yp, char *img_data, int bpp, int size_line)
+void	draw_line(int x, int y, int z, int xp, int yp, char *img_data, int bpp, int size_line)
 {
 	int	dx;
 	int dy;
@@ -425,7 +412,7 @@ void	draw_line(int x, int y, int xp, int yp, char *img_data, int bpp, int size_l
 				y += v_dir;
 				error += dx * 2;
 			}		
-			put_pxl(x, y, img_data, bpp, size_line);
+			put_pxl(x, y, z, img_data, bpp, size_line);
 			error -= dy * 2;
 		}
 	}
@@ -440,7 +427,7 @@ void	draw_line(int x, int y, int xp, int yp, char *img_data, int bpp, int size_l
 				x += h_dir;
 				error += dy * 2;
 			}		
-			put_pxl(x, y, img_data, bpp, size_line);
+			put_pxl(x, y, z, img_data, bpp, size_line);
 			error -= dx * 2;
 		}
 	}		
@@ -464,9 +451,9 @@ void	print_img(t_point **pt_arr)
 		{			
 			pxl_pos = (((*pt_arr)->new_y + truc) * size_line) + (((*pt_arr)->new_x + truc) * (bpp / 8));
 			if ((*pt_arr)->z)  		
-				*(int *)(img_data + pxl_pos) = 0x00FF0000;
+				*(int *)(img_data + pxl_pos) = 0xFFFFFFFF;
 			else
-				*(int *)(img_data + pxl_pos) = 0x0000FF00;
+				*(int *)(img_data + pxl_pos) = 0xFFFFFFFF;
 		}
 		pt_arr++;
 	}
@@ -476,12 +463,12 @@ void	print_img(t_point **pt_arr)
 		if (i != 19 && i != 38 && i != 57 && i != 76 && i != 95 && i != 114 && i != 133 && i != 152 && i != 171 && i != 190)
 		{				
 			if (*(pt_arr_sav + 1))
-				draw_line((*pt_arr_sav)->new_x, (*pt_arr_sav)->new_y, (*(pt_arr_sav + 1))->new_x, (*(pt_arr_sav + 1))->new_y, img_data, bpp, size_line);
+				draw_line((*pt_arr_sav)->new_x, (*pt_arr_sav)->new_y, (*pt_arr_sav)->new_z, (*(pt_arr_sav + 1))->new_x, (*(pt_arr_sav + 1))->new_y, img_data, bpp, size_line);
 		}
 		if (i <= 190)
 		{ 		
 			if (*(pt_arr_sav + 19))
-				draw_line((*pt_arr_sav)->new_x, (*pt_arr_sav)->new_y, (*(pt_arr_sav + 19))->new_x, (*(pt_arr_sav + 19))->new_y, img_data, bpp, size_line);
+				draw_line((*pt_arr_sav)->new_x, (*pt_arr_sav)->new_y, (*pt_arr_sav)->new_z,  (*(pt_arr_sav + 19))->new_x, (*(pt_arr_sav + 19))->new_y, img_data, bpp, size_line);
 		}
 		pt_arr_sav++;
 		i++;
@@ -522,65 +509,124 @@ double	y_average(t_point **pt_arr)
 	return (sum / i);	
 }
 
+double	z_average(t_point **pt_arr)
+{
+	double	sum;
+	int	i;
+		
+	i = 0;
+	sum = 0;
+	while (*pt_arr)
+	{
+		sum += (*pt_arr)->z;
+		i++;
+		pt_arr++;
+	}
+	return (sum / i);	
+}
+t_point **copy_points(t_point **pt_arr)
+{
+	int		i;	
+	t_point **copy;
+	t_point **pt_arr_sav = pt_arr;
+	
+	i = 0;
+	while (*pt_arr)
+	{
+		i++;
+		pt_arr++;
+	}
+	pt_arr = pt_arr_sav;
+	copy = (t_point **) ft_calloc(i + 1, sizeof(t_point *));
+	i = 0;
+	while (*pt_arr)
+	{
+		copy[i] = malloc(sizeof(t_point));
+		copy[i]->x = (*pt_arr)->x;
+		copy[i]->y = (*pt_arr)->y;
+		copy[i]->z = (*pt_arr)->z;
+		copy[i]->new_x = (*pt_arr)->new_x;
+		copy[i]->new_y = (*pt_arr)->new_y;
+		copy[i]->new_z = (*pt_arr)->new_z;
+		i++;
+		pt_arr++;
+	}
+	return (copy);
+}
+
 #include <unistd.h>
 void	global_matrix(t_point **pt_arr)
 {
+	double	m_void[MTX][MTX];
+	double	m_persp[MTX][MTX];
 	double	m_scl[MTX][MTX];
 	double	m_trs[MTX][MTX];
+	double	m_trs2[MTX][MTX];
 	double	m_rtt_x[MTX][MTX];
 	double	m_rtt_y[MTX][MTX];
+	double	m_rtt_z[MTX][MTX];
+	
 	double	m_fnl[MTX][MTX];
 	double	m_fnl_tmp[MTX][MTX];
-	double	m_persp[MTX][MTX];
 	
+	init_matrix(m_void);
 	init_matrix(m_persp);
 	init_matrix(m_scl); //printf_matrix(m_scl);
 	init_matrix(m_trs); //printf_matrix(m_trs);
+	init_matrix(m_trs2);
 	init_matrix(m_rtt_x); // printf_matrix(m_rtt);
 	init_matrix(m_rtt_y);
+	init_matrix(m_rtt_z);
 	
-	set_matrix_scale(m_scl, 10.0); printf_matrix(m_scl);
-	set_matrix_translate(m_trs, -x_average(pt_arr), -y_average(pt_arr), 0.0); printf_matrix(m_trs);
-		double	m_trs2[MTX][MTX];
-	init_matrix(m_trs2);
-	set_matrix_translate(m_trs2, 100.0, 800.0, 0.0); printf_matrix(m_trs);
-	set_matrix_persp(m_persp, 60.0, WIDTH / HEIGHT, 1.0, 2.0);
-	set_matrix_rotation(m_rtt_x, 75, (int []) {1, 0, 0});	 
-	set_matrix_rotation(m_rtt_y, 82, (int []) {0, 1, 0});
+	set_matrix_persp(m_persp, 195.0, WIDTH / HEIGHT, 1.0, 30000.0);
+	set_matrix_scale(m_scl, (double[]){1000.0, 1000.0, 2.0}); //printf_matrix(m_scl);
+	set_matrix_translate(m_trs, -x_average(pt_arr), -y_average(pt_arr), -z_average(pt_arr)); //printf_matrix(m_trs);		
+	set_matrix_translate(m_trs2, 300.0, -2200.0, 0.0); //printf_matrix(m_trs);
+	set_matrix_rotation(m_rtt_x, -75, (int []) {1, 0, 0});	 
+	//set_matrix_rotation(m_rtt_y, 20, (int []) {0, 1, 0});
+	//set_matrix_rotation(m_rtt_z, 82, (int []) {0, 0, 1});
 	
-	//merge_matrix(m_trs2, m_persp, m_fnl_tmp);
-//	merge_matrix(m_persp, m_trs2, m_fnl_tmp);
-	merge_matrix(m_trs2, m_rtt_y, m_fnl);
-//	merge_matrix(m_fnl, m_rtt_x, m_fnl_tmp);
-	merge_matrix(m_fnl, m_scl, m_fnl_tmp);
-	merge_matrix(m_fnl_tmp, m_persp, m_fnl);
-	apply_matrix(m_fnl, pt_arr);
-	print_img(pt_arr);
-	// int i;
-	// i = 1;
-	// while (i)
-	// {
-	// 	usleep(46000);
-	// 	set_matrix_rotation(m_rtt_x, i, (int []) {1, 0, 0});	 
-	// 	set_matrix_rotation(m_rtt_y, i, (int []) {0, 1, 0});
-	// 	merge_matrix(m_persp, m_trs2, m_fnl);
-	// 	merge_matrix(m_fnl, m_scl, m_fnl_tmp);
-	// 	merge_matrix(m_fnl_tmp, m_rtt_y, m_fnl_tmp);
-	// 	merge_matrix(m_fnl_tmp, m_rtt_x, m_fnl);
-	// 	//set_matrix_rotation(m_rtt, 12.0, (int []) {0, 0, 1}); 
-	// 	merge_matrix(m_fnl, m_trs, m_fnl_tmp);
-	// 	//merge_matrix(m_fnl, m_trs, m_fnl_tmp); 
-	// 	apply_matrix(m_fnl_tmp, pt_arr);
-	// 	//apply_m(pt_arr);
-	// 		//	apply_matrix(m_trs, pt_arr);
-	// 	//merge_matrix(m_fnl_tmp, m_scl, m_fnl);
-	// 	//print_pixels(pt_arr);
-	// 	print_img(pt_arr);
-	// 	//ft_printf("YOU\n");
-	// 	i++;
-	// 	if (i == 361)
-	// 		i = 1;
-	// }
+	//merge_matrix(m_persp, m_scl, m_fnl_tmp);
+	//merge_matrix(m_scl, m_rtt_y, m_fnl);
+	//merge_matrix(m_fnl, m_rtt_x, m_fnl_tmp);
+	//merge_matrix(m_fnl_tmp, m_scl, m_fnl);
+	//merge_matrix(m_fnl, m_trs, m_fnl_tmp);
+	//merge_matrix(m_fnl_tmp, m_persp, m_fnl);
+//	merge_matrix(m_fnl_tmp, m_persp, m_fnl);
+	
+	//apply_matrix(m_fnl, pt_arr);
+	//print_img(pt_arr);
+	int i;
+	i = 1;
+	while (i)
+	{
+		usleep(46000);		
+		set_matrix_rotation(m_rtt_y, i, (int []) {0, 1, 0});		
+		
+		merge_matrix(m_void, m_trs2, m_fnl);
+		merge_matrix(m_fnl, m_rtt_y, m_fnl_tmp);
+		merge_matrix(m_fnl_tmp, m_rtt_x, m_fnl);		
+		merge_matrix(m_fnl, m_scl, m_fnl_tmp);	
+		merge_matrix(m_fnl_tmp, m_trs, m_fnl);
+		//merge_matrix(m_fnl_tmp, m_persp, m_fnl);
+		
+		apply_matrix(m_fnl, pt_arr);
+		if (i == 181)
+		{
+			break;
+		}
+			t_point ** cpy = copy_points(pt_arr);
+			apply_m(cpy);
+			apply_matrix(m_persp, cpy);
+			print_img(cpy);
+			//break;
+		//}
+		//print_img(pt_arr);
+	
+		i++;
+		if (i == 361)
+			i = 1;
+	}
 	
 	//merge_matrix(m_fnl, m_rtt, m_fnl_tmp); printf_matrix(m_fnl_tmp);
 	//set_matrix_translate(m_trs, 10.0, 0.0, 0.0); printf_matrix(m_trs);
