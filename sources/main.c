@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/15 17:37:45 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/15 17:59:32 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -284,6 +284,13 @@ void	bla(int greater_delta, int lower_delta, int pos, int opp_pos, int pos_prime
 		error -= lower_delta * 2;
 	}
 }
+
+void	draw_line_setup(int *dir, int dir_value, int *delta, int pos_value_a, int pos_value_b )
+{
+	*dir = dir_value;
+	*delta = pos_value_a - pos_value_b;
+}
+
 void	draw_line(int x, int y, int z, int xp, int yp, char *img_data, int bpp, int size_line)
 {
 	int	dx;
@@ -291,26 +298,14 @@ void	draw_line(int x, int y, int z, int xp, int yp, char *img_data, int bpp, int
 	int h_dir;
 	int v_dir;
 	
-	if (x > xp)
-	{
-		h_dir = -1;
-		dx = x - xp;
-	}
+	if (x > xp)	
+		draw_line_setup(&h_dir, -1, &dx, x, xp);	
 	else
-	{
-		h_dir = 1;
-		dx = xp - x;
-	}	
+		draw_line_setup(&h_dir, 1, &dx, xp, x);	
 	if (y > yp)
-	{
-		v_dir = -1;
-		dy = y - yp;
-	}
+		draw_line_setup(&v_dir, -1, &dy, y, yp);	
 	else
-	{
-		v_dir = 1;
-		dy = yp - y;
-	}	
+		draw_line_setup(&v_dir, 1, &dy, yp, y);
 	if (dx > dy)	
 		bla(dx, dy, x, y, xp, h_dir, v_dir, z, img_data, bpp, size_line, 0);	
 	else	
