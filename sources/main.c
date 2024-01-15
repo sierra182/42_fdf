@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/15 11:02:46 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/15 12:22:25 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,20 +53,21 @@ void	init_matrix(double matrix[][MTX])
 	}
 }
 
-// void	reset_matrix(t_point **pt_arr)
-// {		
-// 	while (*pt_arr)
-// 	{
-// 		(*pt_arr)->new_x = 0;
-// 		(*pt_arr)->new_y = 0;
-// 		(*pt_arr)->new_z = 0;
-// 		pt_arr++;
-// 	}
-// }
+void	reset_matrix(t_point **pt_arr)
+{	
+	int i;
+
+	while (*pt_arr)
+	{
+		i = 0;
+		while (i < MTX)
+			(*pt_arr)->new_vect[i++] = 0;		
+		pt_arr++;
+	}
+}
 
 void	apply_matrix(double matrix[][MTX], t_point **pt_arr)
-{
-	const int coef_t = matrix[MTX - 1][MTX - 1];
+{	
 	int	i;
 	int	j;
 	
@@ -79,40 +80,7 @@ void	apply_matrix(double matrix[][MTX], t_point **pt_arr)
 			j = 0;
 			while (j < MTX)
 			{
-				if (i == 0)
-				{
-					if (j == 0)
-						(*pt_arr)->new_x += matrix[i][j] * (*pt_arr)->x;
-					if (j == 1)
-						(*pt_arr)->new_x += matrix[i][j] * (*pt_arr)->y;
-					if (j == 2)
-						(*pt_arr)->new_x += matrix[i][j] * (*pt_arr)->z;
-					if (j == 3)
-						(*pt_arr)->new_x += matrix[i][j] * coef_t;						
-				}
-				if (i == 1)
-				{					
-					if (j == 0)
-						(*pt_arr)->new_y += matrix[i][j] * (*pt_arr)->x;
-					if (j == 1)
-						(*pt_arr)->new_y += matrix[i][j] * (*pt_arr)->y;
-					if (j == 2)
-						(*pt_arr)->new_y += matrix[i][j] * (*pt_arr)->z;
-					if (j == 3)
-						(*pt_arr)->new_y += matrix[i][j] * coef_t;
-				}
-				if (i == 2)
-				{
-					
-					if (j == 0)
-						(*pt_arr)->new_z += matrix[i][j] * (*pt_arr)->x;
-					if (j == 1)
-						(*pt_arr)->new_z += matrix[i][j] * (*pt_arr)->y;
-					if (j == 2)
-						(*pt_arr)->new_z += matrix[i][j] * (*pt_arr)->z;
-					if (j == 3)
-						(*pt_arr)->new_z += matrix[i][j] * coef_t;
-				}
+				(*pt_arr)->new_vect[i] += (int) (matrix[i][j] * (*pt_arr)->init_vect[j]);			
 				j++;
 			}
 			i++;
@@ -249,9 +217,7 @@ void	printf_matrix(double matrix[][MTX])
 	}
 	printf("\n");
 }
-	void	*mlx_connect;
-	void	*mlx_window;
-
+	
 // void clear_screen()
 // {
 // 	int i;
@@ -368,6 +334,10 @@ void	draw_line(int x, int y, int z, int xp, int yp, char *img_data, int bpp, int
 	}		
 }
 
+void *mlx_connect;
+void *mlx_window;
+#define WIDTH 1000
+#define HEIGHT 700
 void	print_img(t_point **pt_arr)
 {
 	void *img_ptr;
@@ -375,17 +345,17 @@ void	print_img(t_point **pt_arr)
     int bpp; 
     int size_line;
   	int pxl_pos;
-	int truc = 0;//200;
+	int truc = 0;//200;	
 	
-	img_ptr = mlx_new_image(mlx_connect, WIDTH, HEIGHT);   
+	img_ptr = mlx_new_image(mlx_connect, WIDTH, HEIGHT);	
     img_data = mlx_get_data_addr(img_ptr, &bpp, &size_line, &(int){0});
 	t_point **pt_arr_sav = pt_arr;
 	while (*pt_arr)
 	{
-		if ((*pt_arr)->new_x + truc >= 0 && (*pt_arr)->new_x + truc <= WIDTH && (*pt_arr)->new_y + truc >= 0 && (*pt_arr)->new_y + truc <= HEIGHT)
+		if ((*pt_arr)->new_vect[0] + truc >= 0 && (*pt_arr)->new_vect[0] + truc <= WIDTH && (*pt_arr)->new_vect[1] + truc >= 0 && (*pt_arr)->new_vect[1] + truc <= HEIGHT)
 		{			
-			pxl_pos = (((*pt_arr)->new_y + truc) * size_line) + (((*pt_arr)->new_x + truc) * (bpp / 8));
-			if ((*pt_arr)->z)  		
+			pxl_pos = (((*pt_arr)->new_vect[1] + truc) * size_line) + (((*pt_arr)->new_vect[0] + truc) * (bpp / 8));
+			if ((*pt_arr)->init_vect[2])  		
 				*(int *)(img_data + pxl_pos) = 0xFFFFFFFF;
 			else
 				*(int *)(img_data + pxl_pos) = 0xFFFFFFFF;
@@ -398,12 +368,12 @@ void	print_img(t_point **pt_arr)
 		if (i != 19 && i != 38 && i != 57 && i != 76 && i != 95 && i != 114 && i != 133 && i != 152 && i != 171 && i != 190)
 		{				
 			if (*(pt_arr_sav + 1))
-				draw_line((*pt_arr_sav)->new_x, (*pt_arr_sav)->new_y, (*pt_arr_sav)->new_z, (*(pt_arr_sav + 1))->new_x, (*(pt_arr_sav + 1))->new_y, img_data, bpp, size_line);
+				draw_line((*pt_arr_sav)->new_vect[0], (*pt_arr_sav)->new_vect[1], (*pt_arr_sav)->new_vect[2], (*(pt_arr_sav + 1))->new_vect[0], (*(pt_arr_sav + 1))->new_vect[1], img_data, bpp, size_line);
 		}
 		if (i <= 190)
 		{ 		
 			if (*(pt_arr_sav + 19))
-				draw_line((*pt_arr_sav)->new_x, (*pt_arr_sav)->new_y, (*pt_arr_sav)->new_z,  (*(pt_arr_sav + 19))->new_x, (*(pt_arr_sav + 19))->new_y, img_data, bpp, size_line);
+				draw_line((*pt_arr_sav)->new_vect[0], (*pt_arr_sav)->new_vect[1], (*pt_arr_sav)->new_vect[2],  (*(pt_arr_sav + 19))->new_vect[0], (*(pt_arr_sav + 19))->new_vect[1], img_data, bpp, size_line);
 		}
 		pt_arr_sav++;
 		i++;
@@ -412,7 +382,7 @@ void	print_img(t_point **pt_arr)
 	mlx_destroy_image(mlx_connect, img_ptr);
 }
 
-double	x_average(t_point **pt_arr)
+double	get_average(t_point **pt_arr, int axe)
 {
 	double	sum;
 	int	i;
@@ -421,73 +391,88 @@ double	x_average(t_point **pt_arr)
 	sum = 0.0;
 	while (*pt_arr)
 	{
-		sum += (*pt_arr)->x;
+		sum += (*pt_arr)->init_vect[axe];
 		i++;
 		pt_arr++;
 	}
 	return (sum / i);	
 }
-
-double	y_average(t_point **pt_arr)
-{
-	double	sum;
-	int	i;
+// double	x_average(t_point **pt_arr)
+// {
+// 	double	sum;
+// 	int	i;
 		
-	i = 0;
-	sum = 0;
-	while (*pt_arr)
-	{
-		sum += (*pt_arr)->y;
-		i++;
-		pt_arr++;
-	}
-	return (sum / i);	
-}
+// 	i = 0;
+// 	sum = 0.0;
+// 	while (*pt_arr)
+// 	{
+// 		sum += (*pt_arr)->x;
+// 		i++;
+// 		pt_arr++;
+// 	}
+// 	return (sum / i);	
+// }
 
-double	z_average(t_point **pt_arr)
-{
-	double	sum;
-	int	i;
+// double	y_average(t_point **pt_arr)
+// {
+// 	double	sum;
+// 	int	i;
 		
-	i = 0;
-	sum = 0;
-	while (*pt_arr)
-	{
-		sum += (*pt_arr)->z;
-		i++;
-		pt_arr++;
-	}
-	return (sum / i);	
-}
-t_point **copy_points(t_point **pt_arr)
-{
-	int		i;	
-	t_point **copy;
-	t_point **pt_arr_sav = pt_arr;
+// 	i = 0;
+// 	sum = 0;
+// 	while (*pt_arr)
+// 	{
+// 		sum += (*pt_arr)->y;
+// 		i++;
+// 		pt_arr++;
+// 	}
+// 	return (sum / i);	
+// }
+
+// double	z_average(t_point **pt_arr)
+// {
+// 	double	sum;
+// 	int	i;
+		
+// 	i = 0;
+// 	sum = 0;
+// 	while (*pt_arr)
+// 	{
+// 		sum += (*pt_arr)->z;
+// 		i++;
+// 		pt_arr++;
+// 	}
+// 	return (sum / i);	
+// }
+// t_point **copy_points(t_point **pt_arr)
+// {
+// 	int		i;	
+// 	t_point **copy;
+// 	t_point **pt_arr_sav = pt_arr;
 	
-	i = 0;
-	while (*pt_arr)
-	{
-		i++;
-		pt_arr++;
-	}
-	pt_arr = pt_arr_sav;
-	copy = (t_point **) ft_calloc(i + 1, sizeof(t_point *));
-	i = 0;
-	while (*pt_arr)
-	{
-		copy[i] = malloc(sizeof(t_point));
-		copy[i]->x = (*pt_arr)->x;
-		copy[i]->y = (*pt_arr)->y;
-		copy[i]->z = (*pt_arr)->z;
-		copy[i]->new_x = (*pt_arr)->new_x;
-		copy[i]->new_y = (*pt_arr)->new_y;
-		copy[i]->new_z = (*pt_arr)->new_z;
-		i++;
-		pt_arr++;
-	}
-	return (copy);
-}
+// 	i = 0;
+// 	while (*pt_arr)
+// 	{
+// 		i++;
+// 		pt_arr++;
+// 	}
+// 	pt_arr = pt_arr_sav;
+// 	copy = (t_point **) ft_calloc(i + 1, sizeof(t_point *));
+// 	i = 0;
+// 	while (*pt_arr)
+// 	{
+// 		copy[i] = malloc(sizeof(t_point));
+// 		copy[i]->x = (*pt_arr)->x;
+// 		copy[i]->y = (*pt_arr)->y;
+// 		copy[i]->z = (*pt_arr)->z;
+// 		copy[i]->new_x = (*pt_arr)->new_x;
+// 		copy[i]->new_y = (*pt_arr)->new_y;
+// 		copy[i]->new_z = (*pt_arr)->new_z;
+// 		i++;
+// 		pt_arr++;
+// 	}
+// 	return (copy);
+// }
 
 #include <unistd.h>
 void	global_matrix(t_point **pt_arr)
@@ -512,10 +497,10 @@ void	global_matrix(t_point **pt_arr)
 	init_matrix(m_rtt_x); // printf_matrix(m_rtt);
 	init_matrix(m_rtt_y);
 	init_matrix(m_rtt_z);
-	
-	set_matrix_persp(m_persp, 195.0, WIDTH / HEIGHT, 1.0, 30000.0);
+	//set_matrix_persp(m_persp, 195.0, WIDTH / HEIGHT, 1.0, 30000.0);
 	set_matrix_scale(m_scl, (double[]){20.0, 20.0, 8.0}); //printf_matrix(m_scl);
-	set_matrix_translate(m_trs, -x_average(pt_arr), -y_average(pt_arr), -z_average(pt_arr)); //printf_matrix(m_trs);		
+	//set_matrix_translate(m_trs, -x_average(pt_arr), -y_average(pt_arr), -z_average(pt_arr)); //printf_matrix(m_trs);	
+	set_matrix_translate(m_trs, -get_average(pt_arr, 0), -get_average(pt_arr, 1), -get_average(pt_arr, 2)); //printf_matrix(m_trs);	
 	set_matrix_translate(m_trs2, 400.0, 200.0, 0.0); //printf_matrix(m_trs);
 	set_matrix_rotation(m_rtt_x, -65, (int []) {1, 0, 0});	 
 	//set_matrix_rotation(m_rtt_y, 20, (int []) {0, 1, 0});
@@ -556,6 +541,7 @@ void	global_matrix(t_point **pt_arr)
 		// 	print_img(cpy);
 			//break;
 		//}
+
 		print_img(pt_arr);
 	
 		i++;
@@ -589,13 +575,12 @@ int	main(int argc, char *argv[])
 	if (!mlx_window)
 		return (free_ptr_arr((void **) pt_arr),
 			mlx_destroy_display(mlx_connect), free(mlx_connect), 1);
-
-	print_pt_arr(pt_arr);
+	//print_pt_arr(pt_arr);
 	global_matrix(pt_arr);
 	//create_matrix_scale(pt_arr);
 	//print_pt_arr(pt_arr);
 	//create_matrix_translate(pt_arr);
-	print_pt_arr(pt_arr);
+	//print_pt_arr(pt_arr);
 	mlx_loop(mlx_connect);
 
 	free_ptr_arr((void **) pt_arr);
