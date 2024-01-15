@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/15 18:15:11 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/15 21:51:12 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -327,6 +327,19 @@ int 	get_line_length(t_point **pt_arr)
 	return (++len);
 }
 
+int 	get_n_line(t_point **pt_arr)
+{
+	int	n;
+	
+	n = 0;
+	if (!*pt_arr)
+		return (n);
+	while (*pt_arr)	
+		if ((*pt_arr++)->line == 1)
+			n++;	
+	return (++n);
+}
+
 void	print_img(t_point **pt_arr)
 {
 	void *img_ptr;
@@ -414,6 +427,27 @@ double	get_average(t_point **pt_arr, int axe)
 // 	return (copy);
 // }
 
+double	get_initial_scale(t_point **pt_arr)
+{
+	double 	scale;	
+	double	coef;
+	int		line_len;
+	int		n_line;
+	
+	coef = 0.75;
+	n_line = get_n_line(pt_arr);
+	line_len = get_line_length(pt_arr);
+	if (line_len > n_line)		
+		scale = coef * WIDTH / line_len;
+	else
+		scale = coef * HEIGHT / n_line;
+	return (scale);
+}
+int key_press_function(int keycode, void *param) {
+    // Traiter la pression de touche ici
+    return 0;
+}
+
 #include <unistd.h>
 void	global_matrix(t_point **pt_arr)
 {
@@ -438,11 +472,13 @@ void	global_matrix(t_point **pt_arr)
 	init_matrix(m_rtt_y);
 	init_matrix(m_rtt_z);
 	//set_matrix_persp(m_persp, 195.0, WIDTH / HEIGHT, 1.0, 30000.0);
-	set_matrix_scale(m_scl, (double[]){15.0, 15.0, 3.0}); //printf_matrix(m_scl);
+	double	scale;
+	scale = get_initial_scale(pt_arr); 
+	set_matrix_scale(m_scl, (double[]){scale, scale, 3.0}); //printf_matrix(m_scl);
 	//set_matrix_translate(m_trs, -x_average(pt_arr), -y_average(pt_arr), -z_average(pt_arr)); //printf_matrix(m_trs);	
 	set_matrix_translate(m_trs, -get_average(pt_arr, 0), -get_average(pt_arr, 1), -get_average(pt_arr, 2)); //printf_matrix(m_trs);	
-	set_matrix_translate(m_trs2, 500.0, 400.0, 0.0); //printf_matrix(m_trs);
-	set_matrix_rotation(m_rtt_x, -20, (int []) {1, 0, 0});	 
+	set_matrix_translate(m_trs2, WIDTH / 2, HEIGHT / 2, 0.0); //printf_matrix(m_trs);
+	set_matrix_rotation(m_rtt_x, -60, (int []) {1, 0, 0});	 
 	//set_matrix_rotation(m_rtt_y, 20, (int []) {0, 1, 0});
 	//set_matrix_rotation(m_rtt_z, 82, (int []) {0, 0, 1});
 
@@ -453,7 +489,7 @@ void	global_matrix(t_point **pt_arr)
 	//merge_matrix(m_fnl, m_trs, m_fnl_tmp);
 	//merge_matrix(m_fnl_tmp, m_persp, m_fnl);
 //	merge_matrix(m_fnl_tmp, m_persp, m_fnl);
-	
+	mlx_hook(window, X_EVENT_KEY_PRESS, 0, &key_press_function, NULL);
 	//apply_matrix(m_fnl, pt_arr);
 	//print_img(pt_arr);
 	int i;
@@ -513,7 +549,7 @@ int	main(int argc, char *argv[])
 	if (!mlx_window)
 		return (free_ptr_arr((void **) pt_arr),
 			mlx_destroy_display(mlx_connect), free(mlx_connect), 1);
-	//print_pt_arr(pt_arr);
+	//print_pt_arr(pt_arr);	
 	global_matrix(pt_arr);
 	//create_matrix_scale(pt_arr);
 	//print_pt_arr(pt_arr);
