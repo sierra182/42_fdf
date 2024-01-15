@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/15 18:06:34 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/15 18:15:11 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,7 +179,7 @@ double	multiply_rowbycol(double row[], double m2[][MTX], int col)
 	return (rslt);
 }
 
-void	merge_matrix(double m1[][MTX], double m2[][MTX], double mf[][MTX])
+void	multiply_matrix(double m1[][MTX], double m2[][MTX], double mf[][MTX])
 {
 	int	i;
 	int	j;
@@ -463,11 +463,11 @@ void	global_matrix(t_point **pt_arr)
 		usleep(46000);
 		set_matrix_rotation(m_rtt_y, i, (int []) {0, 1, 0});
 	
-		merge_matrix(m_void, m_trs2, m_fnl);
-		merge_matrix(m_fnl, m_rtt_y, m_fnl_tmp);
-		merge_matrix(m_fnl_tmp, m_rtt_x, m_fnl);
-		merge_matrix(m_fnl, m_scl, m_fnl_tmp);
-		merge_matrix(m_fnl_tmp, m_trs, m_fnl);
+		multiply_matrix(m_void, m_trs2, m_fnl);
+		multiply_matrix(m_fnl, m_rtt_y, m_fnl_tmp);
+		multiply_matrix(m_fnl_tmp, m_rtt_x, m_fnl);
+		multiply_matrix(m_fnl, m_scl, m_fnl_tmp);
+		multiply_matrix(m_fnl_tmp, m_trs, m_fnl);
 		//merge_matrix(m_fnl_tmp, m_persp, m_fnl);
 	
 		apply_matrix(m_fnl, pt_arr);
