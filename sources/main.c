@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/15 15:13:10 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/15 17:37:45 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -263,74 +263,58 @@ void	put_pxl(int x, int y, int z, char *img_data, int bpp, int size_line)
 			*(int *)(img_data + pxl_pos) = 0x000000FF;
 	}
 }
+
+void	bla(int greater_delta, int lower_delta, int pos, int opp_pos, int pos_prime, int dir, int opp_dir, int z, char *img_data, int bpp, int size_line, int flag)
+{
+	int error;
+	
+	error = greater_delta;	
+	while (pos != pos_prime)
+	{
+		pos += dir;
+		if (error <= 0)
+		{
+			opp_pos += opp_dir;
+			error += greater_delta * 2;
+		}
+		if (!flag)		
+			put_pxl(pos, opp_pos, z, img_data, bpp, size_line);
+		else
+			put_pxl(opp_pos, pos, z, img_data, bpp, size_line);
+		error -= lower_delta * 2;
+	}
+}
 void	draw_line(int x, int y, int z, int xp, int yp, char *img_data, int bpp, int size_line)
 {
 	int	dx;
-	int dy;
-	int error;
+	int dy;	
 	int h_dir;
 	int v_dir;
-
+	
 	if (x > xp)
 	{
 		h_dir = -1;
 		dx = x - xp;
 	}
-	else if (x < xp)
+	else
 	{
 		h_dir = 1;
 		dx = xp - x;
-	}
-	else
-	{
-		dx = 0;
-		h_dir = 0;
-	}
+	}	
 	if (y > yp)
 	{
 		v_dir = -1;
 		dy = y - yp;
 	}
-	else if (y < yp)
+	else
 	{
 		v_dir = 1;
 		dy = yp - y;
-	}
-	else 
-	{
-		v_dir = 0;
-		dy = 0;
-	}
-	if (dx > dy)
-	{
-    	error = dx;	
-		while (x != xp)
-		{
-			x += h_dir;
-			if (error <= 0)
-			{
-				y += v_dir;
-				error += dx * 2;
-			}		
-			put_pxl(x, y, z, img_data, bpp, size_line);
-			error -= dy * 2;
-		}
-	}
-	else
-	{
-    	error = dy;
-		while (y != yp)
-		{
-			y += v_dir;			
-			if (error <= 0)
-			{
-				x += h_dir;
-				error += dy * 2;
-			}		
-			put_pxl(x, y, z, img_data, bpp, size_line);
-			error -= dx * 2;
-		}
-	}		
+	}	
+	if (dx > dy)	
+		bla(dx, dy, x, y, xp, h_dir, v_dir, z, img_data, bpp, size_line, 0);	
+	else	
+		bla(dy, dx, y, x, yp, v_dir, h_dir, z, img_data, bpp, size_line, 1);   		
 }
 
 void *mlx_connect;
@@ -375,14 +359,14 @@ void	print_img(t_point **pt_arr)
 	int len = get_line_length(pt_arr_sav);// printf("%d\n", len);
 	while (*pt_arr_sav)
 	{
-		if ((*pt_arr_sav)->line)
-			len = get_line_length(pt_arr_sav);
-		if ((*pt_arr_sav)->line < 2)
+		if ((*pt_arr_sav)->line < 2)// && get_line_length(pt_arr_sav + 1) >= )		
 			draw_line((*pt_arr_sav)->new_vect[0], (*pt_arr_sav)->new_vect[1], (*pt_arr_sav)->new_vect[2], (*(pt_arr_sav + len))->new_vect[0], (*(pt_arr_sav + len))->new_vect[1], img_data, bpp, size_line);
 		if (!(*pt_arr_sav)->line || (*pt_arr_sav)->line == 2)	
 			draw_line((*pt_arr_sav)->new_vect[0], (*pt_arr_sav)->new_vect[1], (*pt_arr_sav)->new_vect[2], (*(pt_arr_sav + 1))->new_vect[0], (*(pt_arr_sav + 1))->new_vect[1], img_data, bpp, size_line);
-		// else
-		// 	len = get_line_length(pt_arr_sav + 1);	
+		if ((*pt_arr_sav)->line == 1)
+		  	len = get_line_length(pt_arr_sav + 1);
+		// if ((*pt_arr_sav)->line)
+		//  	len = get_line_length(pt_arr_sav + 1);	
 		pt_arr_sav++;	
 	}
 	mlx_put_image_to_window(mlx_connect, mlx_window, img_ptr, 0, 0);
@@ -459,11 +443,11 @@ void	global_matrix(t_point **pt_arr)
 	init_matrix(m_rtt_y);
 	init_matrix(m_rtt_z);
 	//set_matrix_persp(m_persp, 195.0, WIDTH / HEIGHT, 1.0, 30000.0);
-	set_matrix_scale(m_scl, (double[]){10.0, 10.0, 8.0}); //printf_matrix(m_scl);
+	set_matrix_scale(m_scl, (double[]){15.0, 15.0, 3.0}); //printf_matrix(m_scl);
 	//set_matrix_translate(m_trs, -x_average(pt_arr), -y_average(pt_arr), -z_average(pt_arr)); //printf_matrix(m_trs);	
 	set_matrix_translate(m_trs, -get_average(pt_arr, 0), -get_average(pt_arr, 1), -get_average(pt_arr, 2)); //printf_matrix(m_trs);	
-	set_matrix_translate(m_trs2, 400.0, 200.0, 0.0); //printf_matrix(m_trs);
-	set_matrix_rotation(m_rtt_x, 0, (int []) {1, 0, 0});	 
+	set_matrix_translate(m_trs2, 500.0, 400.0, 0.0); //printf_matrix(m_trs);
+	set_matrix_rotation(m_rtt_x, -20, (int []) {1, 0, 0});	 
 	//set_matrix_rotation(m_rtt_y, 20, (int []) {0, 1, 0});
 	//set_matrix_rotation(m_rtt_z, 82, (int []) {0, 0, 1});
 
@@ -482,7 +466,7 @@ void	global_matrix(t_point **pt_arr)
 	while (i)
 	{
 		usleep(46000);
-		set_matrix_rotation(m_rtt_y, 0, (int []) {0, 1, 0});
+		set_matrix_rotation(m_rtt_y, i, (int []) {0, 1, 0});
 	
 		merge_matrix(m_void, m_trs2, m_fnl);
 		merge_matrix(m_fnl, m_rtt_y, m_fnl_tmp);
