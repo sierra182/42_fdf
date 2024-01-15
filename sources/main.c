@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/15 21:51:12 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/15 22:01:56 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -443,8 +443,9 @@ double	get_initial_scale(t_point **pt_arr)
 		scale = coef * HEIGHT / n_line;
 	return (scale);
 }
-int key_press_function(int keycode, void *param) {
-    // Traiter la pression de touche ici
+int key_press_function(int keycode, void *param) 
+{
+    printf("touche ton boyo\n");
     return 0;
 }
 
@@ -489,7 +490,8 @@ void	global_matrix(t_point **pt_arr)
 	//merge_matrix(m_fnl, m_trs, m_fnl_tmp);
 	//merge_matrix(m_fnl_tmp, m_persp, m_fnl);
 //	merge_matrix(m_fnl_tmp, m_persp, m_fnl);
-	mlx_hook(window, X_EVENT_KEY_PRESS, 0, &key_press_function, NULL);
+	mlx_hook(mlx_window, 2, 0, key_press_function, NULL);
+	mlx_loop(mlx_connect);
 	//apply_matrix(m_fnl, pt_arr);
 	//print_img(pt_arr);
 	int i;
@@ -555,7 +557,7 @@ int	main(int argc, char *argv[])
 	//print_pt_arr(pt_arr);
 	//create_matrix_translate(pt_arr);
 	//print_pt_arr(pt_arr);
-	mlx_loop(mlx_connect);
+
 
 	free_ptr_arr((void **) pt_arr);
 	mlx_destroy_window(mlx_connect, mlx_window);
