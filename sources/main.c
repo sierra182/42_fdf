@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/14 22:13:01 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/15 10:07:19 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -579,10 +579,10 @@ void	global_matrix(t_point **pt_arr)
 	init_matrix(m_rtt_z);
 	
 	set_matrix_persp(m_persp, 195.0, WIDTH / HEIGHT, 1.0, 30000.0);
-	set_matrix_scale(m_scl, (double[]){1000.0, 1000.0, 2.0}); //printf_matrix(m_scl);
+	set_matrix_scale(m_scl, (double[]){20.0, 20.0, 8.0}); //printf_matrix(m_scl);
 	set_matrix_translate(m_trs, -x_average(pt_arr), -y_average(pt_arr), -z_average(pt_arr)); //printf_matrix(m_trs);		
-	set_matrix_translate(m_trs2, 300.0, -2200.0, 0.0); //printf_matrix(m_trs);
-	set_matrix_rotation(m_rtt_x, -75, (int []) {1, 0, 0});	 
+	set_matrix_translate(m_trs2, 400.0, 200.0, 0.0); //printf_matrix(m_trs);
+	set_matrix_rotation(m_rtt_x, -65, (int []) {1, 0, 0});	 
 	//set_matrix_rotation(m_rtt_y, 20, (int []) {0, 1, 0});
 	//set_matrix_rotation(m_rtt_z, 82, (int []) {0, 0, 1});
 	
@@ -611,17 +611,17 @@ void	global_matrix(t_point **pt_arr)
 		//merge_matrix(m_fnl_tmp, m_persp, m_fnl);
 		
 		apply_matrix(m_fnl, pt_arr);
-		if (i == 181)
-		{
-			break;
-		}
-			t_point ** cpy = copy_points(pt_arr);
-			apply_m(cpy);
-			apply_matrix(m_persp, cpy);
-			print_img(cpy);
+		// if (i == 181)
+		// {
+		// 	break;
+		// }
+		// 	t_point ** cpy = copy_points(pt_arr);
+		// 	apply_m(cpy);
+		// 	apply_matrix(m_persp, cpy);
+		// 	print_img(cpy);
 			//break;
 		//}
-		//print_img(pt_arr);
+		print_img(pt_arr);
 	
 		i++;
 		if (i == 361)
