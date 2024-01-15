@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/08 21:40:01 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/08 21:58:47 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/15 10:46:14 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,10 @@ int	fill_split(char **split_line, t_point ***pt_arr, int row)
 		**pt_arr = (t_point *) ft_calloc(1, sizeof(t_point));
 		if (!**pt_arr)
 			return (1);
-		(**pt_arr)->x = col++;
-		(**pt_arr)->y = row;
-		(*(*pt_arr)++)->z = ft_atoi(*split_line++);
+		(**pt_arr)->init_vect[0] = col++;
+		(**pt_arr)->init_vect[1] = row;
+		(**pt_arr)->init_vect[2] = ft_atoi(*split_line++);
+		(*(*pt_arr)++)->init_vect[MTX - 1] = 1;
 	}
 	return (0);
 }
