@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/08 07:55:53 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/15 11:38:19 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/15 12:46:31 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ typedef struct s_point
 {
 	int	init_vect[MTX];
 	int	new_vect[MTX];
+	int	line;
 }	t_point;
 
 #endif

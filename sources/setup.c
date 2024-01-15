@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/08 21:40:01 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/15 10:46:14 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/15 15:01:36 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,20 +27,22 @@ int	fill_split(char **split_line, t_point ***pt_arr, int row)
 	{
 		**pt_arr = (t_point *) ft_calloc(1, sizeof(t_point));
 		if (!**pt_arr)
-			return (1);
+			return (-1);
 		(**pt_arr)->init_vect[0] = col++;
 		(**pt_arr)->init_vect[1] = row;
 		(**pt_arr)->init_vect[2] = ft_atoi(*split_line++);
+		if (!*split_line || **split_line == '\n')
+			(**pt_arr)->line = 1;
 		(*(*pt_arr)++)->init_vect[MTX - 1] = 1;
 	}
-	return (0);
+	return (col);
 }
 
 int	fill_pt_arr(int fd, t_point **pt_arr, int row)
 {
 	char	*line;
 	char	**split_line;
-	int		fill_split_stat;
+	int		col;
 
 	line = get_next_line(fd);
 	while (line)
@@ -48,12 +50,15 @@ int	fill_pt_arr(int fd, t_point **pt_arr, int row)
 		split_line = ft_split(line, ' ');
 		if (!split_line)
 			return (free(line), get_next_line(42), 1);
-		fill_split_stat = fill_split(split_line, &pt_arr, row++);
+		col = fill_split(split_line, &pt_arr, row++);
 		free(line);
 		free_ptr_arr((void **) split_line);
-		if (fill_split_stat)
+		if (col < 0)
 			return (get_next_line(42), 1);
 		line = get_next_line(fd);
+		if (!line)
+		while (*(pt_arr - col))
+		 	(*(pt_arr++ - col))->line += 2;
 	}
 	return (0);
 }
