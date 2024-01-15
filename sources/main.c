@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/15 17:59:32 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/15 18:06:34 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -264,7 +264,7 @@ void	put_pxl(int x, int y, int z, char *img_data, int bpp, int size_line)
 	}
 }
 
-void	bla(int greater_delta, int lower_delta, int pos, int opp_pos, int pos_prime, int dir, int opp_dir, int z, char *img_data, int bpp, int size_line, int flag)
+void	draw_line_action(int greater_delta, int lower_delta, int pos, int opp_pos, int pos_prime, int dir, int opp_dir, int z, char *img_data, int bpp, int size_line, int flag)
 {
 	int error;
 	
@@ -307,9 +307,9 @@ void	draw_line(int x, int y, int z, int xp, int yp, char *img_data, int bpp, int
 	else
 		draw_line_setup(&v_dir, 1, &dy, yp, y);
 	if (dx > dy)	
-		bla(dx, dy, x, y, xp, h_dir, v_dir, z, img_data, bpp, size_line, 0);	
+		draw_line_action(dx, dy, x, y, xp, h_dir, v_dir, z, img_data, bpp, size_line, 0);	
 	else	
-		bla(dy, dx, y, x, yp, v_dir, h_dir, z, img_data, bpp, size_line, 1);   		
+		draw_line_action(dy, dx, y, x, yp, v_dir, h_dir, z, img_data, bpp, size_line, 1);   		
 }
 
 void *mlx_connect;
