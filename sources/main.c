@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/16 09:50:30 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/16 10:41:41 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -460,31 +460,51 @@ double	m_rtt_z[MTX][MTX];
 double	m_fnl[MTX][MTX];
 double	m_fnl_tmp[MTX][MTX];
 
-int i = 1;
+double scale;
+int x = 0;
+int y = 0;
+int z = 0;
 int	loop(t_point **pt_arr)
 {	
-	usleep(40000);
-	set_matrix_rotation(m_rtt_y, i, (int []) {0, 1, 0});
-
+	usleep(16670);
+	set_matrix_scale(m_scl, (double[]){scale, scale, 3.0});
+	set_matrix_rotation(m_rtt_y, y, (int []) {0, 1, 0});
+	set_matrix_rotation(m_rtt_x, x, (int []) {1, 0, 0});
+	set_matrix_rotation(m_rtt_z, z, (int []) {0, 0, 1});
 	multiply_matrix(m_void, m_trs2, m_fnl);
 	multiply_matrix(m_fnl, m_rtt_y, m_fnl_tmp);
 	multiply_matrix(m_fnl_tmp, m_rtt_x, m_fnl);
-	multiply_matrix(m_fnl, m_scl, m_fnl_tmp);
-	multiply_matrix(m_fnl_tmp, m_trs, m_fnl);
+	multiply_matrix(m_fnl, m_rtt_z, m_fnl_tmp);
+	multiply_matrix(m_fnl_tmp, m_scl, m_fnl);
+	multiply_matrix(m_fnl, m_trs, m_fnl_tmp);
 
 
-	apply_matrix(m_fnl, pt_arr);
+	apply_matrix(m_fnl_tmp, pt_arr);
 	
 	print_img(pt_arr);	
-	//i++;
-	if (i == 361)
-		i = 1;
+
+	
 	return (0);
 }
 int key_press_function(int keycode, void *param) 
 {
-    printf("touche ton boyo\n");
-	i++;
+    printf("touche ton boyo: %d\n", keycode);
+	if (keycode == 121)
+		y++;
+	else if (keycode == 117)
+		y--;
+	else if (keycode == 120)
+		x++;
+	else if (keycode == 99)
+		x--;
+	else if (keycode == 122)
+		z++;
+	else if (keycode == 97)
+		z--;
+	else if (keycode == 115)
+		scale++;
+	else if (keycode == 100)
+		scale--;
     return 0;
 }
 
@@ -511,13 +531,13 @@ void	global_matrix(t_point **pt_arr)
 	init_matrix(m_rtt_y);
 	init_matrix(m_rtt_z);
 	//set_matrix_persp(m_persp, 195.0, WIDTH / HEIGHT, 1.0, 30000.0);
-	double	scale;
+
 	scale = get_initial_scale(pt_arr); 
-	set_matrix_scale(m_scl, (double[]){scale, scale, 3.0}); //printf_matrix(m_scl);
+	//set_matrix_scale(m_scl, (double[]){scale, scale, 3.0}); //printf_matrix(m_scl);
 	//set_matrix_translate(m_trs, -x_average(pt_arr), -y_average(pt_arr), -z_average(pt_arr)); //printf_matrix(m_trs);	
 	set_matrix_translate(m_trs, -get_average(pt_arr, 0), -get_average(pt_arr, 1), -get_average(pt_arr, 2)); //printf_matrix(m_trs);	
 	set_matrix_translate(m_trs2, WIDTH / 2, HEIGHT / 2, 0.0); //printf_matrix(m_trs);
-	set_matrix_rotation(m_rtt_x, -60, (int []) {1, 0, 0});	 
+	//set_matrix_rotation(m_rtt_x, -60, (int []) {1, 0, 0});	 
 	//set_matrix_rotation(m_rtt_y, 20, (int []) {0, 1, 0});
 	//set_matrix_rotation(m_rtt_z, 82, (int []) {0, 0, 1});
 
