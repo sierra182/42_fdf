@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
+/*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/16 09:24:42 by svidot           ###   ########.fr       */
+/*   Updated: 2024/01/16 09:50:30 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -446,11 +446,7 @@ double	get_initial_scale(t_point **pt_arr)
 
 #include <unistd.h>
 
-int key_press_function(int keycode, void *param) 
-{
-    printf("touche ton boyo\n");
-    return 0;
-}
+
 
 double	m_void[MTX][MTX];
 double	m_persp[MTX][MTX];
@@ -480,12 +476,17 @@ int	loop(t_point **pt_arr)
 	apply_matrix(m_fnl, pt_arr);
 	
 	print_img(pt_arr);	
-	i++;
+	//i++;
 	if (i == 361)
 		i = 1;
 	return (0);
 }
-
+int key_press_function(int keycode, void *param) 
+{
+    printf("touche ton boyo\n");
+	i++;
+    return 0;
+}
 
 void	global_matrix(t_point **pt_arr)
 {
