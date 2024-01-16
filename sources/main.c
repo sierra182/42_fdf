@@ -6,7 +6,7 @@
 /*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/16 10:41:41 by svidot           ###   ########.fr       */
+/*   Updated: 2024/01/16 10:56:34 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -464,6 +464,8 @@ double scale;
 int x = 0;
 int y = 0;
 int z = 0;
+int tx = 0;
+int ty = 0;
 int	loop(t_point **pt_arr)
 {	
 	usleep(16670);
@@ -486,7 +488,8 @@ int	loop(t_point **pt_arr)
 	
 	return (0);
 }
-int key_press_function(int keycode, void *param) 
+
+int key_press_function(int keycode, void *param)
 {
     printf("touche ton boyo: %d\n", keycode);
 	if (keycode == 121)
@@ -505,8 +508,17 @@ int key_press_function(int keycode, void *param)
 		scale++;
 	else if (keycode == 100)
 		scale--;
+	else if (keycode == 65362)
+		tx++;
+	else if (keycode == 65364)
+		tx--;
+	else if (keycode == 65361)
+		ty--;
+	else if (keycode == 65363)
+		ty++;
     return 0;
 }
+
 
 void	global_matrix(t_point **pt_arr)
 {
