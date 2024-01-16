@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/16 17:47:55 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/17 00:01:00 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,24 +32,39 @@ void	print_pt_arr(t_point *pt_arr[])
 	ft_printf("\n");
 }
 
-void	init_matrix(double matrix[][MTX])
+void	print_matrix(double matrix[][MTX])
 {
 	int	i;
 	int	j;
-
+	
 	i = 0;
 	while (i < MTX)
 	{
 		j = 0;
 		while (j < MTX)
-		{
-			if (i == j)
-				matrix[i][j] = 1;
-			else
-				matrix[i][j] = 0;
+		{			
+			printf("%f ", matrix[i][j]);
 			j++;
 		}
+		printf("\n");
 		i++;
+	}
+	printf("\n");
+}
+
+void	init_matrix(double matrix[][MTX])
+{
+	int	i;
+	int	j;
+
+	i = -1;
+	while (++i < MTX)
+	{
+		matrix[i][i] = 1;
+		j = -1;
+		while (++j < MTX)		
+			if (i != j)			
+				matrix[i][j] = 0;	
 	}
 }
 
@@ -74,16 +89,13 @@ void	apply_matrix(double matrix[][MTX], t_point **pt_arr)
 	reset_matrix(pt_arr);
 	while (*pt_arr)
 	{		
-		i = 0;
-		while (i < MTX)
+		i = -1;
+		while (++i < MTX)
 		{
-			j = 0;
-			while (j < MTX)
-			{
-				(*pt_arr)->new_vect[i] += (int) (matrix[i][j] * (*pt_arr)->init_vect[j]);			
-				j++;
-			}
-			i++;
+			j = -1;
+			while (++j < MTX)			
+				(*pt_arr)->new_vect[i] += (int) (matrix[i][j]
+					 * (*pt_arr)->init_vect[j]);				
 		}
 		pt_arr++;
 	}
@@ -102,27 +114,19 @@ void	apply_matrix(double matrix[][MTX], t_point **pt_arr)
 void	set_matrix_scale(double matrix[][MTX], double scale[])
 {
 	int	i;
-	int	j;
 
-	i = 0;
-	while (i < MTX - 1)
-	{
-		j = 0;
-		while (j < MTX - 1)
-		{
-			if (i == j)
-				matrix[i][j] = scale[i];			
-			j++;
-		}
-		i++;
-	}
+	i = -1;
+	while (++i < MTX - 1)
+		matrix[i][i] = scale[i];	
 }
 
-void	set_matrix_translate(double matrix[][MTX], double x, double y, double z)
+void	set_matrix_translate(double matrix[][MTX], double trans[])
 {
-	matrix[0][MTX - 1] = x;
-	matrix[1][MTX - 1] = y;
-	matrix[2][MTX - 1] = z;
+	int	i;
+	
+	i = -1;
+	while (++i < MTX - 1)	
+		matrix[i][MTX - 1] = trans[i];	
 }
 
 void	set_matrix_rotation(double matrix[][MTX], double angle, int *axe)
@@ -150,16 +154,18 @@ void	set_matrix_rotation(double matrix[][MTX], double angle, int *axe)
 		matrix[1][1] = cos(angle);
 	}
 }
+
 void	set_matrix_persp(double matrix[][MTX], double fov, double aspect, double z_near, double z_far)
 {
 	double f;
 	
-	f = 1.0 / tan(fov * M_PI / 360.0);
-	matrix[0][0] = f / aspect;
+	//f = 1.0 / tan(fov * M_PI / 360.0);
+	f = 1.0 / tan(fov / 2);
+	matrix[0][0] = f * aspect;
 	matrix[1][1] = f;
-	matrix[2][2] = (z_far + z_near) / (z_near - z_far); 
-	matrix[2][3] = 2 * z_far * z_near / (z_near - z_far); 
-	matrix[3][2] = -1;
+	matrix[2][2] = z_far / (z_far - z_near); 
+	matrix[2][3] = (-z_far * z_near) / (z_far - z_near); 
+	matrix[3][2] = 1.0;
 	matrix[MTX - 1][MTX - 1] = 0;	
 }
 
@@ -167,15 +173,11 @@ double	multiply_rowbycol(double row[], double m2[][MTX], int col)
 {
 	double	rslt;
 	int		i;
-	int		j;
-	
+		
 	rslt = 0;
-	i = 0;
-	while (i < MTX)
-	{
-		rslt += row[i] * m2[i][col];
-		i++;
-	}
+	i = -1;
+	while (++i < MTX)	
+		rslt += row[i] * m2[i][col];	
 	return (rslt);
 }
 
@@ -184,38 +186,16 @@ void	multiply_matrix(double m1[][MTX], double m2[][MTX], double mf[][MTX])
 	int	i;
 	int	j;
 	
-	i = 0;
-	while (i < MTX)
+	i = -1;
+	while (++i < MTX)
 	{
-		j = 0;
-		while (j < MTX)
-		{			
-			mf[i][j] = multiply_rowbycol(m1[i], m2, j);
-			j++;
-		}
-		i++;
+		j = -1;
+		while (++j < MTX)				
+			mf[i][j] = multiply_rowbycol(m1[i], m2, j);	
 	}
 }
 
-void	printf_matrix(double matrix[][MTX])
-{
-	int	i;
-	int	j;
-	
-	i = 0;
-	while (i < MTX)
-	{
-		j = 0;
-		while (j < MTX)
-		{			
-			printf("%f ", matrix[i][j]);
-			j++;
-		}
-		printf("\n");
-		i++;
-	}
-	printf("\n");
-}
+
 	
 // void clear_screen()
 // {
@@ -386,46 +366,62 @@ double	get_average(t_point **pt_arr, int axe)
 	double	sum;
 	int	i;
 
-	i = 0;
+	i = -1;
 	sum = 0.0;
+	while (pt_arr[++i])	
+		sum += pt_arr[i]->init_vect[axe];	
+	if (i)	
+		return (sum / i);
+	return (0.0);
+}
+// double	get_average(t_point **pt_arr, int axe)
+// {
+// 	double	sum;
+// 	int	i;
+
+// 	i = 0;
+// 	sum = 0.0;
+// 	while (pt_arr[i])
+// 	{
+// 		sum += (*pt_arr)->init_vect[axe];
+// 		pt_arr++;  i++;
+// 	}
+// 	//if (i)	
+// 		return (sum / i);
+// 	return (0.0);
+// }
+t_point **copy_points(t_point **pt_arr)
+{
+	int		i;	
+	t_point **copy;
+	t_point **pt_arr_sav = pt_arr;
+	
+	i = 0;
 	while (*pt_arr)
 	{
-		sum += (*pt_arr)->init_vect[axe];
 		i++;
 		pt_arr++;
 	}
-	return (sum / i);
+	pt_arr = pt_arr_sav;
+	copy = (t_point **) ft_calloc(i + 1, sizeof(t_point *));
+	i = 0;
+	while (*pt_arr)
+	{
+		copy[i] = malloc(sizeof(t_point));
+		copy[i]->init_vect[0] = (*pt_arr)->init_vect[0];
+		copy[i]->init_vect[1] = (*pt_arr)->init_vect[1];
+		copy[i]->init_vect[2] = (*pt_arr)->init_vect[2];
+		copy[i]->init_vect[3] = (*pt_arr)->init_vect[3];
+		copy[i]->new_vect[0] = (*pt_arr)->new_vect[0];
+		copy[i]->new_vect[1] = (*pt_arr)->new_vect[1];
+		copy[i]->new_vect[2] = (*pt_arr)->new_vect[2];
+		copy[i]->new_vect[3] = (*pt_arr)->new_vect[3];
+		copy[i]->line = (*pt_arr)->line;
+		i++;
+		pt_arr++;
+	}
+	return (copy);
 }
-
-// t_point **copy_points(t_point **pt_arr)
-// {
-// 	int		i;	
-// 	t_point **copy;
-// 	t_point **pt_arr_sav = pt_arr;
-	
-// 	i = 0;
-// 	while (*pt_arr)
-// 	{
-// 		i++;
-// 		pt_arr++;
-// 	}
-// 	pt_arr = pt_arr_sav;
-// 	copy = (t_point **) ft_calloc(i + 1, sizeof(t_point *));
-// 	i = 0;
-// 	while (*pt_arr)
-// 	{
-// 		copy[i] = malloc(sizeof(t_point));
-// 		copy[i]->x = (*pt_arr)->x;
-// 		copy[i]->y = (*pt_arr)->y;
-// 		copy[i]->z = (*pt_arr)->z;
-// 		copy[i]->new_x = (*pt_arr)->new_x;
-// 		copy[i]->new_y = (*pt_arr)->new_y;
-// 		copy[i]->new_z = (*pt_arr)->new_z;
-// 		i++;
-// 		pt_arr++;
-// 	}
-// 	return (copy);
-// }
 
 double	get_initial_scale(t_point **pt_arr)
 {
@@ -483,25 +479,27 @@ int tz = 0;
 int	loop(t_point **pt_arr)
 {	
 	usleep(16670);
-	set_matrix_scale(m_scl, (double[]){scale, scale, 1.0});
+	set_matrix_scale(m_scl, (double[]){scale, scale, 2.1});
 	set_matrix_rotation(m_rtt_y, y, (int []) {0, 1, 0});
 	set_matrix_rotation(m_rtt_x, x, (int []) {1, 0, 0});
 	set_matrix_rotation(m_rtt_z, z, (int []) {0, 0, 1});
-	set_matrix_translate(m_trs_lp, tx, ty, tz);
-
-	multiply_matrix(m_void, m_persp, m_fnl_tmp);
-	multiply_matrix(m_fnl_tmp, m_trs_lp, m_fnl);
-	//multiply_matrix(m_fnl_tmp, m_trs_cntr, m_fnl);
+	set_matrix_translate(m_trs_lp, (double []) {tx, ty, tz});
+		
+//	multiply_matrix(m_persp, m_trs_lp, m_fnl_tmp);
+//	multiply_matrix(m_fnl, m_trs_cntr, m_fnl_tmp);
+	multiply_matrix(m_void, m_trs_cntr, m_fnl);
 	multiply_matrix(m_fnl, m_rtt_y, m_fnl_tmp);
 	multiply_matrix(m_fnl_tmp, m_rtt_x, m_fnl);
 	multiply_matrix(m_fnl, m_rtt_z, m_fnl_tmp);
 	multiply_matrix(m_fnl_tmp, m_scl, m_fnl);
-//	multiply_matrix(m_fnl, m_trs_ori, m_fnl_tmp);
-	print_pt_arr(pt_arr);
-	apply_matrix(m_fnl, pt_arr);
-		print_pt_arr(pt_arr);
+//	multiply_matrix(m_fnl_tmp, m_scl, m_fnl);
+	multiply_matrix(m_fnl, m_trs_ori, m_fnl_tmp);
+//	print_pt_arr(pt_arr);
+ 	//t_point ** cpy = copy_points(pt_arr);
+	apply_matrix(m_fnl_tmp, pt_arr);
+	//	print_pt_arr(pt_arr);
 	homogenize_pt_arr(pt_arr);
-		print_pt_arr(pt_arr);
+	//	print_pt_arr(pt_arr);
 	print_img(pt_arr);	
 
 	
@@ -563,17 +561,19 @@ void	global_matrix(t_point **pt_arr)
 	init_matrix(m_rtt_y);
 	init_matrix(m_rtt_z);
 	
-	set_matrix_persp(m_persp, 40.0, WIDTH / HEIGHT, 1.0, 30.0);
+
 
 	scale = get_initial_scale(pt_arr); 
 	//set_matrix_scale(m_scl, (double[]){scale, scale, 3.0}); //printf_matrix(m_scl);
 	//set_matrix_translate(m_trs, -x_average(pt_arr), -y_average(pt_arr), -z_average(pt_arr)); //printf_matrix(m_trs);	
-	set_matrix_translate(m_trs_ori, -get_average(pt_arr, 0), -get_average(pt_arr, 1), -get_average(pt_arr, 2)); //printf_matrix(m_trs);	
-	set_matrix_translate(m_trs_cntr, WIDTH / 2, HEIGHT / 2, 0.0); //printf_matrix(m_trs);
+	set_matrix_translate(m_trs_ori, (double []) {-get_average(pt_arr, 0), 
+													-get_average(pt_arr, 1), 
+														-get_average(pt_arr, 2)}); //printf_matrix(m_trs);	
+	set_matrix_translate(m_trs_cntr,  (double []) {WIDTH / 2, HEIGHT / 2, 0.0}); //printf_matrix(m_trs);
 	//set_matrix_rotation(m_rtt_x, -60, (int []) {1, 0, 0});	 
 	//set_matrix_rotation(m_rtt_y, 20, (int []) {0, 1, 0});
 	//set_matrix_rotation(m_rtt_z, 82, (int []) {0, 0, 1});
-
+	set_matrix_persp(m_persp, 60.0, WIDTH / HEIGHT, 1.0, 300.1);
 	//merge_matrix(m_persp, m_scl, m_fnl_tmp);
 	//merge_matrix(m_scl, m_rtt_y, m_fnl);
 	//merge_matrix(m_fnl, m_rtt_x, m_fnl_tmp);
