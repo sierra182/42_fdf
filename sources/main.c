@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/15 22:01:56 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/16 09:02:00 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -490,8 +490,7 @@ void	global_matrix(t_point **pt_arr)
 	//merge_matrix(m_fnl, m_trs, m_fnl_tmp);
 	//merge_matrix(m_fnl_tmp, m_persp, m_fnl);
 //	merge_matrix(m_fnl_tmp, m_persp, m_fnl);
-	mlx_hook(mlx_window, 2, 0, key_press_function, NULL);
-	mlx_loop(mlx_connect);
+
 	//apply_matrix(m_fnl, pt_arr);
 	//print_img(pt_arr);
 	int i;
@@ -552,7 +551,9 @@ int	main(int argc, char *argv[])
 		return (free_ptr_arr((void **) pt_arr),
 			mlx_destroy_display(mlx_connect), free(mlx_connect), 1);
 	//print_pt_arr(pt_arr);	
-	global_matrix(pt_arr);
+	mlx_hook(mlx_window, 2, 1L << 0, key_press_function, NULL);
+	mlx_loop(mlx_connect);
+	//global_matrix(pt_arr);
 	//create_matrix_scale(pt_arr);
 	//print_pt_arr(pt_arr);
 	//create_matrix_translate(pt_arr);
