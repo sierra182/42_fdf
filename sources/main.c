@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
+/*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/16 11:28:33 by svidot           ###   ########.fr       */
+/*   Updated: 2024/01/16 17:47:55 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,17 +20,17 @@
 #include <stdio.h>
 t_point	**input_handle(char *argv[]);
 
-// void	print_pt_arr(t_point *pt_arr[])
-// {
-// 	while (*pt_arr)
-// 	{
-// 		if ((*pt_arr)->z > 0)
-// 			ft_printf("x: %d, y: %d, z:%d, nx: %d, ny: %d, nz: %d\n", 
-// 				(*pt_arr)->x, (*pt_arr)->y, (*pt_arr)->z, (*pt_arr)->new_x, (*pt_arr)->new_y, (*pt_arr)->new_z);
-// 		pt_arr++;
-// 	}
-// 	ft_printf("\n");
-// }
+void	print_pt_arr(t_point *pt_arr[])
+{
+	while (*pt_arr)
+	{	
+		ft_printf("x: %d, y: %d, z:%d, w:%d, nx: %d, ny: %d, nz: %d, nw:%d\n",
+			(*pt_arr)->init_vect[0], (*pt_arr)->init_vect[1], (*pt_arr)->init_vect[2], (*pt_arr)->init_vect[3],
+				(*pt_arr)->new_vect[0], (*pt_arr)->new_vect[1], (*pt_arr)->new_vect[2], (*pt_arr)->new_vect[3]);	
+		pt_arr++;
+	}
+	ft_printf("\n");
+}
 
 void	init_matrix(double matrix[][MTX])
 {
@@ -443,10 +443,21 @@ double	get_initial_scale(t_point **pt_arr)
 		scale = coef * HEIGHT / n_line;
 	return (scale);
 }
+void	homogenize_pt_arr(t_point **pt_arr)
+{
+	int	i;
+
+	while (*pt_arr)
+	{
+		i = 0;
+		if ((*pt_arr)->new_vect[MTX - 1])
+			while (i < MTX - 1)			
+				(*pt_arr)->new_vect[i++] /= (*pt_arr)->new_vect[MTX - 1];
+		pt_arr++;
+	}
+}
 
 #include <unistd.h>
-
-
 
 double	m_void[MTX][MTX];
 double	m_persp[MTX][MTX];
@@ -472,21 +483,25 @@ int tz = 0;
 int	loop(t_point **pt_arr)
 {	
 	usleep(16670);
-	set_matrix_scale(m_scl, (double[]){scale, scale, 3.0});
+	set_matrix_scale(m_scl, (double[]){scale, scale, 1.0});
 	set_matrix_rotation(m_rtt_y, y, (int []) {0, 1, 0});
 	set_matrix_rotation(m_rtt_x, x, (int []) {1, 0, 0});
 	set_matrix_rotation(m_rtt_z, z, (int []) {0, 0, 1});
 	set_matrix_translate(m_trs_lp, tx, ty, tz);
-	multiply_matrix(m_void, m_trs_lp, m_fnl_tmp);
-	multiply_matrix(m_fnl_tmp, m_trs_cntr, m_fnl);
+
+	multiply_matrix(m_void, m_persp, m_fnl_tmp);
+	multiply_matrix(m_fnl_tmp, m_trs_lp, m_fnl);
+	//multiply_matrix(m_fnl_tmp, m_trs_cntr, m_fnl);
 	multiply_matrix(m_fnl, m_rtt_y, m_fnl_tmp);
 	multiply_matrix(m_fnl_tmp, m_rtt_x, m_fnl);
 	multiply_matrix(m_fnl, m_rtt_z, m_fnl_tmp);
 	multiply_matrix(m_fnl_tmp, m_scl, m_fnl);
-	multiply_matrix(m_fnl, m_trs_ori, m_fnl_tmp);
-
-	apply_matrix(m_fnl_tmp, pt_arr);
-	
+//	multiply_matrix(m_fnl, m_trs_ori, m_fnl_tmp);
+	print_pt_arr(pt_arr);
+	apply_matrix(m_fnl, pt_arr);
+		print_pt_arr(pt_arr);
+	homogenize_pt_arr(pt_arr);
+		print_pt_arr(pt_arr);
 	print_img(pt_arr);	
 
 	
@@ -547,7 +562,8 @@ void	global_matrix(t_point **pt_arr)
 	init_matrix(m_rtt_x); // printf_matrix(m_rtt);
 	init_matrix(m_rtt_y);
 	init_matrix(m_rtt_z);
-	//set_matrix_persp(m_persp, 195.0, WIDTH / HEIGHT, 1.0, 30000.0);
+	
+	set_matrix_persp(m_persp, 40.0, WIDTH / HEIGHT, 1.0, 30.0);
 
 	scale = get_initial_scale(pt_arr); 
 	//set_matrix_scale(m_scl, (double[]){scale, scale, 3.0}); //printf_matrix(m_scl);
@@ -632,7 +648,7 @@ int	main(int argc, char *argv[])
 	
 	global_matrix(pt_arr);
 	//create_matrix_scale(pt_arr);
-	//print_pt_arr(pt_arr);
+//	print_pt_arr(pt_arr);
 	//create_matrix_translate(pt_arr);
 	//print_pt_arr(pt_arr);
 
