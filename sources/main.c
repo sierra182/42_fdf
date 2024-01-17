@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/17 00:01:00 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/17 21:04:31 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,14 +158,15 @@ void	set_matrix_rotation(double matrix[][MTX], double angle, int *axe)
 void	set_matrix_persp(double matrix[][MTX], double fov, double aspect, double z_near, double z_far)
 {
 	double f;
+	double z_len;
 	
-	//f = 1.0 / tan(fov * M_PI / 360.0);
-	f = 1.0 / tan(fov / 2);
-	matrix[0][0] = f * aspect;
-	matrix[1][1] = f;
-	matrix[2][2] = z_far / (z_far - z_near); 
-	matrix[2][3] = (-z_far * z_near) / (z_far - z_near); 
-	matrix[3][2] = 1.0;
+	z_len = z_far - z_near;
+	f = 1.0 / tan(fov * M_PI / 360.0);	
+	matrix[0][0] = aspect * f; 
+	matrix[1][1] = f;//1.0 / aspect * tan(fov * M_PI / 360.0);//
+	matrix[2][2] = z_far / z_len; //(z_near + z_far) / (z_near - z_far);////   //  
+	matrix[2][3] = -z_far * z_near / z_len; //(2 * z_near * z_far) / (z_near - z_far);// ; 
+	matrix[3][2] = 1.0;// -0.1
 	matrix[MTX - 1][MTX - 1] = 0;	
 }
 
@@ -194,8 +195,6 @@ void	multiply_matrix(double m1[][MTX], double m2[][MTX], double mf[][MTX])
 			mf[i][j] = multiply_rowbycol(m1[i], m2, j);	
 	}
 }
-
-
 	
 // void clear_screen()
 // {
@@ -374,22 +373,7 @@ double	get_average(t_point **pt_arr, int axe)
 		return (sum / i);
 	return (0.0);
 }
-// double	get_average(t_point **pt_arr, int axe)
-// {
-// 	double	sum;
-// 	int	i;
 
-// 	i = 0;
-// 	sum = 0.0;
-// 	while (pt_arr[i])
-// 	{
-// 		sum += (*pt_arr)->init_vect[axe];
-// 		pt_arr++;  i++;
-// 	}
-// 	//if (i)	
-// 		return (sum / i);
-// 	return (0.0);
-// }
 t_point **copy_points(t_point **pt_arr)
 {
 	int		i;	
@@ -439,6 +423,20 @@ double	get_initial_scale(t_point **pt_arr)
 		scale = coef * HEIGHT / n_line;
 	return (scale);
 }
+// void	homogenize_pt_arr(t_point **pt_arr)
+// {
+// 	int	i;
+
+// 	while (*pt_arr)
+// 	{
+// 		i = 0;
+// 		if ((*pt_arr)->init_vect[2])//if ((*pt_arr)->new_vect[3]) //
+// 			while (i < MTX - 1)			
+// 				(*pt_arr)->new_vect[i++] /= (*pt_arr)->init_vect[2];//(*pt_arr)->new_vect[i++] /= (*pt_arr)->new_vect[3];//
+// 		pt_arr++;
+// 	}
+// }
+
 void	homogenize_pt_arr(t_point **pt_arr)
 {
 	int	i;
@@ -446,16 +444,15 @@ void	homogenize_pt_arr(t_point **pt_arr)
 	while (*pt_arr)
 	{
 		i = 0;
-		if ((*pt_arr)->new_vect[MTX - 1])
+		if ((*pt_arr)->new_vect[MTX - 1]) 
 			while (i < MTX - 1)			
 				(*pt_arr)->new_vect[i++] /= (*pt_arr)->new_vect[MTX - 1];
 		pt_arr++;
 	}
 }
-
 #include <unistd.h>
 
-double	m_void[MTX][MTX];
+double	m_neutral[MTX][MTX];
 double	m_persp[MTX][MTX];
 double	m_scl[MTX][MTX];
 double	m_trs_ori[MTX][MTX];
@@ -464,51 +461,50 @@ double	m_trs_lp[MTX][MTX];
 double	m_rtt_x[MTX][MTX];
 double	m_rtt_y[MTX][MTX];
 double	m_rtt_z[MTX][MTX];
-
 double	m_fnl[MTX][MTX];
 double	m_fnl_tmp[MTX][MTX];
 
-double scale;
-int x = 0;
-int y = 0;
-int z = 0;
-int tx = 0;
-int ty = 0;
-int tz = 0;
+double	scale;
+double	x = 0;
+double 	y = 0;
+double 	z = 0;
+double 	tx = 0;
+double 	ty = 0;
+double 	tz = 0;
+double 	scale_z = 0.0;
+double 	per = 90;
 
 int	loop(t_point **pt_arr)
 {	
 	usleep(16670);
-	set_matrix_scale(m_scl, (double[]){scale, scale, 2.1});
+	set_matrix_scale(m_scl, (double[]){scale, scale, scale_z});
 	set_matrix_rotation(m_rtt_y, y, (int []) {0, 1, 0});
 	set_matrix_rotation(m_rtt_x, x, (int []) {1, 0, 0});
 	set_matrix_rotation(m_rtt_z, z, (int []) {0, 0, 1});
 	set_matrix_translate(m_trs_lp, (double []) {tx, ty, tz});
-		
-//	multiply_matrix(m_persp, m_trs_lp, m_fnl_tmp);
-//	multiply_matrix(m_fnl, m_trs_cntr, m_fnl_tmp);
-	multiply_matrix(m_void, m_trs_cntr, m_fnl);
-	multiply_matrix(m_fnl, m_rtt_y, m_fnl_tmp);
+	set_matrix_persp(m_persp, per, WIDTH / HEIGHT, 1.0, 5.0);
+
+	multiply_matrix(m_neutral, m_persp, m_fnl_tmp);
+	multiply_matrix(m_fnl_tmp, m_trs_lp,  m_fnl); //printf("scale z: %f", scale_z);// print_matrix(m_fnl_tmp);
+	multiply_matrix(m_fnl, m_trs_cntr,  m_fnl_tmp);
 	multiply_matrix(m_fnl_tmp, m_rtt_x, m_fnl);
-	multiply_matrix(m_fnl, m_rtt_z, m_fnl_tmp);
-	multiply_matrix(m_fnl_tmp, m_scl, m_fnl);
-//	multiply_matrix(m_fnl_tmp, m_scl, m_fnl);
-	multiply_matrix(m_fnl, m_trs_ori, m_fnl_tmp);
-//	print_pt_arr(pt_arr);
- 	//t_point ** cpy = copy_points(pt_arr);
-	apply_matrix(m_fnl_tmp, pt_arr);
-	//	print_pt_arr(pt_arr);
+	multiply_matrix( m_rtt_y, m_fnl, m_fnl_tmp);
+	multiply_matrix(m_rtt_z, m_fnl_tmp,  m_fnl);
+	multiply_matrix(m_fnl, m_scl, m_fnl_tmp);
+	multiply_matrix( m_trs_ori, m_fnl_tmp, m_fnl);
+
+ //	t_point ** cpy = copy_points(pt_arr);
+	apply_matrix(m_fnl, pt_arr);
 	homogenize_pt_arr(pt_arr);
 	//	print_pt_arr(pt_arr);
 	print_img(pt_arr);	
-
-	
 	return (0);
 }
 
 int key_press_function(int keycode, void *param)
 {
     printf("touche ton boyo: %d\n", keycode);
+	printf("scale z: %f\n", scale_z);
 	if (keycode == 121)
 		y++;
 	else if (keycode == 117)
@@ -525,6 +521,10 @@ int key_press_function(int keycode, void *param)
 		scale++;
 	else if (keycode == 100)
 		scale--;
+	else if (keycode == 102)
+		scale_z += .1;
+	else if (keycode == 103)
+		scale_z -= .1;
 	else if (keycode == 65361)
 		tx += 2;
 	else if (keycode == 65363)
@@ -533,101 +533,35 @@ int key_press_function(int keycode, void *param)
 		ty -= 2;
 	else if (keycode == 65362)
 		ty += 2;
+	else if (keycode == 112)
+		per++;
+	else if (keycode == 109)
+		per--;
     return 0;
 }
 
-
 void	global_matrix(t_point **pt_arr)
 {
-	// double	m_void[MTX][MTX];
-	// double	m_persp[MTX][MTX];
-	// double	m_scl[MTX][MTX];
-	// double	m_trs[MTX][MTX];
-	// double	m_trs2[MTX][MTX];
-	// double	m_rtt_x[MTX][MTX];
-	// double	m_rtt_y[MTX][MTX];
-	// double	m_rtt_z[MTX][MTX];
-
-	// double	m_fnl[MTX][MTX];
-	// double	m_fnl_tmp[MTX][MTX];
-
-	init_matrix(m_void);
+	
+	init_matrix(m_neutral);
 	init_matrix(m_persp);
-	init_matrix(m_scl); //printf_matrix(m_scl);
-	init_matrix(m_trs_ori); //printf_matrix(m_trs);
+	init_matrix(m_scl); 
+	init_matrix(m_trs_ori); 
 	init_matrix(m_trs_cntr);
 	init_matrix(m_trs_lp);
-	init_matrix(m_rtt_x); // printf_matrix(m_rtt);
+	init_matrix(m_rtt_x); 
 	init_matrix(m_rtt_y);
 	init_matrix(m_rtt_z);
 	
-
-
-	scale = get_initial_scale(pt_arr); 
-	//set_matrix_scale(m_scl, (double[]){scale, scale, 3.0}); //printf_matrix(m_scl);
-	//set_matrix_translate(m_trs, -x_average(pt_arr), -y_average(pt_arr), -z_average(pt_arr)); //printf_matrix(m_trs);	
+	scale = get_initial_scale(pt_arr); 		
 	set_matrix_translate(m_trs_ori, (double []) {-get_average(pt_arr, 0), 
 													-get_average(pt_arr, 1), 
-														-get_average(pt_arr, 2)}); //printf_matrix(m_trs);	
-	set_matrix_translate(m_trs_cntr,  (double []) {WIDTH / 2, HEIGHT / 2, 0.0}); //printf_matrix(m_trs);
-	//set_matrix_rotation(m_rtt_x, -60, (int []) {1, 0, 0});	 
-	//set_matrix_rotation(m_rtt_y, 20, (int []) {0, 1, 0});
-	//set_matrix_rotation(m_rtt_z, 82, (int []) {0, 0, 1});
-	set_matrix_persp(m_persp, 60.0, WIDTH / HEIGHT, 1.0, 300.1);
-	//merge_matrix(m_persp, m_scl, m_fnl_tmp);
-	//merge_matrix(m_scl, m_rtt_y, m_fnl);
-	//merge_matrix(m_fnl, m_rtt_x, m_fnl_tmp);
-	//merge_matrix(m_fnl_tmp, m_scl, m_fnl);
-	//merge_matrix(m_fnl, m_trs, m_fnl_tmp);
-	//merge_matrix(m_fnl_tmp, m_persp, m_fnl);
-//	merge_matrix(m_fnl_tmp, m_persp, m_fnl);
+														-get_average(pt_arr, 2)}); 
+	set_matrix_translate(m_trs_cntr,  (double []) {WIDTH / 2, HEIGHT / 2, 0.0}); 
+
 	mlx_hook(mlx_window, 2, 1L << 0, key_press_function, NULL);
-	
-	//apply_matrix(m_fnl, pt_arr);
-	//print_img(pt_arr);
 	mlx_loop_hook(mlx_connect, loop, pt_arr);
-	mlx_loop(mlx_connect);
-	// int i;
-	// i = 1;
-	// while (i)
-	// {
-	// 	usleep(46000);
-	// 	set_matrix_rotation(m_rtt_y, i, (int []) {0, 1, 0});
-	
-	// 	multiply_matrix(m_void, m_trs2, m_fnl);
-	// 	multiply_matrix(m_fnl, m_rtt_y, m_fnl_tmp);
-	// 	multiply_matrix(m_fnl_tmp, m_rtt_x, m_fnl);
-	// 	multiply_matrix(m_fnl, m_scl, m_fnl_tmp);
-	// 	multiply_matrix(m_fnl_tmp, m_trs, m_fnl);
-	// 	//merge_matrix(m_fnl_tmp, m_persp, m_fnl);
-	
-	// 	apply_matrix(m_fnl, pt_arr);
-	// 	// if (i == 181)
-	// 	// {
-	// 	// 	break;
-	// 	// }
-	// 	// 	t_point ** cpy = copy_points(pt_arr);
-	// 	// 	apply_m(cpy);
-	// 	// 	apply_matrix(m_persp, cpy);
-	// 	// 	print_img(cpy);
-	// 		//break;
-	// 	//}
-	// 	print_img(pt_arr);	
-	// 	i++;
-	// 	if (i == 361)
-	// 		i = 1;
-	// }
-
-	//merge_matrix(m_fnl, m_rtt, m_fnl_tmp); printf_matrix(m_fnl_tmp);
-	//set_matrix_translate(m_trs, 10.0, 0.0, 0.0); printf_matrix(m_trs);
-
-//	apply_m(pt_arr);
-//	apply_matrix2(m_rtt, pt_arr);
-//	apply_m(pt_arr);
-//	apply_matrix2(m_trs, pt_arr);
-
-	
-	//apply_rotation(m_rtt, pt_arr);	
+	mlx_loop(mlx_connect);	
 }
 
 int	main(int argc, char *argv[])
@@ -644,14 +578,8 @@ int	main(int argc, char *argv[])
 	if (!mlx_window)
 		return (free_ptr_arr((void **) pt_arr),
 			mlx_destroy_display(mlx_connect), free(mlx_connect), 1);
-	//print_pt_arr(pt_arr);	
 	
 	global_matrix(pt_arr);
-	//create_matrix_scale(pt_arr);
-//	print_pt_arr(pt_arr);
-	//create_matrix_translate(pt_arr);
-	//print_pt_arr(pt_arr);
-
 
 	free_ptr_arr((void **) pt_arr);
 	mlx_destroy_window(mlx_connect, mlx_window);
