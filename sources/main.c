@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
+/*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/18 09:58:39 by svidot           ###   ########.fr       */
+/*   Updated: 2024/01/18 11:39:09 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,7 +233,7 @@ void	put_pxl(int x, int y, int z, char *img_data, int bpp, int size_line)
 {
 	int	pxl_pos;
 	
-	if (x >= 0 && x <= WIDTH && y >= 0 && y <= HEIGHT)
+	if (x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT)
 	{
 		pxl_pos = (x * bpp / 8 + y * size_line);
 		if (!z)
@@ -335,7 +335,7 @@ void	print_img(t_point **pt_arr)
 	t_point **pt_arr_sav = pt_arr;
 	while (*pt_arr)
 	{
-		if ((*pt_arr)->new_vect[0] + truc >= 0 && (*pt_arr)->new_vect[0] + truc <= WIDTH && (*pt_arr)->new_vect[1] + truc >= 0 && (*pt_arr)->new_vect[1] + truc <= HEIGHT)
+		if ((*pt_arr)->new_vect[0] + truc >= 0 && (*pt_arr)->new_vect[0] + truc < WIDTH  && (*pt_arr)->new_vect[1] + truc >= 0 && (*pt_arr)->new_vect[1] + truc < HEIGHT)
 		{			
 			pxl_pos = (((*pt_arr)->new_vect[1] + truc) * size_line) + (((*pt_arr)->new_vect[0] + truc) * (bpp / 8));
 			if ((*pt_arr)->init_vect[2])  		
