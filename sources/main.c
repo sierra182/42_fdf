@@ -6,7 +6,7 @@
 /*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/18 09:48:13 by svidot           ###   ########.fr       */
+/*   Updated: 2024/01/18 09:58:39 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,8 +160,10 @@ void	set_matrix_persp(double matrix[][MTX], double fov, double aspect, double z_
 	double f;
 	double z_len;
 	
+	f = 1; 
+	if (tan(fov * M_PI / 360.0))
+		f = 1.0 / tan(fov * M_PI / 360.0);	
 	z_len = z_far - z_near;
-	f = 1.0 / tan(fov * M_PI / 360.0);	
 	matrix[0][0] = aspect * f; 
 	matrix[1][1] = f;//1.0 / aspect * tan(fov * M_PI / 360.0);//
 	matrix[2][2] = z_far / z_len; //(z_near + z_far) / (z_near - z_far);////   //  
