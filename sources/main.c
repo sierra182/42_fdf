@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/18 12:35:34 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/18 19:13:38 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,16 +100,6 @@ void	apply_matrix(double matrix[][MTX], t_point **pt_arr)
 		pt_arr++;
 	}
 }
-// void	apply_m(t_point **pt_arr)
-// {		
-// 	while (*pt_arr)
-// 	{
-// 		(*pt_arr)->x = (*pt_arr)->new_x;
-// 		(*pt_arr)->y = (*pt_arr)->new_y;
-// 		(*pt_arr)->z = (*pt_arr)->new_z;
-// 		pt_arr++;
-// 	}
-// }
 			
 void	set_matrix_scale(double matrix[][MTX], double scale[])
 {
@@ -166,9 +156,9 @@ void	set_matrix_persp(double matrix[][MTX], double fov, double aspect, double z_
 	z_len = z_far - z_near;
 	matrix[0][0] = aspect * f; 
 	matrix[1][1] = f;//1.0 / aspect * tan(fov * M_PI / 360.0);//
-	matrix[2][2] = -(z_far + z_near) / z_len;// z_far / z_len; //(z_near + z_far) / (z_near - z_far);////   //  
-	matrix[2][3] = -2 * z_far * z_near / z_len; //(2 * z_near * z_far) / (z_near - z_far);// ; 
-	matrix[3][2] = -1.0;// -0.1
+	matrix[2][2] = z_far / z_len; //(z_near + z_far) / (z_near - z_far);////   //  
+	matrix[2][3] = -z_far * z_near / z_len;//-2 * z_far * z_near / z_len; //(2 * z_near * z_far) / (z_near - z_far);// ; 
+	matrix[3][2] = 1.0;// -0.1
 	matrix[MTX - 1][MTX - 1] = 0;	
 }
 
@@ -377,7 +367,18 @@ double	get_average(t_point **pt_arr, int axe)
 		return (sum / i);
 	return (0.0);
 }
+void	save_new_vect(t_point **pt_arr)
+{	
+	int	i;
 
+	while (*pt_arr)
+	{
+		i = -1;
+		while (++i < MTX - 1)
+			(*pt_arr)->init_vect[i] = (*pt_arr)->new_vect[i];	
+		pt_arr++;
+	}
+}
 t_point **copy_points(t_point **pt_arr)
 {
 	int		i;	
@@ -512,23 +513,30 @@ int	loop(t_point **pt_arr)
 	// multiply_matrix(m_fnl_tmp, m_rtt_z, m_fnl);
 	// multiply_matrix(m_fnl, m_scl, m_fnl_tmp);
 	
-
-	multiply_matrix(m_neutral, m_trs_lp, m_fnl);	
-	multiply_matrix(m_fnl, m_trs_cntr, m_fnl_tmp);
-    multiply_matrix(m_fnl_tmp, m_rtt_y, m_fnl);
-	multiply_matrix(m_fnl, m_rtt_x, m_fnl_tmp); //printf("scale z: %f", scale_z);// print_matrix(m_fnl_tmp);
-	if (per)	
-	{
-		multiply_matrix(m_neutral, m_fnl_tmp, m_fnl);	
-		multiply_matrix(m_persp, m_fnl, m_fnl_tmp);	
-	}
-    multiply_matrix(m_fnl_tmp, m_rtt_z, m_fnl);
+	//multiply_matrix(m_neutral, m_trs_cntr, m_fnl_tmp);
+	//multiply_matrix(m_fnl, m_trs_lp, m_fnl_tmp);	
+    multiply_matrix(m_neutral, m_rtt_x, m_fnl);
+    multiply_matrix(m_fnl, m_rtt_y, m_fnl_tmp);
+	multiply_matrix(m_fnl_tmp, m_rtt_z, m_fnl); //printf("scale z: %f", scale_z);// print_matrix(m_fnl_tmp);
 	multiply_matrix(m_fnl, m_scl, m_fnl_tmp);
 	multiply_matrix(m_fnl_tmp, m_trs_ori, m_fnl);
- //	t_point ** cpy = copy_points(pt_arr);
 	apply_matrix(m_fnl, pt_arr);
-	homogenize_pt_arr(pt_arr);
-	//	print_pt_arr(pt_arr);
+ 	t_point **cpy = copy_points(pt_arr);
+	save_new_vect(cpy);
+	if (per)	
+	{
+		//multiply_matrix(m_persp, m_fnl_tmp, m_fnl);	
+		//multiply_matrix(m_fnl, m_neutral, m_fnl_tmp);
+		apply_matrix(m_persp, cpy);	
+		homogenize_pt_arr(cpy); 
+		t_point **cpy2 = copy_points(cpy);
+		save_new_vect(cpy2);
+		apply_matrix(m_trs_lp, cpy2); 
+		print_img(cpy2);
+		return (0);
+	//	print_pt_arr(cpy);
+	}	
+	//print_pt_arr(cpy);
 	print_img(pt_arr);	
 	return (0);
 }
@@ -602,7 +610,7 @@ void	global_matrix(t_point **pt_arr)
 	set_matrix_translate(m_trs_ori, (double []) {-get_average(pt_arr, 0), 
 													-get_average(pt_arr, 1), 
 														-get_average(pt_arr, 2)}); 
-	set_matrix_translate(m_trs_cntr,  (double []) {WIDTH / 2, HEIGHT / 2, 0.0}); 
+	set_matrix_translate(m_trs_cntr,  (double []) {WIDTH / 2, HEIGHT / 2, get_average(pt_arr, 2)}); 
 
 	mlx_hook(mlx_window, 2, 1L << 0, key_press_function, NULL);
 	mlx_loop_hook(mlx_connect, loop, pt_arr);
