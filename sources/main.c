@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/18 11:39:09 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/18 12:35:34 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,9 +166,9 @@ void	set_matrix_persp(double matrix[][MTX], double fov, double aspect, double z_
 	z_len = z_far - z_near;
 	matrix[0][0] = aspect * f; 
 	matrix[1][1] = f;//1.0 / aspect * tan(fov * M_PI / 360.0);//
-	matrix[2][2] = z_far / z_len; //(z_near + z_far) / (z_near - z_far);////   //  
-	matrix[2][3] = -z_far * z_near / z_len; //(2 * z_near * z_far) / (z_near - z_far);// ; 
-	matrix[3][2] = 1.0;// -0.1
+	matrix[2][2] = -(z_far + z_near) / z_len;// z_far / z_len; //(z_near + z_far) / (z_near - z_far);////   //  
+	matrix[2][3] = -2 * z_far * z_near / z_len; //(2 * z_near * z_far) / (z_near - z_far);// ; 
+	matrix[3][2] = -1.0;// -0.1
 	matrix[MTX - 1][MTX - 1] = 0;	
 }
 
@@ -238,10 +238,12 @@ void	put_pxl(int x, int y, int z, char *img_data, int bpp, int size_line)
 		pxl_pos = (x * bpp / 8 + y * size_line);
 		if (!z)
 			*(int *)(img_data + pxl_pos) = 0x00FF0000;
-		else if (z < 0)
+		else if (z <= -1 && z < 0)
 			*(int *)(img_data + pxl_pos) = 0x0000FF00;
-		else
+		else if (z > 0 && z <= 1)
 			*(int *)(img_data + pxl_pos) = 0x000000FF;
+		else 
+			*(int *)(img_data + pxl_pos) = 0xFFFFFFFF;
 	}
 }
 
@@ -467,25 +469,29 @@ double	m_fnl[MTX][MTX];
 double	m_fnl_tmp[MTX][MTX];
 
 double	scale;
-double	x = 0;
-double 	y = 0;
-double 	z = 0;
-double 	tx = 0;
-double 	ty = 0;
-double 	tz = 0;
+double	x = 0.0;
+double 	y = 0.0;
+double 	z = 0.0;
+double 	tx = 0.0;
+double 	ty = 0.0;
+double 	tz = 0.0;
 double 	scale_z = 0.0;
-double 	per = 0;
+double 	per = 0.0;
+double 	z_nr = 1.0;
+double 	z_fr = 100.0;
 
 void	reset(void)
 {	
-	x = 0;
- 	y = 0;
- 	z = 0;
- 	tx = 0;
- 	ty = 0;
- 	tz = 0;
+	x = 0.0;
+ 	y = 0.0;
+ 	z = 0.0;
+ 	tx = 0.0;
+ 	ty = 0.0;
+ 	tz = 0.0;
  	scale_z = 0.0;
- 	per = 0;
+ 	per = 0.0;
+	z_nr = 1.0;
+	z_fr = 100.0;
 }
 
 int	loop(t_point **pt_arr)
@@ -496,7 +502,7 @@ int	loop(t_point **pt_arr)
 	set_matrix_rotation(m_rtt_x, x, (int []) {1, 0, 0});
 	set_matrix_rotation(m_rtt_z, z, (int []) {0, 0, 1});
 	set_matrix_translate(m_trs_lp, (double []) {tx, ty, tz});
-	set_matrix_persp(m_persp, per, WIDTH / HEIGHT, 1.0, 350000.0);
+	set_matrix_persp(m_persp, per, WIDTH / HEIGHT, z_nr, z_fr);
 
 	// multiply_matrix(m_neutral, m_persp, m_fnl_tmp);
 	// multiply_matrix(m_fnl_tmp, m_trs_cntr, m_fnl); //printf("scale z: %f", scale_z);// print_matrix(m_fnl_tmp);
@@ -530,7 +536,7 @@ int	loop(t_point **pt_arr)
 int key_press_function(int keycode, void *param)
 {
     printf("touche ton boyo: %d\n", keycode);
-	printf("scale z: %f, tz: %f, per: %f\n", scale_z, tz, per);
+	printf("scale z: %f, tz: %f, per: %f, z_near:%f, z_far:%f\n", scale_z, tz, per, z_nr, z_fr);
 	if (keycode == 121)
 		y++;
 	else if (keycode == 117)
@@ -567,6 +573,14 @@ int key_press_function(int keycode, void *param)
 		per++;
 	else if (keycode == 109)
 		per--;
+	else if (keycode == 65431)
+		z_nr++;
+	else if (keycode == 65433)
+		z_nr--;
+	else if (keycode == 65432)
+		z_fr++;
+	else if (keycode == 65430)
+		z_fr--;
 	else if (keycode == 114)
 		reset();	
     return 0;
