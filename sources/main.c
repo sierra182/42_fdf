@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/18 08:18:55 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/18 09:48:13 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -528,7 +528,7 @@ int	loop(t_point **pt_arr)
 int key_press_function(int keycode, void *param)
 {
     printf("touche ton boyo: %d\n", keycode);
-	printf("scale z: %f\n", scale_z);
+	printf("scale z: %f, tz: %f, per: %f\n", scale_z, tz, per);
 	if (keycode == 121)
 		y++;
 	else if (keycode == 117)
@@ -550,13 +550,13 @@ int key_press_function(int keycode, void *param)
 	else if (keycode == 103)
 		scale_z -= .1;
 	else if (keycode == 65361)
-		tx += 2;
+		tx += 10;
 	else if (keycode == 65363)
-		tx -= 2;
+		tx -= 10;
 	else if (keycode == 65362)
-		ty += 2;
+		ty += 10;
 	else if (keycode == 65364)
-		ty -= 2;
+		ty -= 10;
 	else if (keycode == 65436)
 		tz += 2;
 	else if (keycode == 65438)
