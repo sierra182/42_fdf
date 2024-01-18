@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/17 23:16:48 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/18 07:43:55 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -472,7 +472,19 @@ double 	tx = 0;
 double 	ty = 0;
 double 	tz = 0;
 double 	scale_z = 0.0;
-double 	per = 90;
+double 	per = 0;
+
+void	reset(void)
+{	
+	x = 0;
+ 	y = 0;
+ 	z = 0;
+ 	tx = 0;
+ 	ty = 0;
+ 	tz = 0;
+ 	scale_z = 0.0;
+ 	per = 0;
+}
 
 int	loop(t_point **pt_arr)
 {	
@@ -491,19 +503,22 @@ int	loop(t_point **pt_arr)
 	// multiply_matrix(m_fnl, m_rtt_y, m_fnl_tmp);
 	// multiply_matrix(m_fnl_tmp, m_rtt_z, m_fnl);
 	// multiply_matrix(m_fnl, m_scl, m_fnl_tmp);
-	// multiply_matrix(m_fnl_tmp, m_trs_ori, m_fnl);
-
-	multiply_matrix(m_scl, m_neutral, m_fnl_tmp);
-	multiply_matrix(m_fnl_tmp, m_trs_lp, m_fnl);
-	//multiply_matrix(m_fnl_tmp, m_trs_lp, m_fnl);
-	multiply_matrix(m_trs_cntr, m_fnl, m_fnl_tmp); //printf("scale z: %f", scale_z);// print_matrix(m_fnl_tmp);
-    multiply_matrix(m_fnl_tmp, m_rtt_z, m_fnl);
-    multiply_matrix(m_fnl, m_rtt_y, m_fnl_tmp);
-	multiply_matrix(m_fnl_tmp, m_rtt_x, m_fnl);
-	multiply_matrix(m_persp, m_fnl, m_fnl_tmp);
 	
+
+	multiply_matrix(m_neutral, m_trs_lp, m_fnl);	
+	multiply_matrix(m_fnl, m_trs_cntr, m_fnl_tmp);
+	multiply_matrix(m_fnl_tmp,  m_scl, m_fnl); //printf("scale z: %f", scale_z);// print_matrix(m_fnl_tmp);
+    multiply_matrix(m_fnl, m_rtt_z, m_fnl_tmp);
+    multiply_matrix(m_fnl_tmp, m_rtt_y, m_fnl);
+	multiply_matrix(m_fnl, m_rtt_x, m_fnl_tmp);
+	multiply_matrix(m_fnl_tmp, m_trs_ori, m_fnl);
+	if (per)	
+	{
+		multiply_matrix(m_persp, m_fnl, m_fnl_tmp);	
+		multiply_matrix(m_neutral, m_fnl_tmp, m_fnl);	
+	}
  //	t_point ** cpy = copy_points(pt_arr);
-	apply_matrix(m_fnl_tmp, pt_arr);
+	apply_matrix(m_fnl, pt_arr);
 	homogenize_pt_arr(pt_arr);
 	//	print_pt_arr(pt_arr);
 	print_img(pt_arr);	
@@ -546,12 +561,13 @@ int key_press_function(int keycode, void *param)
 		per++;
 	else if (keycode == 109)
 		per--;
+	else if (keycode == 114)
+		reset();	
     return 0;
 }
 
 void	global_matrix(t_point **pt_arr)
-{
-	
+{	
 	init_matrix(m_neutral);
 	init_matrix(m_persp);
 	init_matrix(m_scl); 
