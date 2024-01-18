@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/18 07:43:55 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/18 08:18:55 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -494,7 +494,7 @@ int	loop(t_point **pt_arr)
 	set_matrix_rotation(m_rtt_x, x, (int []) {1, 0, 0});
 	set_matrix_rotation(m_rtt_z, z, (int []) {0, 0, 1});
 	set_matrix_translate(m_trs_lp, (double []) {tx, ty, tz});
-	set_matrix_persp(m_persp, per, WIDTH / HEIGHT, 1.0, 35000.0);
+	set_matrix_persp(m_persp, per, WIDTH / HEIGHT, 1.0, 350000.0);
 
 	// multiply_matrix(m_neutral, m_persp, m_fnl_tmp);
 	// multiply_matrix(m_fnl_tmp, m_trs_cntr, m_fnl); //printf("scale z: %f", scale_z);// print_matrix(m_fnl_tmp);
@@ -507,16 +507,16 @@ int	loop(t_point **pt_arr)
 
 	multiply_matrix(m_neutral, m_trs_lp, m_fnl);	
 	multiply_matrix(m_fnl, m_trs_cntr, m_fnl_tmp);
-	multiply_matrix(m_fnl_tmp,  m_scl, m_fnl); //printf("scale z: %f", scale_z);// print_matrix(m_fnl_tmp);
-    multiply_matrix(m_fnl, m_rtt_z, m_fnl_tmp);
     multiply_matrix(m_fnl_tmp, m_rtt_y, m_fnl);
-	multiply_matrix(m_fnl, m_rtt_x, m_fnl_tmp);
-	multiply_matrix(m_fnl_tmp, m_trs_ori, m_fnl);
+	multiply_matrix(m_fnl, m_rtt_x, m_fnl_tmp); //printf("scale z: %f", scale_z);// print_matrix(m_fnl_tmp);
 	if (per)	
 	{
-		multiply_matrix(m_persp, m_fnl, m_fnl_tmp);	
 		multiply_matrix(m_neutral, m_fnl_tmp, m_fnl);	
+		multiply_matrix(m_persp, m_fnl, m_fnl_tmp);	
 	}
+    multiply_matrix(m_fnl_tmp, m_rtt_z, m_fnl);
+	multiply_matrix(m_fnl, m_scl, m_fnl_tmp);
+	multiply_matrix(m_fnl_tmp, m_trs_ori, m_fnl);
  //	t_point ** cpy = copy_points(pt_arr);
 	apply_matrix(m_fnl, pt_arr);
 	homogenize_pt_arr(pt_arr);
@@ -553,10 +553,14 @@ int key_press_function(int keycode, void *param)
 		tx += 2;
 	else if (keycode == 65363)
 		tx -= 2;
-	else if (keycode == 65364)
-		ty -= 2;
 	else if (keycode == 65362)
 		ty += 2;
+	else if (keycode == 65364)
+		ty -= 2;
+	else if (keycode == 65436)
+		tz += 2;
+	else if (keycode == 65438)
+		tz -= 2;
 	else if (keycode == 112)
 		per++;
 	else if (keycode == 109)
