@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/19 08:52:54 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/19 11:29:57 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,11 +60,11 @@ void	init_matrix(double matrix[][MTX])
 	i = -1;
 	while (++i < MTX)
 	{
-		matrix[i][i] = 1;
+		matrix[i][i] = 1.0;
 		j = -1;
 		while (++j < MTX)		
 			if (i != j)			
-				matrix[i][j] = 0;	
+				matrix[i][j] = 0.0;	
 	}
 }
 
@@ -76,7 +76,7 @@ void	reset_matrix(t_point **pt_arr)
 	{
 		i = 0;
 		while (i < MTX)
-			(*pt_arr)->new_vect[i++] = 0;		
+			(*pt_arr)->new_vect[i++] = 0.0;		
 		pt_arr++;
 	}
 }
@@ -227,13 +227,13 @@ void	put_pxl(int x, int y, int z, char *img_data, int bpp, int size_line)
 	{
 		pxl_pos = (x * bpp / 8 + y * size_line);
 		if (!z)
-			*(int *)(img_data + pxl_pos) = 0x00FF0000;
-		else if (z <= -1 && z < 0)
-			*(int *)(img_data + pxl_pos) = 0x0000FF00;
+			*(int *) (img_data + pxl_pos) = 0x00FF0000;
+		else if (z >= -1 && z < 0)
+			*(int *) (img_data + pxl_pos) = 0x0000FF00;
 		else if (z > 0 && z <= 1)
-			*(int *)(img_data + pxl_pos) = 0x000000FF;
+			*(int *) (img_data + pxl_pos) = 0x000000FF;
 		else 
-			*(int *)(img_data + pxl_pos) = 0xFFFFFFFF;
+			*(int *) (img_data + pxl_pos) = 0xFFFFFFFF;
 	}
 }
 
@@ -331,9 +331,9 @@ void	print_img(t_point **pt_arr)
 		{			
 			pxl_pos = (((*pt_arr)->new_vect[1] + truc) * size_line) + (((*pt_arr)->new_vect[0] + truc) * (bpp / 8));
 			if ((*pt_arr)->init_vect[2])  		
-				*(int *)(img_data + pxl_pos) = 0xFFFFFFFF;
+				*(int *) (img_data + pxl_pos) = 0xFFFFFFFF;
 			else
-				*(int *)(img_data + pxl_pos) = 0xFFFFFFFF;
+				*(int *) (img_data + pxl_pos) = 0xFFFFFFFF;
 		}
 		pt_arr++;
 	}	
@@ -511,6 +511,7 @@ void	set_matrix_mapping(double matrix[][MTX])
 
 #include <unistd.h>
 
+double	m_map[MTX][MTX];
 double	m_neutral[MTX][MTX];
 double	m_persp[MTX][MTX];
 double	m_scl[MTX][MTX];
@@ -544,8 +545,8 @@ void	reset(void)
  	ty = 0.0;
  	tz = 0.0;
  	scale_z = 0.0;
- 	per = 0.0;
-	z_nr = 1.0;
+ 	per = 1.0;
+	z_nr = 0.0;
 	z_fr = 100.0;
 }
 
@@ -568,32 +569,36 @@ int	loop(t_point **pt_arr)
 	// multiply_matrix(m_fnl, m_scl, m_fnl_tmp);
 	
 	//multiply_matrix(m_neutral, m_trs_cntr, m_fnl_tmp);
-	//multiply_matrix(m_fnl, m_trs_lp, m_fnl_tmp);	
-    multiply_matrix(m_neutral, m_rtt_x, m_fnl);
+	multiply_matrix(m_neutral, m_trs_lp, m_fnl_tmp);	
+    multiply_matrix(m_fnl_tmp, m_rtt_x, m_fnl);
     multiply_matrix(m_fnl, m_rtt_y, m_fnl_tmp);
 	multiply_matrix(m_fnl_tmp, m_rtt_z, m_fnl); //printf("scale z: %f", scale_z);// print_matrix(m_fnl_tmp);
 	multiply_matrix(m_fnl, m_scl, m_fnl_tmp);
 	multiply_matrix(m_fnl_tmp, m_trs_ori, m_fnl);
-	apply_matrix(m_fnl, pt_arr);
- 	t_point **cpy = copy_points(pt_arr);
-	//save_new_vect(cpy);
+	//apply_matrix(m_fnl, pt_arr);
+ 	// t_point **cpy = copy_points(pt_arr);
+	// save_new_vect(cpy);
 	if (per)	
 	{
-		//multiply_matrix(m_persp, m_fnl_tmp, m_fnl);	
+		multiply_matrix(m_persp, m_fnl, m_fnl_tmp);	
 		//multiply_matrix(m_fnl, m_neutral, m_fnl_tmp);
 		//print_pt_arr(cpy);
 		//printf("avant avant\n"); print_pt_arr(cpy);
-		apply_matrix(m_persp, cpy);	
+		apply_matrix(m_fnl_tmp, pt_arr);	
 		//printf("avant\n"); print_pt_arr(cpy);
 	
-		homogenize_pt_arr(cpy);  printf("apres\n"); print_pt_arr(cpy);
-		t_point **cpy2 = copy_points(cpy);
-		save_new_vect(cpy2);
-		apply_matrix(m_trs_lp, cpy2); 
-		print_img(cpy2);
+		homogenize_pt_arr(pt_arr); 
+		print_pt_arr(pt_arr);
+		t_point **fil = filter_points(pt_arr);
+		save_new_vect(fil);
+		// printf("apres\n"); print_pt_arr(cpy);
+		
+		
+		apply_matrix(m_map, fil); 
+		print_img(pt_arr);
 		return (0);
-	//	print_pt_arr(cpy);
-	}	
+	}
+	apply_matrix(m_fnl, pt_arr);
 	//print_pt_arr(cpy);
 	print_img(pt_arr);
 	return (0);
@@ -654,6 +659,7 @@ int key_press_function(int keycode, void *param)
 
 void	global_matrix(t_point **pt_arr)
 {	
+	init_matrix(m_map);
 	init_matrix(m_neutral);
 	init_matrix(m_persp);
 	init_matrix(m_scl); 
@@ -669,7 +675,7 @@ void	global_matrix(t_point **pt_arr)
 													-get_average(pt_arr, 1), 
 														-get_average(pt_arr, 2)}); 
 	set_matrix_translate(m_trs_cntr,  (double []) {WIDTH / 2, HEIGHT / 2, get_average(pt_arr, 2)}); 
-
+	set_matrix_mapping(m_map);
 	mlx_hook(mlx_window, 2, 1L << 0, key_press_function, NULL);
 	mlx_loop_hook(mlx_connect, loop, pt_arr);
 	mlx_loop(mlx_connect);	
