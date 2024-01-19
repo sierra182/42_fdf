@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/19 13:37:19 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/19 15:09:40 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,23 @@ void	set_matrix_persp(double matrix[][MTX], double fov, double aspect, double z_
 	matrix[3][2] = 1.0;// -0.1
 	matrix[MTX - 1][MTX - 1] = 0;	
 }
+
+// void	set_matrix_persp(double matrix[][MTX], double fov, double aspect, double z_near, double z_far)
+// {
+// 	double f;
+// 	double z_len;
+	
+// 	f = 1; 
+// 	if (tan(fov * M_PI / 360.0))
+// 		f = 1.0 / tan(fov * M_PI / 360.0);	
+// 	z_len = z_far - z_near;
+// 	// matrix[0][0] = aspect * f; 
+// 	// matrix[1][1] = f;//1.0 / aspect * tan(fov * M_PI / 360.0);//
+// 	// matrix[2][2] = z_far / z_len; //(z_near + z_far) / (z_near - z_far);////   //  
+// 	// matrix[2][3] = -z_far * z_near / z_len;//-2 * z_far * z_near / z_len; //(2 * z_near * z_far) / (z_near - z_far);// ; 
+// 	matrix[3][2] = 1.0;// -0.1
+// 	matrix[MTX - 1][MTX - 1] = 0;	
+// }
 
 double	multiply_rowbycol(double row[], double m2[][MTX], int col)
 {
@@ -469,20 +486,6 @@ double	get_initial_scale(t_point **pt_arr)
 		scale = coef * HEIGHT / n_line;
 	return (scale);
 }
-// void	homogenize_pt_arr(t_point **pt_arr)
-// {
-// 	int	i;
-
-// 	while (*pt_arr)
-// 	{
-// 		i = 0;
-// 		if ((*pt_arr)->init_vect[2])//if ((*pt_arr)->new_vect[3]) //
-// 			while (i < MTX - 1)			
-// 				(*pt_arr)->new_vect[i++] /= (*pt_arr)->init_vect[2];//(*pt_arr)->new_vect[i++] /= (*pt_arr)->new_vect[3];//
-// 		pt_arr++;
-// 	}
-// }
-
 void	homogenize_pt_arr(t_point **pt_arr)
 {
 	int	i;
@@ -490,12 +493,40 @@ void	homogenize_pt_arr(t_point **pt_arr)
 	while (*pt_arr)
 	{
 		i = 0;
-		if ((*pt_arr)->new_vect[MTX - 1]) 
+		if ((*pt_arr)->init_vect[2])//if ((*pt_arr)->new_vect[3]) //
 			while (i < MTX - 1)			
-				(*pt_arr)->new_vect[i++] /= (*pt_arr)->new_vect[MTX - 1];
+				(*pt_arr)->new_vect[i++] /= (*pt_arr)->init_vect[2];//(*pt_arr)->new_vect[i++] /= (*pt_arr)->new_vect[3];//
 		pt_arr++;
 	}
 }
+
+// void	homogenize_pt_arr(t_point **pt_arr)
+// {
+// 	int	i;
+
+// 	while (*pt_arr)
+// 	{
+// 		i = 0;
+// 		if ((*pt_arr)->new_vect[2])//if ((*pt_arr)->new_vect[3]) //
+// 			while (i < MTX - 1)			
+// 				(*pt_arr)->new_vect[i++] /= (*pt_arr)->new_vect[2];//(*pt_arr)->new_vect[i++] /= (*pt_arr)->new_vect[3];//
+// 		pt_arr++;
+// 	}
+// }
+
+// void	homogenize_pt_arr(t_point **pt_arr)
+// {
+// 	int	i;
+
+// 	while (*pt_arr)
+// 	{
+// 		i = 0;
+// 		if ((*pt_arr)->new_vect[MTX - 1]) 
+// 			while (i < MTX - 1)			
+// 				(*pt_arr)->new_vect[i++] /= (*pt_arr)->new_vect[MTX - 1];
+// 		pt_arr++;
+// 	}
+// }
 
 void	set_matrix_mapping(double matrix[][MTX])
 {
@@ -569,7 +600,7 @@ int	loop(t_point **pt_arr)
 	// multiply_matrix(m_fnl, m_scl, m_fnl_tmp);
 	
 	//multiply_matrix(m_neutral, m_trs_cntr, m_fnl_tmp);
-	multiply_matrix(m_neutral, m_trs_lp, m_fnl_tmp);	
+	multiply_matrix(m_neutral, m_trs_lp, m_fnl_tmp);
     multiply_matrix(m_fnl_tmp, m_rtt_x, m_fnl);
     multiply_matrix(m_fnl, m_rtt_y, m_fnl_tmp);
 	multiply_matrix(m_fnl_tmp, m_rtt_z, m_fnl); //printf("scale z: %f", scale_z);// print_matrix(m_fnl_tmp);
@@ -580,14 +611,15 @@ int	loop(t_point **pt_arr)
 	// save_new_vect(cpy);
 	if (per)	
 	{
-		multiply_matrix(m_persp, m_fnl, m_fnl_tmp);	
+		multiply_matrix(m_fnl, m_persp, m_fnl_tmp);
+		apply_matrix(m_fnl_tmp, pt_arr);	
+		homogenize_pt_arr(pt_arr); 
+	//	multiply_matrix(m_fnl_tmp, m_trs_lp, m_fnl);
 		//multiply_matrix(m_fnl, m_neutral, m_fnl_tmp);
 		//print_pt_arr(cpy);
 		//printf("avant avant\n"); print_pt_arr(cpy);
-		apply_matrix(m_fnl_tmp, pt_arr);	
 		//printf("avant\n"); print_pt_arr(cpy);
 	
-		homogenize_pt_arr(pt_arr); 
 	//	print_pt_arr(pt_arr);
 	//	t_point **fil = filter_points(pt_arr);
 	//	save_new_vect(fil);
