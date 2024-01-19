@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/18 19:13:38 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/19 08:52:54 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -412,6 +412,47 @@ t_point **copy_points(t_point **pt_arr)
 	return (copy);
 }
 
+t_point **filter_points(t_point **pt_arr)
+{
+	int		i;	
+	t_point **copy;
+	t_point **pt_arr_sav = pt_arr;
+	
+	i = 0;
+	while (*pt_arr)
+	{
+		if ((*pt_arr)->new_vect[0] >= -1 && (*pt_arr)->new_vect[0] <= 1
+			&& (*pt_arr)->new_vect[1] >= -1 && (*pt_arr)->new_vect[1] <= 1
+			&& (*pt_arr)->new_vect[2] >= -1 && (*pt_arr)->new_vect[2] <= 1)
+				i++;
+		pt_arr++;
+	}
+	pt_arr = pt_arr_sav;
+	copy = (t_point **) ft_calloc(i + 1, sizeof(t_point *));
+	i = 0;
+	while (*pt_arr)
+	{
+		if ((*pt_arr)->new_vect[0] >= -1 && (*pt_arr)->new_vect[0] <= 1
+			&& (*pt_arr)->new_vect[1] >= -1 && (*pt_arr)->new_vect[1] <= 1
+			&& (*pt_arr)->new_vect[2] >= -1 && (*pt_arr)->new_vect[2] <= 1)
+			{				
+				copy[i] = malloc(sizeof(t_point));
+				copy[i]->init_vect[0] = (*pt_arr)->init_vect[0];
+				copy[i]->init_vect[1] = (*pt_arr)->init_vect[1];
+				copy[i]->init_vect[2] = (*pt_arr)->init_vect[2];
+				copy[i]->init_vect[3] = (*pt_arr)->init_vect[3];
+				copy[i]->new_vect[0] = (*pt_arr)->new_vect[0];
+				copy[i]->new_vect[1] = (*pt_arr)->new_vect[1];
+				copy[i]->new_vect[2] = (*pt_arr)->new_vect[2];
+				copy[i]->new_vect[3] = (*pt_arr)->new_vect[3];
+				copy[i]->line = (*pt_arr)->line;
+				i++;
+			}
+		pt_arr++;
+	}
+	return (copy);
+}
+
 double	get_initial_scale(t_point **pt_arr)
 {
 	double 	scale;	
@@ -455,6 +496,19 @@ void	homogenize_pt_arr(t_point **pt_arr)
 		pt_arr++;
 	}
 }
+
+void	set_matrix_mapping(double matrix[][MTX])
+{
+	double	div = 2.0;
+	double 	rap_x = WIDTH / div;
+	double 	rap_y = HEIGHT / div;
+	
+	matrix[0][0] = rap_x;
+	matrix[0][MTX - 1] = rap_x;
+	matrix[1][1] = rap_y;
+	matrix[1][MTX - 1] = rap_y;	
+}
+
 #include <unistd.h>
 
 double	m_neutral[MTX][MTX];
@@ -522,13 +576,17 @@ int	loop(t_point **pt_arr)
 	multiply_matrix(m_fnl_tmp, m_trs_ori, m_fnl);
 	apply_matrix(m_fnl, pt_arr);
  	t_point **cpy = copy_points(pt_arr);
-	save_new_vect(cpy);
+	//save_new_vect(cpy);
 	if (per)	
 	{
 		//multiply_matrix(m_persp, m_fnl_tmp, m_fnl);	
 		//multiply_matrix(m_fnl, m_neutral, m_fnl_tmp);
+		//print_pt_arr(cpy);
+		//printf("avant avant\n"); print_pt_arr(cpy);
 		apply_matrix(m_persp, cpy);	
-		homogenize_pt_arr(cpy); 
+		//printf("avant\n"); print_pt_arr(cpy);
+	
+		homogenize_pt_arr(cpy);  printf("apres\n"); print_pt_arr(cpy);
 		t_point **cpy2 = copy_points(cpy);
 		save_new_vect(cpy2);
 		apply_matrix(m_trs_lp, cpy2); 
@@ -537,7 +595,7 @@ int	loop(t_point **pt_arr)
 	//	print_pt_arr(cpy);
 	}	
 	//print_pt_arr(cpy);
-	print_img(pt_arr);	
+	print_img(pt_arr);
 	return (0);
 }
 
