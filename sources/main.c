@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/19 11:56:33 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/19 13:26:09 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,8 +94,8 @@ void	apply_matrix(double matrix[][MTX], t_point **pt_arr)
 		{
 			j = -1;
 			while (++j < MTX)			
-				(*pt_arr)->new_vect[i] += matrix[i][j]
-					 * (*pt_arr)->init_vect[j];				
+				(*pt_arr)->new_vect[i] += (int) (matrix[i][j]
+					 * (*pt_arr)->init_vect[j]);				
 		}
 		pt_arr++;
 	}
