@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/19 13:26:09 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/19 13:37:19 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,12 @@ void	print_pt_arr(t_point *pt_arr[])
 {
 	while (*pt_arr)
 	{	
-		printf("x: %f, y: %f, z:%f, w:%f, nx: %f, ny: %f, nz: %f, nw:%f\n",
+		ft_printf("x: %d, y: %d, z:%d, w:%d, nx: %d, ny: %d, nz: %d, nw:%d\n",
 			(*pt_arr)->init_vect[0], (*pt_arr)->init_vect[1], (*pt_arr)->init_vect[2], (*pt_arr)->init_vect[3],
 				(*pt_arr)->new_vect[0], (*pt_arr)->new_vect[1], (*pt_arr)->new_vect[2], (*pt_arr)->new_vect[3]);	
 		pt_arr++;
 	}
-	printf("\n");
+	ft_printf("\n");
 }
 
 void	print_matrix(double matrix[][MTX])
@@ -532,7 +532,7 @@ double 	tx = 0.0;
 double 	ty = 0.0;
 double 	tz = 0.0;
 double 	scale_z = 0.0;
-double 	per = 1.0;
+double 	per = 0.0;
 double 	z_nr = 1.0;
 double 	z_fr = 100.0;
 
@@ -588,14 +588,14 @@ int	loop(t_point **pt_arr)
 		//printf("avant\n"); print_pt_arr(cpy);
 	
 		homogenize_pt_arr(pt_arr); 
-		t_point **fil = filter_points(pt_arr);
-		save_new_vect(fil);
+	//	print_pt_arr(pt_arr);
+	//	t_point **fil = filter_points(pt_arr);
+	//	save_new_vect(fil);
 		// printf("apres\n"); print_pt_arr(cpy);
 		
 		
-		apply_matrix(m_map, fil); 
-		print_pt_arr(fil);
-		print_img(fil);
+	//	apply_matrix(m_map, fil); 
+		print_img(pt_arr);
 		return (0);
 	}
 	apply_matrix(m_fnl, pt_arr);
