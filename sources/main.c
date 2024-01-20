@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/20 16:37:03 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/20 17:38:26 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -243,14 +243,10 @@ void	put_pxl(int x, int y, int z, char *img_data, int bpp, int size_line)
 	if (x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT)
 	{
 		pxl_pos = (x * bpp / 8 + y * size_line);
-		if (!z)
-			*(int *) (img_data + pxl_pos) = 0x00FF0000;
-		else if (z >= -1 && z < 0)
-			*(int *) (img_data + pxl_pos) = 0x0000FF00;
-		else if (z > 0 && z <= 1)
-			*(int *) (img_data + pxl_pos) = 0x000000FF;
+		if (z > 0)
+			*(int *) (img_data + pxl_pos) = 0x00FF0000;	
 		else 
-			*(int *) (img_data + pxl_pos) = 0xFFFFFFFF;
+			*(int *) (img_data + pxl_pos) = 0x000000FF;		
 	}
 }
 
@@ -564,7 +560,7 @@ double 	y = 0.0;
 double 	z = 0.0;
 double 	tx = 0.0;
 double 	ty = 0.0;
-double 	tz = 0.0;
+double 	tz = -HEIGHT / 1.5;
 double 	scale_z = 1.0;
 double 	scale_end = 1.0;
 double 	per = 0.0;
@@ -578,7 +574,7 @@ void	reset(void)
  	z = 0.0;
  	tx = 0.0;
  	ty = 0.0;
- 	tz = 0.0;
+ 	tz = -HEIGHT / 1.5;
  	scale_z = 1.0;
 	scale_end = 1.0;
  	per = 1.0;
@@ -597,7 +593,7 @@ int	loop(t_point **pt_arr)
 	set_matrix_rotation(m_rtt_z, z, (int []) {0, 0, 1});
 	set_matrix_translate(m_trs_lp, (double []) {tx, ty, tz});
 	set_matrix_persp(m_persp, per, WIDTH / HEIGHT, z_nr, z_fr);
-	set_matrix_translate(m_trs_cntr, (double []) {WIDTH / 2.0, HEIGHT / 2.0, -HEIGHT});
+	set_matrix_translate(m_trs_cntr, (double []) {WIDTH / 2.0, HEIGHT / 2.0, HEIGHT / 1.5});
 	// multiply_matrix(m_neutral, m_persp, m_fnl_tmp);
 	// multiply_matrix(m_fnl_tmp, m_trs_cntr, m_fnl); //printf("scale z: %f", scale_z);// print_matrix(m_fnl_tmp);
 	// multiply_matrix(m_fnl, m_trs_lp, m_fnl_tmp);
@@ -665,9 +661,11 @@ int	loop(t_point **pt_arr)
 		free_ptr_arr((void *) p_cpy);
 		return (0);
 	}
-	apply_matrix(m_fnl_tmp, pt_arr);
+	multiply_matrix(m_scl3, m_fnl_tmp, m_fnl);
+	multiply_matrix(m_trs_cntr, m_fnl, m_fnl_tmp);
+	apply_matrix(m_fnl_tmp, p_cpy);	
 	//print_pt_arr(cpy);
-	print_img(pt_arr);
+	print_img(p_cpy);
 	return (0);
 }
 
