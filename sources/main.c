@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/20 17:38:26 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/20 18:21:33 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,8 +156,8 @@ void	set_matrix_persp(double matrix[][MTX], double fov, double aspect, double z_
 	z_len = z_far - z_near;
 	matrix[0][0] = aspect * f; 
 	matrix[1][1] = f;//1.0 / aspect * tan(fov * M_PI / 360.0);//
-	matrix[2][2] = z_far / z_len; //(z_near + z_far) / (z_near - z_far);////   //  
-	matrix[2][3] = -z_far * z_near / z_len;//-2 * z_far * z_near / z_len; //(2 * z_near * z_far) / (z_near - z_far);// ; 
+	matrix[2][2] = 1;//z_far / z_len; //(z_near + z_far) / (z_near - z_far);////   //  
+	matrix[2][3] = 0;//-z_far * z_near / z_len;//-2 * z_far * z_near / z_len; //(2 * z_near * z_far) / (z_near - z_far);// ; 
 	matrix[3][2] = -1.0;// -0.1
 	matrix[MTX - 1][MTX - 1] = 0;	
 }
@@ -239,7 +239,7 @@ void	multiply_matrix(double m1[][MTX], double m2[][MTX], double mf[][MTX])
 void	put_pxl(int x, int y, int z, char *img_data, int bpp, int size_line)
 {
 	int	pxl_pos;
-	
+	//printf("Z: %d\n", z);
 	if (x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT)
 	{
 		pxl_pos = (x * bpp / 8 + y * size_line);
@@ -518,7 +518,7 @@ void	homogenize_pt_arr(t_point **pt_arr)
 	{
 		i = 0;
 		if ((*pt_arr)->new_vect[MTX - 1]) 
-			while (i < MTX) //- 1)			
+			while (i < MTX - 2) //- 1)			
 				(*pt_arr)->new_vect[i++] /= (*pt_arr)->new_vect[MTX - 1];
 		pt_arr++;
 	}
