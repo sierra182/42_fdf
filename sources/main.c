@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/20 23:45:54 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/21 00:16:37 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -246,37 +246,37 @@ void	put_pxl(int x, int y, int z, char *img_data, int bpp, int size_line)
 	{
 		pxl_pos = (x * bpp / 8 + y * size_line);
 
-        // Décomposer les couleurs en composants RGB
-        // int r1 = (color1 >> 16) & 0xFF;
-        // int g1 = (color1 >> 8) & 0xFF;
-        // int b1 = color1 & 0xFF;
+        //Décomposer les couleurs en composants RGB
+        int r1 = (color1 >> 16) & 0xFF;
+        int g1 = (color1 >> 8) & 0xFF;
+        int b1 = color1 & 0xFF;
 
-        // int r2 = (color2 >> 16) & 0xFF;
-        // int g2 = (color2 >> 8) & 0xFF;
-        // int b2 = color2 & 0xFF;
+        int r2 = (color2 >> 16) & 0xFF;
+        int g2 = (color2 >> 8) & 0xFF;
+        int b2 = color2 & 0xFF;
 
-        // // Facteur d'interpolation basé sur z
-        // // Ajustez ces valeurs selon vos besoins
-        // float factor = (float)(z - 50) / (0 - 50);
+        // Facteur d'interpolation basé sur z
+        // Ajustez ces valeurs selon vos besoins
+        float factor = (float)(z - 50) / (0 - 50);
 
-        // // Interpoler entre les couleurs
-        // int r = r1 + factor * (r2 - r1);
-        // int g = g1 + factor * (g2 - g1);
-        // int b = b1 + factor * (b2 - b1);
+        // Interpoler entre les couleurs
+        int r = r1 + factor * (r2 - r1);
+        int g = g1 + factor * (g2 - g1);
+        int b = b1 + factor * (b2 - b1);
 
-        // // Assurer que les composants restent dans les limites [0, 255]
-        // r = (r < 0) ? 0 : (r > 255) ? 255 : r;
-        // g = (g < 0) ? 0 : (g > 255) ? 255 : g;
-        // b = (b < 0) ? 0 : (b > 255) ? 255 : b;
+        // Assurer que les composants restent dans les limites [0, 255]
+        r = (r < 0) ? 0 : (r > 255) ? 255 : r;
+        g = (g < 0) ? 0 : (g > 255) ? 255 : g;
+        b = (b < 0) ? 0 : (b > 255) ? 255 : b;
 
-        // // Combinez les composants interpolés pour obtenir la couleur finale
-        // unsigned int finalColor = (r << 16) | (g << 8) | b;
+        // Combinez les composants interpolés pour obtenir la couleur finale
+        unsigned int finalColor = (r << 16) | (g << 8) | b;
 
-        // *(int *)(img_data + pxl_pos) = finalColor;
-		if (z > 0)
-			*(int *) (img_data + pxl_pos) = 0x2faf62;	
-		else 
-			*(int *) (img_data + pxl_pos) = 0x9fa5a7;		
+        *(int *)(img_data + pxl_pos) = finalColor;
+		// if (z > 0)
+		// 	*(int *) (img_data + pxl_pos) = 0x2faf62;	
+		// else 
+		// 	*(int *) (img_data + pxl_pos) = 0x9fa5a7;		
 	}
 }
 
@@ -364,36 +364,40 @@ void	print_img(t_point **pt_arr, t_point **p_cpy)
     int size_line;
   	int pxl_pos;
 	int truc = 0;//200;	
+	t_point **p_cpy_sav;
 	
 	img_ptr = mlx_new_image(mlx_connect, WIDTH, HEIGHT);	
     img_data = mlx_get_data_addr(img_ptr, &bpp, &size_line, &(int){0});
 	t_point **pt_arr_sav = pt_arr;
-	t_point **p_cpy_sav = p_cpy;
+	if (p_cpy)
+		p_cpy_sav = p_cpy;
 	while (*pt_arr)
 	{
 		if ((*pt_arr)->new_vect[0] + truc >= 0 && (*pt_arr)->new_vect[0] + truc < WIDTH  
-		&& (*pt_arr)->new_vect[1] + truc >= 0 && (*pt_arr)->new_vect[1] + truc < HEIGHT && (*p_cpy)->new_vect[2] <= 0)
+		&& (*pt_arr)->new_vect[1] + truc >= 0 && (*pt_arr)->new_vect[1] + truc < HEIGHT && (!p_cpy || (*p_cpy)->new_vect[2] <= 0))
 		{			
 			pxl_pos = (((*pt_arr)->new_vect[1] + truc) * size_line) + (((*pt_arr)->new_vect[0] + truc) * (bpp / 8));				
 			*(int *) (img_data + pxl_pos) = 0xFFFFFFFF;					
 		}
-		p_cpy++;
+		if (p_cpy)
+			p_cpy++;
 		pt_arr++;
 	}	
 	int len = get_line_length(pt_arr_sav);// printf("%d\n", len);
 	while (*pt_arr_sav)
 	{
 					
-		if ((*pt_arr_sav)->line < 2 && (*p_cpy_sav)->new_vect[2] <= 0 && (*(p_cpy_sav + len))->new_vect[2] <= 0)// && get_line_length(pt_arr_sav + 1) >= )		
+		if ((*pt_arr_sav)->line < 2 && (!p_cpy || (*p_cpy_sav)->new_vect[2] <= 0 && (*(p_cpy_sav + len))->new_vect[2] <= 0))// && get_line_length(pt_arr_sav + 1) >= )		
 			draw_line((*pt_arr_sav)->new_vect[0], (*pt_arr_sav)->new_vect[1], (*pt_arr_sav)->new_vect[2], (*(pt_arr_sav + len))->new_vect[0], (*(pt_arr_sav + len))->new_vect[1], img_data, bpp, size_line);
-		if ((!(*pt_arr_sav)->line || (*pt_arr_sav)->line == 2) && (*p_cpy_sav)->new_vect[2] <= 0 && (*(p_cpy_sav + 1))->new_vect[2] <= 0)	
+		if ((!(*pt_arr_sav)->line || (*pt_arr_sav)->line == 2) && (!p_cpy || (*p_cpy_sav)->new_vect[2] <= 0 && (*(p_cpy_sav + 1))->new_vect[2] <= 0))
 			draw_line((*pt_arr_sav)->new_vect[0], (*pt_arr_sav)->new_vect[1], (*pt_arr_sav)->new_vect[2], (*(pt_arr_sav + 1))->new_vect[0], (*(pt_arr_sav + 1))->new_vect[1], img_data, bpp, size_line);
 		if ((*pt_arr_sav)->line == 1)
 			len = get_line_length(pt_arr_sav + 1);	
 		
 		// if ((*pt_arr_sav)->line)
 		//  	len = get_line_length(pt_arr_sav + 1);
-		p_cpy_sav++;
+		if (p_cpy)
+			p_cpy_sav++;
 		pt_arr_sav++;	
 	}
 	mlx_put_image_to_window(mlx_connect, mlx_window, img_ptr, 0, 0);
@@ -699,7 +703,7 @@ int	loop(t_point **pt_arr)
 	multiply_matrix(m_trs_cntr, m_fnl, m_fnl_tmp);
 	apply_matrix(m_fnl_tmp, p_cpy);	
 	//print_pt_arr(cpy);
-	print_img(p_cpy, p_cpy);
+	print_img(p_cpy, NULL);
 	return (0);
 }
 
@@ -756,7 +760,8 @@ int key_press_function(int keycode, void *param)
 	else if (keycode == 65430)
 		z_fr--;
 	else if (keycode == 114)
-		reset();	
+		reset();
+	loop((t_point **)param);
     return 0;
 }
 
@@ -783,8 +788,8 @@ void	global_matrix(t_point **pt_arr)
 	// set_matrix_translate(m_trs_cntr, (double []) {WIDTH / 2, HEIGHT / 2, HEIGHT}); 
 	// set_matrix_translate(m_trs_cntr, (double []) {0, 0, -HEIGHT});
 	//set_matrix_mapping(m_map);
-	mlx_hook(mlx_window, 2, 1L << 0, key_press_function, NULL);
-	mlx_loop_hook(mlx_connect, loop, pt_arr);
+	mlx_hook(mlx_window, 2, 1L << 0, key_press_function, pt_arr);
+//	mlx_loop_hook(mlx_connect, loop, pt_arr);
 	mlx_loop(mlx_connect);	
 }
 
