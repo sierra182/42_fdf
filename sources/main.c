@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/20 14:49:56 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/20 16:37:03 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -547,7 +547,9 @@ double	m_neutral[MTX][MTX];
 double	m_persp[MTX][MTX];
 double	m_scl[MTX][MTX];
 double	m_scl2[MTX][MTX];
+double	m_scl3[MTX][MTX];
 double	m_trs_ori[MTX][MTX];
+double	m_trs_ori2[MTX][MTX];
 double	m_trs_cntr[MTX][MTX];
 double	m_trs_lp[MTX][MTX];
 double	m_rtt_x[MTX][MTX];
@@ -564,6 +566,7 @@ double 	tx = 0.0;
 double 	ty = 0.0;
 double 	tz = 0.0;
 double 	scale_z = 1.0;
+double 	scale_end = 1.0;
 double 	per = 0.0;
 double 	z_nr = 1.0;
 double 	z_fr = 100.0;
@@ -577,6 +580,7 @@ void	reset(void)
  	ty = 0.0;
  	tz = 0.0;
  	scale_z = 1.0;
+	scale_end = 1.0;
  	per = 1.0;
 	z_nr = 0.0;
 	z_fr = 100.0;
@@ -586,7 +590,8 @@ int	loop(t_point **pt_arr)
 {	
 	usleep(16670);
 	set_matrix_scale(m_scl, (double[]){scale, scale, scale});
-	set_matrix_scale(m_scl2, (double[]){scale_z, scale_z, scale_z});
+	set_matrix_scale(m_scl2, (double[]){1, 1, scale_z});
+	set_matrix_scale(m_scl3, (double[]){scale_end, scale_end, scale_end});
 	set_matrix_rotation(m_rtt_y, y, (int []) {0, 1, 0});
 	set_matrix_rotation(m_rtt_x, x, (int []) {1, 0, 0});
 	set_matrix_rotation(m_rtt_z, z, (int []) {0, 0, 1});
@@ -600,7 +605,9 @@ int	loop(t_point **pt_arr)
 	// multiply_matrix(m_fnl, m_rtt_y, m_fnl_tmp);
 	// multiply_matrix(m_fnl_tmp, m_rtt_z, m_fnl);
 	// multiply_matrix(m_fnl, m_scl, m_fnl_tmp);
-	
+	apply_matrix(m_scl2, pt_arr);
+	t_point **p_cpy = copy_points(pt_arr);
+	save_new_vect(p_cpy);
 	//multiply_matrix(m_neutral, m_trs_cntr, m_fnl_tmp);
    // multiply_matrix(m_neutral, m_rtt_x, m_fnl_tmp);
    // multiply_matrix(m_fnl, m_rtt_y, m_fnl_tmp);
@@ -629,11 +636,14 @@ int	loop(t_point **pt_arr)
 	//	multiply_matrix(m_trs_lp, m_fnl_tmp, m_fnl);
 		multiply_matrix(m_persp, m_fnl_tmp, m_fnl);
 		//multiply_matrix(m_scl, m_trs_cntr, m_fnl);
-		apply_matrix(m_fnl, pt_arr);	
-		homogenize_pt_arr(pt_arr);
-		t_point **cpy = copy_points(pt_arr);
+		apply_matrix(m_fnl, p_cpy);	
+		homogenize_pt_arr(p_cpy);
+		t_point **cpy = copy_points(p_cpy);
 		save_new_vect(cpy);
-		multiply_matrix(m_scl2, m_trs_cntr, m_fnl);
+		// set_matrix_translate(m_trs_ori2, (double []) {-get_average(cpy, 0), 
+		// 											-get_average(cpy, 1), 
+		// 												-get_average(cpy, 2)}); 
+		multiply_matrix(m_trs_cntr, m_scl3, m_fnl);
 		apply_matrix(m_fnl, cpy);	
 		// t_point **cpy2 = copy_points(cpy);
 		// save_new_vect(cpy2);
@@ -652,7 +662,7 @@ int	loop(t_point **pt_arr)
 	//	apply_matrix(m_map, fil); 
 		print_img(cpy);
 		free_ptr_arr((void *) cpy);
-		//free_ptr_arr((void *) cpy2);
+		free_ptr_arr((void *) p_cpy);
 		return (0);
 	}
 	apply_matrix(m_fnl_tmp, pt_arr);
@@ -677,10 +687,14 @@ int key_press_function(int keycode, void *param)
 		z++;
 	else if (keycode == 97)
 		z--;
+	else if (keycode == 65432)
+		scale_end += 0.1;
+	else if (keycode == 65430)
+		scale_end -= 0.1;
 	else if (keycode == 115)
-		scale++;
+		scale += 1;
 	else if (keycode == 100)
-		scale--;
+		scale -= 1;
 	else if (keycode == 102)
 		scale_z += .1;
 	else if (keycode == 103)
@@ -721,7 +735,9 @@ void	global_matrix(t_point **pt_arr)
 	init_matrix(m_persp);
 	init_matrix(m_scl);
 	init_matrix(m_scl2);
+	init_matrix(m_scl3);
 	init_matrix(m_trs_ori); 
+	init_matrix(m_trs_ori2);
 	init_matrix(m_trs_cntr);
 	init_matrix(m_trs_lp);
 	init_matrix(m_rtt_x); 
