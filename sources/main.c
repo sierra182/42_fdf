@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/19 21:54:58 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/20 10:18:43 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -604,13 +604,14 @@ int	loop(t_point **pt_arr)
    // multiply_matrix(m_fnl, m_rtt_y, m_fnl_tmp);
 	//multiply_matrix(m_fnl_tmp, m_rtt_z, m_fnl); //printf("scale z: %f", scale_z);// print_matrix(m_fnl_tmp);
 //	multiply_matrix(m_fnl, m_scl, m_fnl_tmp);
-	multiply_matrix(m_neutral, m_trs_ori, m_fnl);
+	 multiply_matrix(m_neutral, m_trs_cntr, m_fnl);
 	multiply_matrix(m_fnl, m_scl, m_fnl_tmp);
-	multiply_matrix(m_fnl_tmp, m_rtt_z, m_fnl);
+	multiply_matrix(m_fnl_tmp, m_rtt_y, m_fnl);
 	multiply_matrix(m_fnl, m_rtt_x, m_fnl_tmp);
-    multiply_matrix(m_fnl_tmp, m_rtt_y, m_fnl);
+    multiply_matrix(m_fnl_tmp, m_rtt_z, m_fnl);
+	multiply_matrix(m_fnl, m_trs_ori, m_fnl_tmp);
 	//multiply_matrix(m_fnl, m_trs_ori, m_fnl_tmp);
-	//multiply_matrix(m_neutral, m_fnl_tmp, m_fnl);
+	multiply_matrix(m_fnl_tmp, m_neutral, m_fnl);
 	//apply_matrix(m_fnl, pt_arr);
  	// t_point **cpy = copy_points(pt_arr);
 	// save_new_vect(cpy);
@@ -717,8 +718,9 @@ void	global_matrix(t_point **pt_arr)
 	scale = get_initial_scale(pt_arr); 		
 	set_matrix_translate(m_trs_ori, (double []) {-get_average(pt_arr, 0), 
 													-get_average(pt_arr, 1), 
-														-50 * get_average(pt_arr, 1)}); 
-	set_matrix_translate(m_trs_cntr, (double []) {WIDTH / 2, HEIGHT / 2, 0}); 
+														-get_average(pt_arr, 2)}); 
+	// set_matrix_translate(m_trs_cntr, (double []) {WIDTH / 2, HEIGHT / 2, HEIGHT}); 
+	set_matrix_translate(m_trs_cntr, (double []) {0, 0, -HEIGHT});
 	set_matrix_mapping(m_map);
 	mlx_hook(mlx_window, 2, 1L << 0, key_press_function, NULL);
 	mlx_loop_hook(mlx_connect, loop, pt_arr);
