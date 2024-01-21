@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/21 20:22:32 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/21 23:33:34 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -293,7 +293,7 @@ void	put_pxl(int x, int y, int z)
 		final_color = get_final_color((int []){47, 175, 98},
 				(int []){159, 165, 167}, z);
 		img_data_handle(NULL, &img_data, &size_line, &bpp);
-		pxl_pos = (x * bpp / 8 + y * size_line);
+		pxl_pos = x * bpp / 8 + y * size_line;
 		*(int *)(img_data + pxl_pos) = final_color;
 	}
 }
@@ -324,9 +324,15 @@ void	draw_line_action(t_draw_act *act)
 			error += act->greater_delta * 2;
 		}
 		if (!act->flag)
+		{
 			put_pxl(act->pos, act->opp_pos, act->z);
+			//put_pxl(act->pos + 1, act->opp_pos + 1, act->z);			
+		}
 		else
-			put_pxl(act->opp_pos, act->pos, act->z);
+		{
+			put_pxl(act->opp_pos, act->pos, act->z);			
+			//put_pxl(act->opp_pos + 1, act->pos + 1, act->z);		
+		}
 		error -= act->lower_delta * 2;
 	}
 }
@@ -389,7 +395,28 @@ int 	get_n_line(t_point **pt_arr)
 			n++;	
 	return (++n);
 }
+void	add_background(void)
+{
+	char			*img_data;
+	int				pxl_pos;
+	int				bpp;
+	int				size_line;
+	int				x;
+	int				y;
 
+	x = -1;
+	y = -1;
+	img_data_handle(NULL, &img_data, &size_line, &bpp);
+	while (++x < WIDTH)
+	{	
+		y = -1;
+		while (++y < HEIGHT)
+		{		
+			pxl_pos = x * bpp / 8 + y * size_line;
+			*(int *)(img_data + pxl_pos) = 0x373224;
+		}
+	}
+}
 
 void	print_img(t_point **pt_arr, t_point **p_cpy)
 {
@@ -398,6 +425,7 @@ void	print_img(t_point **pt_arr, t_point **p_cpy)
 
 	img_ptr = mlx_new_image(mlx_connect, WIDTH, HEIGHT);
 	img_data_handle(img_ptr, NULL, NULL, NULL);
+	add_background();
 	len = get_line_length(pt_arr);//!!
 	while (*pt_arr)
 	{
