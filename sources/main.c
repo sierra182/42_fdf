@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/21 01:16:29 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/21 10:35:59 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -618,7 +618,7 @@ void	reset(void)
 	z_nr = 0.0;
 	z_fr = 100.0;
 }
-int flag = 0;
+int flag = 1;
 int	loop(t_point **pt_arr)
 {	
 	if (!flag)
