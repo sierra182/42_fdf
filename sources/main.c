@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/21 18:35:20 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/21 20:22:32 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -254,50 +254,47 @@ void	img_data_handle(void *img_ptr, char	**img_data, int *size_l, int *bpp)
 	}
 }
 
+unsigned int	get_final_color(int *start, int *end, int z)
+{
+	float	factor;
+	int		r;
+	int		g;
+	int		b;
+
+	factor = (float)(z - 50) / (0 - 50);
+	r = start[0] + factor * (end[0] - start[0]);
+	g = start[1] + factor * (end[1] - start[1]);
+	b = start[2] + factor * (end[2] - start[2]);
+	if (r < 0)
+		r = 0;
+	else if (r > 255)
+		r = 255;
+	if (g < 0)
+		g = 0;
+	else if (g > 255)
+		g = 255;
+	if (b < 0)
+		b = 0;
+	else if (b > 255)
+		b = 255;
+	return (r << 16 | g << 8 | b);
+}
+
 void	put_pxl(int x, int y, int z)
 {
-	int	pxl_pos;
-	unsigned int color1 = 0x2faf62; // Turquoise
-    unsigned int color2 = 0x9fa5a7; // Violet/Rosé
-	char *img_data;
-	int bpp;
-	int size_line;
-	//printf("Z: %d\n", z);
+	unsigned int	final_color;
+	char			*img_data;
+	int				pxl_pos;
+	int				bpp;
+	int				size_line;
+
 	if (x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT)
 	{
-		
-        //Décomposer les couleurs en composants RGB
-        int r1 = (color1 >> 16) & 0xFF;
-        int g1 = (color1 >> 8) & 0xFF;
-        int b1 = color1 & 0xFF;
-
-        int r2 = (color2 >> 16) & 0xFF;
-        int g2 = (color2 >> 8) & 0xFF;
-        int b2 = color2 & 0xFF;
-
-        // Facteur d'interpolation basé sur z
-        // Ajustez ces valeurs selon vos besoins
-        float factor = (float)(z - 50) / (0 - 50);
-
-        // Interpoler entre les couleurs
-        int r = r1 + factor * (r2 - r1);
-        int g = g1 + factor * (g2 - g1);
-        int b = b1 + factor * (b2 - b1);
-
-        // Assurer que les composants restent dans les limites [0, 255]
-        r = (r < 0) ? 0 : (r > 255) ? 255 : r;
-        g = (g < 0) ? 0 : (g > 255) ? 255 : g;
-        b = (b < 0) ? 0 : (b > 255) ? 255 : b;
-
-        // Combinez les composants interpolés pour obtenir la couleur finale
-        unsigned int finalColor = (r << 16) | (g << 8) | b;
+		final_color = get_final_color((int []){47, 175, 98},
+				(int []){159, 165, 167}, z);
 		img_data_handle(NULL, &img_data, &size_line, &bpp);
 		pxl_pos = (x * bpp / 8 + y * size_line);
-        *(int *)(img_data + pxl_pos) = finalColor;
-		// if (z > 0)
-		// 	*(int *) (img_data + pxl_pos) = 0x2faf62;	
-		// else 
-		// 	*(int *) (img_data + pxl_pos) = 0x9fa5a7;		
+		*(int *)(img_data + pxl_pos) = final_color;
 	}
 }
 typedef struct s_draw_act
