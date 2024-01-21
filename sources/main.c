@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/21 18:25:10 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/21 18:35:20 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,21 +237,23 @@ void	multiply_matrix(double m1[][MTX], double m2[][MTX], double mf[][MTX])
 // 	}
 // }
 
-void	img_data_handle(void *img_ptr, char	**img_data, int *size_line, int *bpp)
-{	
+void	img_data_handle(void *img_ptr, char	**img_data, int *size_l, int *bpp)
+{
 	static char	*img_data_lcl;
-    static int	size_line_lcl;
-    static int	bpp_lcl; 
+	static int	size_l_lcl;
+	static int	bpp_lcl;
 
 	if (img_ptr)
-		img_data_lcl = mlx_get_data_addr(img_ptr, &bpp_lcl, &size_line_lcl, &(int){0});
+		img_data_lcl = mlx_get_data_addr(img_ptr, &bpp_lcl, &size_l_lcl,
+				&(int){0});
 	else
 	{
 		*img_data = img_data_lcl;
-		*size_line = size_line_lcl;
+		*size_l = size_l_lcl;
 		*bpp = bpp_lcl;
-	}	
+	}
 }
+
 void	put_pxl(int x, int y, int z)
 {
 	int	pxl_pos;
