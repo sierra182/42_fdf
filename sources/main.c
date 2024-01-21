@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/21 15:10:29 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/21 18:25:10 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,12 +148,13 @@ void	set_matrix_rotation(double matrix[][MTX], double angle, int *axe)
 void	set_matrix_persp(double matrix[][MTX], double fov, double aspect, double z_near, double z_far)
 {
 	double f;
-	double z_len;
-	
+	//double z_len;
+	(void) z_near;
+	(void) z_far;
 	f = 1; 
 	if (tan(fov * M_PI / 360.0))
 		f = 1.0 / tan(fov * M_PI / 360.0);	
-	z_len = z_far - z_near;
+//	z_len = z_far - z_near;
 	matrix[0][0] = aspect * f; 
 	matrix[1][1] = f;//1.0 / aspect * tan(fov * M_PI / 360.0);//
 	matrix[2][2] = 1;//z_far / z_len; //(z_near + z_far) / (z_near - z_far);////   //  
@@ -241,7 +242,7 @@ void	img_data_handle(void *img_ptr, char	**img_data, int *size_line, int *bpp)
 	static char	*img_data_lcl;
     static int	size_line_lcl;
     static int	bpp_lcl; 
-	
+
 	if (img_ptr)
 		img_data_lcl = mlx_get_data_addr(img_ptr, &bpp_lcl, &size_line_lcl, &(int){0});
 	else
@@ -297,53 +298,69 @@ void	put_pxl(int x, int y, int z)
 		// 	*(int *) (img_data + pxl_pos) = 0x9fa5a7;		
 	}
 }
-
-void	draw_line_action(int greater_delta, int lower_delta, int pos, int opp_pos, int pos_prime, int dir, int opp_dir, int z, int flag)
+typedef struct s_draw_act
 {
-	int error;
-	
-	error = greater_delta;	
-	while (pos != pos_prime)
+	int greater_delta;
+	int lower_delta;
+	int pos;
+	int opp_pos;
+	int pos_prim;
+	int dir;
+	int opp_dir;
+	int z;
+	int flag;
+}	t_draw_act;
+
+void	draw_line_action(t_draw_act *act)
+{
+	int	error;
+
+	error = act->greater_delta;
+	while (act->pos != act->pos_prim)
 	{
-		pos += dir;
+		act->pos += act->dir;
 		if (error <= 0)
 		{
-			opp_pos += opp_dir;
-			error += greater_delta * 2;
+			act->opp_pos += act->opp_dir;
+			error += act->greater_delta * 2;
 		}
-		if (!flag)		
-			put_pxl(pos, opp_pos, z);
+		if (!act->flag)
+			put_pxl(act->pos, act->opp_pos, act->z);
 		else
-			put_pxl(opp_pos, pos, z);
-		error -= lower_delta * 2;
+			put_pxl(act->opp_pos, act->pos, act->z);
+		error -= act->lower_delta * 2;
 	}
 }
 
-void	draw_line_setup(int *dir, int dir_value, int *delta, int pos_value_a, int pos_value_b )
+void	draw_line_setup(int **dir, int *delta, int pos_value_a, int pos_value_b)
 {
-	*dir = dir_value;
+	*dir[0] = *dir[1];
 	*delta = pos_value_a - pos_value_b;
 }
 
-void	draw_line(int x, int y, int z, int xp, int yp)
+void	draw_line(double *vct, double *vct_prm)
 {
 	int	dx;
-	int dy;	
-	int h_dir;
-	int v_dir;
-	
-	if (x > xp)	
-		draw_line_setup(&h_dir, -1, &dx, x, xp);	
+	int	dy;
+	int	h_dir;
+	int	v_dir;
+
+	if ((int) vct[0] > (int) vct_prm[0])
+		draw_line_setup((int *[]){&h_dir, &(int){-1}}, &dx, vct[0], vct_prm[0]);
 	else
-		draw_line_setup(&h_dir, 1, &dx, xp, x);	
-	if (y > yp)
-		draw_line_setup(&v_dir, -1, &dy, y, yp);	
+		draw_line_setup((int *[]){&h_dir, &(int){1}}, &dx, vct_prm[0], vct[0]);
+	if ((int) vct[1] > (int) vct_prm[1])
+		draw_line_setup((int *[]){&v_dir, &(int){-1}}, &dy, vct[1], vct_prm[1]);
 	else
-		draw_line_setup(&v_dir, 1, &dy, yp, y);
-	if (dx > dy)	
-		draw_line_action(dx, dy, x, y, xp, h_dir, v_dir, z, 0);	
-	else	
-		draw_line_action(dy, dx, y, x, yp, v_dir, h_dir, z, 1);   		
+		draw_line_setup((int *[]){&v_dir, &(int){1}}, &dy, vct_prm[1], vct[1]);
+	if (dx > dy)
+		draw_line_action(&(t_draw_act){.greater_delta = dx, .lower_delta = dy,
+			.pos = vct[0], .opp_pos = vct[1], .pos_prim = vct_prm[0],
+			.dir = h_dir, .opp_dir = v_dir, .z = vct[2], .flag = 0});
+	else
+		draw_line_action(&(t_draw_act){.greater_delta = dy, .lower_delta = dx,
+			.pos = vct[1], .opp_pos = vct[0], .pos_prim = vct_prm[1],
+			.dir = v_dir, .opp_dir = h_dir, .z = vct[2], .flag = 1});
 }
 
 void *mlx_connect;
@@ -377,27 +394,26 @@ int 	get_n_line(t_point **pt_arr)
 
 void	print_img(t_point **pt_arr, t_point **p_cpy)
 {
-	void *img_ptr;
-	// char *img_data;
-    // int bpp; 
-    // int size_line;
-  	// int pxl_pos;
-	
+	void	*img_ptr;
+	int		len;
+
 	img_ptr = mlx_new_image(mlx_connect, WIDTH, HEIGHT);
-	img_data_handle(img_ptr, NULL, NULL, NULL);	
-  //  img_data = mlx_get_data_addr(img_ptr, &bpp, &size_line, &(int){0});	
-	int len = get_line_length(pt_arr);
+	img_data_handle(img_ptr, NULL, NULL, NULL);
+	len = get_line_length(pt_arr);//!!
 	while (*pt_arr)
-	{					
-		if ((*pt_arr)->line < 2 && (!p_cpy || (*p_cpy)->new_vect[2] <= 0 && (*(p_cpy + len))->new_vect[2] <= 0))		
-			draw_line((*pt_arr)->new_vect[0], (*pt_arr)->new_vect[1], (*pt_arr)->new_vect[2], (*(pt_arr + len))->new_vect[0], (*(pt_arr + len))->new_vect[1]);
-		if ((!(*pt_arr)->line || (*pt_arr)->line == 2) && (!p_cpy || (*p_cpy)->new_vect[2] <= 0 && (*(p_cpy + 1))->new_vect[2] <= 0))
-			draw_line((*pt_arr)->new_vect[0], (*pt_arr)->new_vect[1], (*pt_arr)->new_vect[2], (*(pt_arr + 1))->new_vect[0], (*(pt_arr + 1))->new_vect[1]);
+	{
+		if ((*pt_arr)->line < 2 && (!p_cpy || ((*p_cpy)->new_vect[2] <= 0
+				&& (*(p_cpy + len))->new_vect[2] <= 0)))
+			draw_line((*pt_arr)->new_vect, (*(pt_arr + len))->new_vect);
+		if ((!(*pt_arr)->line || (*pt_arr)->line == 2) && (!p_cpy
+				|| ((*p_cpy)->new_vect[2] <= 0
+				&& (*(p_cpy + 1))->new_vect[2] <= 0)))
+			draw_line((*pt_arr)->new_vect, (*(pt_arr + 1))->new_vect);
 		if ((*pt_arr)->line == 1)
-			len = get_line_length(pt_arr + 1);		
+			len = get_line_length(pt_arr + 1);
 		if (p_cpy)
 			p_cpy++;
-		pt_arr++;	
+		pt_arr++;
 	}
 	mlx_put_image_to_window(mlx_connect, mlx_window, img_ptr, 0, 0);
 	mlx_destroy_image(mlx_connect, img_ptr);
@@ -709,7 +725,7 @@ int	loop(t_point **pt_arr)
 	return (0);
 }
 
-int key_press_function(int keycode, void *param)
+int key_press_function(int keycode)
 {
 	flag = 1;
     printf("touche ton boyo: %d\n", keycode);
