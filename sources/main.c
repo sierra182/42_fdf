@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/21 00:16:37 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/21 01:16:29 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -618,9 +618,11 @@ void	reset(void)
 	z_nr = 0.0;
 	z_fr = 100.0;
 }
-
+int flag = 0;
 int	loop(t_point **pt_arr)
 {	
+	if (!flag)
+		return 0;
 	usleep(16670);
 	set_matrix_scale(m_scl, (double[]){scale, scale, scale});
 	set_matrix_scale(m_scl2, (double[]){1, 1, scale_z});
@@ -704,11 +706,13 @@ int	loop(t_point **pt_arr)
 	apply_matrix(m_fnl_tmp, p_cpy);	
 	//print_pt_arr(cpy);
 	print_img(p_cpy, NULL);
+	flag = 0;
 	return (0);
 }
 
 int key_press_function(int keycode, void *param)
 {
+	flag = 1;
     printf("touche ton boyo: %d\n", keycode);
 	printf("scale z: %f, tz: %f, per: %f, z_near:%f, z_far:%f\n", scale_z, tz, per, z_nr, z_fr);
 	if (keycode == 121)
@@ -760,11 +764,13 @@ int key_press_function(int keycode, void *param)
 	else if (keycode == 65430)
 		z_fr--;
 	else if (keycode == 114)
-		reset();
-	loop((t_point **)param);
+		reset();	
     return 0;
 }
-
+int test()
+{
+	return 1;
+}
 void	global_matrix(t_point **pt_arr)
 {	
 	//init_matrix(m_map);
@@ -788,8 +794,11 @@ void	global_matrix(t_point **pt_arr)
 	// set_matrix_translate(m_trs_cntr, (double []) {WIDTH / 2, HEIGHT / 2, HEIGHT}); 
 	// set_matrix_translate(m_trs_cntr, (double []) {0, 0, -HEIGHT});
 	//set_matrix_mapping(m_map);
-	mlx_hook(mlx_window, 2, 1L << 0, key_press_function, pt_arr);
-//	mlx_loop_hook(mlx_connect, loop, pt_arr);
+	mlx_hook(mlx_window, 2, 1L << 0, key_press_function, NULL);
+	//mlx_hook(mlx_window, 3, 1L << 1, key_release_function, pt_arr);
+	
+	
+	mlx_loop_hook(mlx_connect, loop, pt_arr);
 	mlx_loop(mlx_connect);	
 }
 
