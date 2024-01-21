@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/21 13:35:36 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/21 15:10:29 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void	reset_matrix(t_point **pt_arr)
 	{
 		i = 0;
 		while (i < MTX)
-			(*pt_arr)->new_vect[i++] = 0;		
+			(*pt_arr)->new_vect[i++] = 0.0;		
 		pt_arr++;
 	}
 }
@@ -236,16 +236,33 @@ void	multiply_matrix(double m1[][MTX], double m2[][MTX], double mf[][MTX])
 // 	}
 // }
 
-void	put_pxl(int x, int y, int z, char *img_data, int bpp, int size_line)
+void	img_data_handle(void *img_ptr, char	**img_data, int *size_line, int *bpp)
+{	
+	static char	*img_data_lcl;
+    static int	size_line_lcl;
+    static int	bpp_lcl; 
+	
+	if (img_ptr)
+		img_data_lcl = mlx_get_data_addr(img_ptr, &bpp_lcl, &size_line_lcl, &(int){0});
+	else
+	{
+		*img_data = img_data_lcl;
+		*size_line = size_line_lcl;
+		*bpp = bpp_lcl;
+	}	
+}
+void	put_pxl(int x, int y, int z)
 {
 	int	pxl_pos;
 	unsigned int color1 = 0x2faf62; // Turquoise
     unsigned int color2 = 0x9fa5a7; // Violet/Rosé
+	char *img_data;
+	int bpp;
+	int size_line;
 	//printf("Z: %d\n", z);
 	if (x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT)
 	{
-		pxl_pos = (x * bpp / 8 + y * size_line);
-
+		
         //Décomposer les couleurs en composants RGB
         int r1 = (color1 >> 16) & 0xFF;
         int g1 = (color1 >> 8) & 0xFF;
@@ -271,7 +288,8 @@ void	put_pxl(int x, int y, int z, char *img_data, int bpp, int size_line)
 
         // Combinez les composants interpolés pour obtenir la couleur finale
         unsigned int finalColor = (r << 16) | (g << 8) | b;
-
+		img_data_handle(NULL, &img_data, &size_line, &bpp);
+		pxl_pos = (x * bpp / 8 + y * size_line);
         *(int *)(img_data + pxl_pos) = finalColor;
 		// if (z > 0)
 		// 	*(int *) (img_data + pxl_pos) = 0x2faf62;	
@@ -280,7 +298,7 @@ void	put_pxl(int x, int y, int z, char *img_data, int bpp, int size_line)
 	}
 }
 
-void	draw_line_action(int greater_delta, int lower_delta, int pos, int opp_pos, int pos_prime, int dir, int opp_dir, int z, char *img_data, int bpp, int size_line, int flag)
+void	draw_line_action(int greater_delta, int lower_delta, int pos, int opp_pos, int pos_prime, int dir, int opp_dir, int z, int flag)
 {
 	int error;
 	
@@ -294,9 +312,9 @@ void	draw_line_action(int greater_delta, int lower_delta, int pos, int opp_pos, 
 			error += greater_delta * 2;
 		}
 		if (!flag)		
-			put_pxl(pos, opp_pos, z, img_data, bpp, size_line);
+			put_pxl(pos, opp_pos, z);
 		else
-			put_pxl(opp_pos, pos, z, img_data, bpp, size_line);
+			put_pxl(opp_pos, pos, z);
 		error -= lower_delta * 2;
 	}
 }
@@ -307,7 +325,7 @@ void	draw_line_setup(int *dir, int dir_value, int *delta, int pos_value_a, int p
 	*delta = pos_value_a - pos_value_b;
 }
 
-void	draw_line(int x, int y, int z, int xp, int yp, char *img_data, int bpp, int size_line)
+void	draw_line(int x, int y, int z, int xp, int yp)
 {
 	int	dx;
 	int dy;	
@@ -323,9 +341,9 @@ void	draw_line(int x, int y, int z, int xp, int yp, char *img_data, int bpp, int
 	else
 		draw_line_setup(&v_dir, 1, &dy, yp, y);
 	if (dx > dy)	
-		draw_line_action(dx, dy, x, y, xp, h_dir, v_dir, z, img_data, bpp, size_line, 0);	
+		draw_line_action(dx, dy, x, y, xp, h_dir, v_dir, z, 0);	
 	else	
-		draw_line_action(dy, dx, y, x, yp, v_dir, h_dir, z, img_data, bpp, size_line, 1);   		
+		draw_line_action(dy, dx, y, x, yp, v_dir, h_dir, z, 1);   		
 }
 
 void *mlx_connect;
@@ -356,23 +374,25 @@ int 	get_n_line(t_point **pt_arr)
 	return (++n);
 }
 
+
 void	print_img(t_point **pt_arr, t_point **p_cpy)
 {
 	void *img_ptr;
-	char *img_data;
-    int bpp; 
-    int size_line;
-  	int pxl_pos;
+	// char *img_data;
+    // int bpp; 
+    // int size_line;
+  	// int pxl_pos;
 	
-	img_ptr = mlx_new_image(mlx_connect, WIDTH, HEIGHT);	
-    img_data = mlx_get_data_addr(img_ptr, &bpp, &size_line, &(int){0});	
+	img_ptr = mlx_new_image(mlx_connect, WIDTH, HEIGHT);
+	img_data_handle(img_ptr, NULL, NULL, NULL);	
+  //  img_data = mlx_get_data_addr(img_ptr, &bpp, &size_line, &(int){0});	
 	int len = get_line_length(pt_arr);
 	while (*pt_arr)
 	{					
 		if ((*pt_arr)->line < 2 && (!p_cpy || (*p_cpy)->new_vect[2] <= 0 && (*(p_cpy + len))->new_vect[2] <= 0))		
-			draw_line((*pt_arr)->new_vect[0], (*pt_arr)->new_vect[1], (*pt_arr)->new_vect[2], (*(pt_arr + len))->new_vect[0], (*(pt_arr + len))->new_vect[1], img_data, bpp, size_line);
+			draw_line((*pt_arr)->new_vect[0], (*pt_arr)->new_vect[1], (*pt_arr)->new_vect[2], (*(pt_arr + len))->new_vect[0], (*(pt_arr + len))->new_vect[1]);
 		if ((!(*pt_arr)->line || (*pt_arr)->line == 2) && (!p_cpy || (*p_cpy)->new_vect[2] <= 0 && (*(p_cpy + 1))->new_vect[2] <= 0))
-			draw_line((*pt_arr)->new_vect[0], (*pt_arr)->new_vect[1], (*pt_arr)->new_vect[2], (*(pt_arr + 1))->new_vect[0], (*(pt_arr + 1))->new_vect[1], img_data, bpp, size_line);
+			draw_line((*pt_arr)->new_vect[0], (*pt_arr)->new_vect[1], (*pt_arr)->new_vect[2], (*(pt_arr + 1))->new_vect[0], (*(pt_arr + 1))->new_vect[1]);
 		if ((*pt_arr)->line == 1)
 			len = get_line_length(pt_arr + 1);		
 		if (p_cpy)
