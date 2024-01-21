@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/21 10:35:59 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/21 13:35:36 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -363,42 +363,21 @@ void	print_img(t_point **pt_arr, t_point **p_cpy)
     int bpp; 
     int size_line;
   	int pxl_pos;
-	int truc = 0;//200;	
-	t_point **p_cpy_sav;
 	
 	img_ptr = mlx_new_image(mlx_connect, WIDTH, HEIGHT);	
-    img_data = mlx_get_data_addr(img_ptr, &bpp, &size_line, &(int){0});
-	t_point **pt_arr_sav = pt_arr;
-	if (p_cpy)
-		p_cpy_sav = p_cpy;
+    img_data = mlx_get_data_addr(img_ptr, &bpp, &size_line, &(int){0});	
+	int len = get_line_length(pt_arr);
 	while (*pt_arr)
-	{
-		if ((*pt_arr)->new_vect[0] + truc >= 0 && (*pt_arr)->new_vect[0] + truc < WIDTH  
-		&& (*pt_arr)->new_vect[1] + truc >= 0 && (*pt_arr)->new_vect[1] + truc < HEIGHT && (!p_cpy || (*p_cpy)->new_vect[2] <= 0))
-		{			
-			pxl_pos = (((*pt_arr)->new_vect[1] + truc) * size_line) + (((*pt_arr)->new_vect[0] + truc) * (bpp / 8));				
-			*(int *) (img_data + pxl_pos) = 0xFFFFFFFF;					
-		}
+	{					
+		if ((*pt_arr)->line < 2 && (!p_cpy || (*p_cpy)->new_vect[2] <= 0 && (*(p_cpy + len))->new_vect[2] <= 0))		
+			draw_line((*pt_arr)->new_vect[0], (*pt_arr)->new_vect[1], (*pt_arr)->new_vect[2], (*(pt_arr + len))->new_vect[0], (*(pt_arr + len))->new_vect[1], img_data, bpp, size_line);
+		if ((!(*pt_arr)->line || (*pt_arr)->line == 2) && (!p_cpy || (*p_cpy)->new_vect[2] <= 0 && (*(p_cpy + 1))->new_vect[2] <= 0))
+			draw_line((*pt_arr)->new_vect[0], (*pt_arr)->new_vect[1], (*pt_arr)->new_vect[2], (*(pt_arr + 1))->new_vect[0], (*(pt_arr + 1))->new_vect[1], img_data, bpp, size_line);
+		if ((*pt_arr)->line == 1)
+			len = get_line_length(pt_arr + 1);		
 		if (p_cpy)
 			p_cpy++;
-		pt_arr++;
-	}	
-	int len = get_line_length(pt_arr_sav);// printf("%d\n", len);
-	while (*pt_arr_sav)
-	{
-					
-		if ((*pt_arr_sav)->line < 2 && (!p_cpy || (*p_cpy_sav)->new_vect[2] <= 0 && (*(p_cpy_sav + len))->new_vect[2] <= 0))// && get_line_length(pt_arr_sav + 1) >= )		
-			draw_line((*pt_arr_sav)->new_vect[0], (*pt_arr_sav)->new_vect[1], (*pt_arr_sav)->new_vect[2], (*(pt_arr_sav + len))->new_vect[0], (*(pt_arr_sav + len))->new_vect[1], img_data, bpp, size_line);
-		if ((!(*pt_arr_sav)->line || (*pt_arr_sav)->line == 2) && (!p_cpy || (*p_cpy_sav)->new_vect[2] <= 0 && (*(p_cpy_sav + 1))->new_vect[2] <= 0))
-			draw_line((*pt_arr_sav)->new_vect[0], (*pt_arr_sav)->new_vect[1], (*pt_arr_sav)->new_vect[2], (*(pt_arr_sav + 1))->new_vect[0], (*(pt_arr_sav + 1))->new_vect[1], img_data, bpp, size_line);
-		if ((*pt_arr_sav)->line == 1)
-			len = get_line_length(pt_arr_sav + 1);	
-		
-		// if ((*pt_arr_sav)->line)
-		//  	len = get_line_length(pt_arr_sav + 1);
-		if (p_cpy)
-			p_cpy_sav++;
-		pt_arr_sav++;	
+		pt_arr++;	
 	}
 	mlx_put_image_to_window(mlx_connect, mlx_window, img_ptr, 0, 0);
 	mlx_destroy_image(mlx_connect, img_ptr);
