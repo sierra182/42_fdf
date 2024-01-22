@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/22 09:00:04 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/22 10:16:43 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -754,8 +754,8 @@ int	loop(t_point **pt_arr)
 int key_press_function(int keycode)
 {
 	flag = 1;
-    printf("touche ton boyo: %d\n", keycode);
-	printf("scale z: %f, tz: %f, per: %f, z_near:%f, z_far:%f\n", scale_z, tz, per, z_nr, z_fr);
+   // printf("touche ton boyo: %d\n", keycode);
+//	printf("scale z: %f, tz: %f, per: %f, z_near:%f, z_far:%f\n", scale_z, tz, per, z_nr, z_fr);
 	if (keycode == 121)
 		y++;
 	else if (keycode == 117)
