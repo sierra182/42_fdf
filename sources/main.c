@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/21 23:33:34 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/22 09:00:04 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -418,7 +418,7 @@ void	add_background(void)
 	}
 }
 
-void	print_img(t_point **pt_arr, t_point **p_cpy)
+void	print_img(t_point **pt_arr, int	per)
 {
 	void	*img_ptr;
 	int		len;
@@ -429,17 +429,15 @@ void	print_img(t_point **pt_arr, t_point **p_cpy)
 	len = get_line_length(pt_arr);//!!
 	while (*pt_arr)
 	{
-		if ((*pt_arr)->line < 2 && (!p_cpy || ((*p_cpy)->new_vect[2] <= 0
-				&& (*(p_cpy + len))->new_vect[2] <= 0)))
+		if ((*pt_arr)->line < 2 && (!per || ((*pt_arr)->init_vect[2] <= 0
+				&& (*(pt_arr + len))->init_vect[2] <= 0)))
 			draw_line((*pt_arr)->new_vect, (*(pt_arr + len))->new_vect);
-		if ((!(*pt_arr)->line || (*pt_arr)->line == 2) && (!p_cpy
-				|| ((*p_cpy)->new_vect[2] <= 0
-				&& (*(p_cpy + 1))->new_vect[2] <= 0)))
+		if ((!(*pt_arr)->line || (*pt_arr)->line == 2) && (!per
+				|| ((*pt_arr)->init_vect[2] <= 0
+				&& (*(pt_arr + 1))->init_vect[2] <= 0)))
 			draw_line((*pt_arr)->new_vect, (*(pt_arr + 1))->new_vect);
 		if ((*pt_arr)->line == 1)
-			len = get_line_length(pt_arr + 1);
-		if (p_cpy)
-			p_cpy++;
+			len = get_line_length(pt_arr + 1);	
 		pt_arr++;
 	}
 	mlx_put_image_to_window(mlx_connect, mlx_window, img_ptr, 0, 0);
@@ -715,14 +713,14 @@ int	loop(t_point **pt_arr)
 		//multiply_matrix(m_scl, m_trs_cntr, m_fnl);
 		apply_matrix(m_fnl, p_cpy);	
 		homogenize_pt_arr(p_cpy);
-		t_point **cpy = copy_points(p_cpy);
-		save_new_vect(cpy);
+	//	t_point **cpy = copy_points(p_cpy);
+		save_new_vect(p_cpy);
 		// set_matrix_translate(m_trs_ori2, (double []) {-get_average(cpy, 0), 
 		// 											-get_average(cpy, 1), 
 		// 												-get_average(cpy, 2)}); 
 		
 		multiply_matrix(m_trs_cntr, m_scl3, m_fnl);
-		apply_matrix(m_fnl, cpy);	
+		apply_matrix(m_fnl, p_cpy);	
 		// t_point **cpy2 = copy_points(cpy);
 		// save_new_vect(cpy2);
 		// apply_matrix(m_scl, cpy2);	
@@ -738,8 +736,8 @@ int	loop(t_point **pt_arr)
 		
 		
 	//	apply_matrix(m_map, fil); 
-		print_img(cpy, p_cpy);
-		free_ptr_arr((void *) cpy);
+		print_img(p_cpy, 1);
+	//	free_ptr_arr((void *) cpy);
 		free_ptr_arr((void *) p_cpy);
 		return (0);
 	}
@@ -747,7 +745,8 @@ int	loop(t_point **pt_arr)
 	multiply_matrix(m_trs_cntr, m_fnl, m_fnl_tmp);
 	apply_matrix(m_fnl_tmp, p_cpy);	
 	//print_pt_arr(cpy);
-	print_img(p_cpy, NULL);
+	print_img(p_cpy, 0);
+	free_ptr_arr((void *) p_cpy);
 	flag = 0;
 	return (0);
 }
