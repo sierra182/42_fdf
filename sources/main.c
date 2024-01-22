@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/22 16:07:21 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/22 17:53:59 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -537,19 +537,19 @@ typedef struct s_matrix
 typedef struct s_event
 {
 	int 	flag;
-	double	x;// = 0.0;
-	double 	y;// = 0.0;
-	double 	z;// = 0.0;
+	double	rx;// = 0.0;
+	double 	ry;// = 0.0;
+	double 	rz;// = 0.0;
 	double 	tx;// = 0.0;
 	double 	ty;// = 0.0;
 	double 	tz;// = -HEIGHT / 1.5;
-	double	scale;
-	double 	scale_z;// = 1.0;
-	double 	scale_end;// = 1.0;
-	double 	per;// = 0.0;
-	double 	z_nr;// = 1.0;
-	double 	z_fr;// = 100.0;
-} t_event;
+	double	scl;
+	double 	scl_z;// = 1.0;
+	double 	scl_end;// = 1.0;
+	double 	persp;// = 0.0;
+	double 	znr;// = 1.0;
+	double 	zfr;// = 100.0;
+} 	t_event;
 
 // void	reset(void)
 // {	
@@ -569,21 +569,24 @@ typedef struct s_event
 int	loop(void *param[])
 {	
 	t_point **pt_arr;
+	t_event *event;
 	t_mtx *mtx; 
 	
-	pt_arr = (t_point **) param[0];
-	mtx = (t_point *) param[1];
-	if (!flag)
+	event = (t_event *) param[2];
+	if (!event->flag)
 		return 0;
+	pt_arr = (t_point **) param[0];
+	mtx = (t_mtx *) param[1];
+	
 	usleep(16670);
-	set_matrix_scale(mtx->scl, (double[]){scale, scale, scale});
-	set_matrix_scale(mtx->scl2, (double[]){1, 1, scale_z});
-	set_matrix_scale(mtx->scl3, (double[]){scale_end, scale_end, scale_end});
-	set_matrix_rotation(mtx->rtt_y, y, (int []) {0, 1, 0});
-	set_matrix_rotation(mtx->rtt_x, x, (int []) {1, 0, 0});
-	set_matrix_rotation(mtx->rtt_z, z, (int []) {0, 0, 1});
-	set_matrix_translate(mtx->trs_lp, (double []) {tx, ty, tz});
-	set_matrix_persp(mtx->persp, per, WIDTH / HEIGHT, z_nr, z_fr);
+	set_matrix_scale(mtx->scl, (double[]){event->scl, event->scl, event->scl});
+	set_matrix_scale(mtx->scl2, (double[]){1, 1, event->scl_z});
+	set_matrix_scale(mtx->scl3, (double[]){event->scl_end, event->scl_end, event->scl_end});
+	set_matrix_rotation(mtx->rtt_x, event->rx, (int []) {1, 0, 0});
+	set_matrix_rotation(mtx->rtt_y, event->ry, (int []) {0, 1, 0});
+	set_matrix_rotation(mtx->rtt_z, event->rz, (int []) {0, 0, 1});
+	set_matrix_translate(mtx->trs_lp, (double []) {event->tx, event->ty, event->tz});
+	set_matrix_persp(mtx->persp, event->persp, WIDTH / HEIGHT, event->znr, event->zfr);
 	set_matrix_translate(mtx->trs_cntr, (double []) {WIDTH / 2.0, HEIGHT / 2.0, HEIGHT / 1.5});	
 	apply_matrix(mtx->scl2, pt_arr);
 	t_point **p_cpy = copy_points(pt_arr);
@@ -595,7 +598,7 @@ int	loop(void *param[])
 	multiply_matrix(mtx->fnl, mtx->scl, mtx->fnl_tmp);
 	multiply_matrix(mtx->fnl_tmp, mtx->trs_ori, mtx->fnl);
 	multiply_matrix(mtx->fnl, mtx->neutral, mtx->fnl_tmp);
-	if (per)	
+	if (event->persp)	
 	{
 		multiply_matrix(mtx->persp, mtx->fnl_tmp, mtx->fnl);	
 		apply_matrix(mtx->fnl, p_cpy);	
@@ -612,8 +615,25 @@ int	loop(void *param[])
 	apply_matrix(mtx->fnl_tmp, p_cpy);		
 	print_img(p_cpy, 0);
 	free_ptr_arr((void *) p_cpy);
-	flag = 0;
+	event->flag = 0;
 	return (0);
+}
+
+void	init_event(t_event *event, t_point **pt_arr)
+{
+	event->flag = 1;	
+	event->rx = 0.0;
+	event->ry = 0.0;
+	event->rz = 0.0;
+	event->tx = 0.0;
+	event->ty = 0.0;
+	event->tz = -HEIGHT / 1.5;
+	event->scl = get_initial_scale(pt_arr);
+	event->scl_z = 1.0;
+	event->scl_end = 1.0;
+	event->persp = 0.0;
+	event->znr = 1.0;
+	event->zfr = 100.0;
 }
 
 int key_press(int keycode, void *param[])
@@ -621,35 +641,35 @@ int key_press(int keycode, void *param[])
 	t_event *event; 
 	t_point **pt_arr;
 	
-//    printf("touche ton boyo: %d\n", keycode);
+    printf("touche ton boyo: %d\n", keycode);
 	pt_arr = (t_point **) param[1];
-	event = (t_point *) param[0];
+	event = (t_event *) param[0];
 	event->flag = 1;
 
 	if (keycode == 120)
-		event->x++;
+		event->rx++;
 	else if (keycode == 99)
-		event->x--;
+		event->rx--;
 	else if (keycode == 121)
-		event->y++;
+		event->ry++;
 	else if (keycode == 117)
-		event->y--;	
+		event->ry--;	
 	else if (keycode == 122)
-		event->z++;
+		event->rz++;
 	else if (keycode == 97)
-		event->z--;
+		event->rz--;
 	else if (keycode == 65432)
-		event->scale_end += 0.1;
+		event->scl_end += 0.1;
 	else if (keycode == 65430)
-		event->scale_end -= 0.1;
+		event->scl_end -= 0.1;
 	else if (keycode == 115)
-		event->scale += 1;
+		event->scl += 1;
 	else if (keycode == 100)
-		event->scale -= 1;
+		event->scl -= 1;
 	else if (keycode == 102)
-		event->scale_z += .1;
+		event->scl_z += .1;
 	else if (keycode == 103)
-		event->scale_z -= .1;
+		event->scl_z -= .1;
 	else if (keycode == 65361)
 		event->tx += 10;
 	else if (keycode == 65363)
@@ -663,17 +683,17 @@ int key_press(int keycode, void *param[])
 	else if (keycode == 65438)
 		event->tz -= 2;
 	else if (keycode == 112)
-		event->per++;
+		event->persp++;
 	else if (keycode == 109)
-		event->per--;
+		event->persp--;
 	else if (keycode == 65431)
-		event->z_nr++;
+		event->znr++;
 	else if (keycode == 65433)
-		event->z_nr--;
+		event->znr--;
 	else if (keycode == 65432)
-		event->z_fr++;
+		event->zfr++;
 	else if (keycode == 65430)
-		event->z_fr--;
+		event->zfr--;
 	else if (keycode == 114)
 		init_event(event, pt_arr);
 	else if (keycode == 65307)
@@ -686,25 +706,9 @@ int	clean_kill(t_point **pt_arr)
 	free_ptr_arr((void **) pt_arr);
 	mlx_destroy_window(mlx_connect, mlx_window);
 	mlx_destroy_display(mlx_connect);
-	free(mlx_connect);
-	exit(0);
+	free(mlx_connect);	
 }
-void	init_event(t_event *event, t_point **pt_arr)
-{
-	event->flag = 1;	
-	event->x = 0.0;
-	event->y = 0.0;
-	event->z = 0.0;
-	event->tx = 0.0;
-	event->ty = 0.0;
-	event->tz = -HEIGHT / 1.5;
-	event->scale = get_initial_scale(pt_arr);
-	event->scale_z = 1.0;
-	event->scale_end = 1.0;
-	event->per = 0.0;
-	event->z_nr = 1.0;
-	event->z_fr = 100.0;
-}
+
 
 void	global_matrix(t_point **pt_arr)
 {	
@@ -728,9 +732,9 @@ void	global_matrix(t_point **pt_arr)
 	set_matrix_translate(mtx.trs_ori, (double []) {-get_average(pt_arr, 0), 
 													-get_average(pt_arr, 1), 
 														-get_average(pt_arr, 2)}); 
-	mlx_hook(mlx_window, 2, 1L << 0, key_press, NULL);	
+	mlx_hook(mlx_window, 2, 1L << 0, key_press, (void *[]){pt_arr, &mtx, &event});	
 	mlx_hook(mlx_window, 17, 0L, mlx_loop_end, mlx_connect);	
-	mlx_loop_hook(mlx_connect, loop, (void *[]){pt_arr, &mtx});
+	mlx_loop_hook(mlx_connect, loop, (void *[]){pt_arr, &mtx, &event});
 	mlx_loop(mlx_connect);
 }
 
@@ -747,8 +751,7 @@ int	main(int argc, char *argv[])
 	mlx_window = mlx_new_window(mlx_connect, WIDTH, HEIGHT, "fdf");
 	if (!mlx_window)
 		return (free_ptr_arr((void **) pt_arr),
-			mlx_destroy_display(mlx_connect), free(mlx_connect), 1);
-	
+			mlx_destroy_display(mlx_connect), free(mlx_connect), 1);	
 	global_matrix(pt_arr);
 	clean_kill(pt_arr);
 	return (0);
