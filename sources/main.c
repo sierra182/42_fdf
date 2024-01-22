@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
+/*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/22 10:16:43 by svidot           ###   ########.fr       */
+/*   Updated: 2024/01/22 10:56:57 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -323,16 +323,10 @@ void	draw_line_action(t_draw_act *act)
 			act->opp_pos += act->opp_dir;
 			error += act->greater_delta * 2;
 		}
-		if (!act->flag)
-		{
+		if (!act->flag)		
 			put_pxl(act->pos, act->opp_pos, act->z);
-			//put_pxl(act->pos + 1, act->opp_pos + 1, act->z);			
-		}
-		else
-		{
-			put_pxl(act->opp_pos, act->pos, act->z);			
-			//put_pxl(act->opp_pos + 1, act->pos + 1, act->z);		
-		}
+		else		
+			put_pxl(act->opp_pos, act->pos, act->z);
 		error -= act->lower_delta * 2;
 	}
 }
@@ -471,33 +465,24 @@ void	save_new_vect(t_point **pt_arr)
 }
 t_point **copy_points(t_point **pt_arr)
 {
-	int		i;	
 	t_point **copy;
-	t_point **pt_arr_sav = pt_arr;
-	
+	int		i;
+	int		j;
+
 	i = 0;
-	while (*pt_arr)
-	{
-		i++;
-		pt_arr++;
-	}
-	pt_arr = pt_arr_sav;
+	while (pt_arr[i])	
+		i++;	
 	copy = (t_point **) ft_calloc(i + 1, sizeof(t_point *));
 	i = 0;
-	while (*pt_arr)
+	while (pt_arr[i])
 	{
-		copy[i] = malloc(sizeof(t_point));
-		copy[i]->init_vect[0] = (*pt_arr)->init_vect[0];
-		copy[i]->init_vect[1] = (*pt_arr)->init_vect[1];
-		copy[i]->init_vect[2] = (*pt_arr)->init_vect[2];
-		copy[i]->init_vect[3] = (*pt_arr)->init_vect[3];
-		copy[i]->new_vect[0] = (*pt_arr)->new_vect[0];
-		copy[i]->new_vect[1] = (*pt_arr)->new_vect[1];
-		copy[i]->new_vect[2] = (*pt_arr)->new_vect[2];
-		copy[i]->new_vect[3] = (*pt_arr)->new_vect[3];
-		copy[i]->line = (*pt_arr)->line;
-		i++;
-		pt_arr++;
+		copy[i] = malloc(sizeof(t_point));	
+		copy[i]->init_vect[3] =  1 ;
+		j = -1;
+		while (++j < MTX)		
+			copy[i]->new_vect[j] = pt_arr[i]->new_vect[j];
+		copy[i]->line = pt_arr[i]->line;
+		i++;		
 	}
 	return (copy);
 }
@@ -595,7 +580,7 @@ void	homogenize_pt_arr(t_point **pt_arr)
 	{
 		i = 0;
 		if ((*pt_arr)->new_vect[MTX - 1]) 
-			while (i < 2) //- 1)			
+			while (i < 2)			
 				(*pt_arr)->new_vect[i++] /= (*pt_arr)->new_vect[MTX - 1];
 		pt_arr++;
 	}
