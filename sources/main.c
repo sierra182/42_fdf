@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/22 19:30:36 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/22 20:11:42 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -349,13 +349,13 @@ int 	get_line_length(t_point **pt_arr)
 int 	get_n_line(t_point **pt_arr)
 {
 	int	n;
-	
+
 	n = 0;
 	if (!*pt_arr)
 		return (n);
-	while (*pt_arr)	
+	while (*pt_arr)
 		if ((*pt_arr++)->line == 1)
-			n++;	
+			n++;
 	return (++n);
 }
 void	add_background(int x, int y)
@@ -370,7 +370,7 @@ void	add_background(int x, int y)
 	{	
 		y = -1;
 		while (++y < HEIGHT)
-		{		
+		{
 			pxl_pos = x * bpp / 8 + y * size_line;
 			*(int *)(img_data + pxl_pos) = 0x373224;
 		}
@@ -485,21 +485,19 @@ void	homogenize_pt_arr(t_point **pt_arr)
 
 #include <unistd.h>
 
-
-
 int	loop(void *param[])
 {	
 	t_point **pt_arr;
 	t_event *event;
 	t_mtrx 	*mtrx; 
 		
+	usleep(16670);
 	event = (t_event *) param[2];
 	if (!event->flag)
 		return 0;
 	pt_arr = (t_point **) param[0];
 	mtrx = (t_mtrx *) param[1];
 		
-	usleep(16670);
 	set_matrix_scale(mtrx->scl, (double[]){event->scl, event->scl, event->scl});
 	set_matrix_scale(mtrx->scl2, (double[]){1, 1, event->scl_z});
 	set_matrix_scale(mtrx->scl3, (double[]){event->scl_end, event->scl_end, event->scl_end});
@@ -628,7 +626,7 @@ int	clean_kill(t_point **pt_arr, t_mlx *mlx)
 	free(mlx->connect);	
 }
 
-void	global_matrix(t_point **pt_arr, t_mlx *mlx)
+void	launch_matrix(t_point **pt_arr, t_mlx *mlx)
 {	
 	t_mtrx 	mtrx;
 	t_event event;
@@ -670,7 +668,7 @@ int	main(int argc, char *argv[])
 	if (!mlx.window)
 		return (free_ptr_arr((void **) pt_arr),
 			mlx_destroy_display(mlx.connect), free(mlx.connect), 1);	
-	global_matrix(pt_arr, &mlx);
+	launch_matrix(pt_arr, &mlx);
 	clean_kill(pt_arr, &mlx);
 	return (0);
 }
