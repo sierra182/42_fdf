@@ -6,15 +6,16 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/08 21:40:01 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 11:29:43 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 12:02:52 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-//#include <unistd.h>
+#include <unistd.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include "get_next_line.h"
-//#include "ft_printf.h"
+#include "setup.h"
+#include "ft_printf.h"
 #include "libft.h"
 //#include "setup.h"//
 

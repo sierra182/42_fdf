@@ -6,9 +6,13 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 11:16:46 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 11:16:48 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 12:15:07 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "setup.h"
+#include "libft.h"
+#include <stdlib.h>
 
 void	save_new_vect(t_point **pt_arr)
 {	

@@ -6,15 +6,15 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/23 11:24:50 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 12:02:17 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-//#include <stdlib.h>
+#include <stdlib.h>
 //#include "ft_printf.h"
 #include "libft.h"
 #include "mlx.h"
-//#include "setup.h"//
+#include "setup.h"
 //#include <unistd.h>
 
 

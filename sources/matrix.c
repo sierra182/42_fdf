@@ -6,10 +6,11 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:11:11 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 10:27:14 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 12:00:35 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "setup.h"
 void	init_matrix(double matrix[][MTX])
 {
 	int	i;

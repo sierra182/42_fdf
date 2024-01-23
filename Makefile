@@ -24,7 +24,9 @@ CFLAGS = -I$(LIBFT_DIR) -I$(GNL_DIR) -I$(FT_PRINTF_DIR) -I$(HEADERS_DIR) -I$(MLX
 LDFLAGS = -L$(MLX) -lmlx_Linux -lXext -lX11 -lm -lz
 #CFLAGS_BONUS = -I$(GNL_DIR)
 
-SOURCES = $(SRC_DIR)/main.c $(SRC_DIR)/setup.c $(GNL_DIR)/get_next_line.c $(GNL_DIR)/get_next_line_utils.c
+SOURCES = $(SRC_DIR)/main.c $(SRC_DIR)/setup.c $(GNL_DIR)/get_next_line.c $(GNL_DIR)/get_next_line_utils.c \
+$(SRC_DIR)/draw_line.c $(SRC_DIR)/event.c $(SRC_DIR)/loop.c $(SRC_DIR)/matrix.c $(SRC_DIR)/pixels.c \
+$(SRC_DIR)/points.c $(SRC_DIR)/set_matrix.c $(SRC_DIR)/utils.c
 #SOURCES_BONUS = 
 
 OBJECTS = $(SOURCES:.c=.o)

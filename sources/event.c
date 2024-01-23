@@ -6,10 +6,12 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:05:15 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 11:09:37 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 12:08:23 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "setup.h"
+#include "mlx.h"
 double	get_initial_scale(t_point **pt_arr);
 
 void	init_event(t_event *event, t_point **pt_arr)

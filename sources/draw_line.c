@@ -6,11 +6,12 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:07:04 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 11:10:02 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 12:00:11 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 void	put_pxl(int x, int y, int z);
+#include "setup.h"
 
 static void	draw_line_action(t_draw_act *act)
 {

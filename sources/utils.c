@@ -6,9 +6,11 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:15:33 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 10:44:32 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 12:01:14 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "setup.h"
 
 int 	get_line_length(t_point **pt_arr)
 {
@@ -34,6 +36,7 @@ static int 	get_n_line(t_point **pt_arr)
 			n++;
 	return (++n);
 }
+
 double	get_average(t_point **pt_arr, int axe)
 {
 	double	sum;
