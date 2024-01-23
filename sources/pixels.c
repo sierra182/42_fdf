@@ -6,16 +6,11 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:18:16 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 12:12:50 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 12:23:44 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "setup.h"
-#include "mlx.h"
-#include <unistd.h>
-
-void	draw_line(double *vct, double *vct_prm);
-int 	get_line_length(t_point **pt_arr);
+#include "pixels.h"
 
 static void	img_data_handle(void *img_ptr, char	**img_data, int *size_l, int *bpp)
 {
