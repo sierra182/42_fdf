@@ -17,44 +17,52 @@ SRC_DIR = sources
 HEADERS_DIR = include
 MLX = mlx_linux
 BONUS_DIR = bonus
-SRCS_BONUS_DIR = $(BONUS_DIR)/sources
+SRC_BONUS_DIR = $(BONUS_DIR)/sources
 
 CC = cc
-CFLAGS = -I$(LIBFT_DIR) -I$(GNL_DIR) -I$(FT_PRINTF_DIR) -I$(HEADERS_DIR) -I$(MLX) -O3 -Wall -Wextra -Werror 
+CFLAGS = -I$(LIBFT_DIR) -I$(GNL_DIR) -I$(FT_PRINTF_DIR) -I$(HEADERS_DIR) -I$(MLX) -O3 -Wall -Wextra -Werror
 LDFLAGS = -L$(MLX) -lmlx_Linux -lXext -lX11 -lm -lz
-#CFLAGS_BONUS = 
+#CFLAGS_BONUS =
 
 SOURCES = $(SRC_DIR)/main.c $(SRC_DIR)/setup.c $(GNL_DIR)/get_next_line.c $(GNL_DIR)/get_next_line_utils.c \
 $(SRC_DIR)/draw_line.c $(SRC_DIR)/event.c $(SRC_DIR)/loop.c $(SRC_DIR)/matrix.c $(SRC_DIR)/pixels.c \
 $(SRC_DIR)/points.c $(SRC_DIR)/set_matrix.c $(SRC_DIR)/utils.c
-#SOURCES_BONUS = 
+
+SOURCES_BONUS = $(SRC_BONUS_DIR)/main.c $(SRC_BONUS_DIR)/setup.c $(GNL_DIR)/get_next_line.c $(GNL_DIR)/get_next_line_utils.c \
+$(SRC_BONUS_DIR)/draw_line.c $(SRC_BONUS_DIR)/event.c $(SRC_BONUS_DIR)/loop.c $(SRC_BONUS_DIR)/matrix.c $(SRC_BONUS_DIR)/pixels.c \
+$(SRC_BONUS_DIR)/points.c $(SRC_BONUS_DIR)/set_matrix.c $(SRC_BONUS_DIR)/utils.c
 
 OBJECTS = $(SOURCES:.c=.o)
 OBJECTS_BONUS = $(SOURCES_BONUS:.c=_bonus.o)
 
 LIBFTPRINTF = $(FT_PRINTF_DIR)/libftprintf.a
 NAME = fdf
-#NAME_BONUS = $(BONUS_DIR)/$(NAME)
+NAME_BONUS = $(BONUS_DIR)/$(NAME)
 
-HEADER = $(GNL_DIR)/get_next_line.h 
-#HEADERS_BONUS = $(GNL_DIR)/get_next_line.h 
+HEADERS = $(GNL_DIR)/get_next_line.h $(HEADERS_DIR)/main.h $(HEADERS_DIR)/loop.h $(HEADERS_DIR)/pixels.h $(HEADERS_DIR)/setup.h
+#HEADERS_BONUS = 
 
 .PHONY: all ft_printf bonus clean fclean re intro l newline backline emoticon
 
-$(SRC_DIR)/%.o : $(SRC_DIR)/%.c $(LIBFTPRINTF) $(HEADER)
+$(SRC_DIR)/%.o : $(SRC_DIR)/%.c $(LIBFTPRINTF) $(HEADERS)
 	@echo "\033[0;32m compiling $(NAME) object $<...\033[0m" 🚀
 	@$(CC) $(CFLAGS) $< -c -o $@
 
-$(GNL_DIR)/%.o : $(GNL_DIR)/%.c $(HEADER)
+$(GNL_DIR)/%.o : $(GNL_DIR)/%.c $(HEADERS)
 	@echo "\033[0;32m compiling $(NAME) object $<...\033[0m" 🚀
 	@$(CC) $(CFLAGS) $< -c -o $@
-#$(BONUS_DIR)/%_bonus.o : $(BONUS_DIR)/%.c $(LIBFTPRINTF) $(HEADER) $(HEADERS_BONUS)
-#	@echo "\033[0;32m compiling $(NAME) object bonus $<...\033[0m" 🚀
-#	@$(CC) $(CFLAGS) $(CFLAGS_BONUS) $< -c -o $@	
+
+$(BONUS_DIR)/%_bonus.o : $(BONUS_DIR)/%.c $(LIBFTPRINTF) $(HEADERS) 
+	@echo "\033[0;32m compiling $(NAME) object bonus $<...\033[0m" 🚀
+	@$(CC) $(CFLAGS) $(CFLAGS_BONUS) $< -c -o $@
+
+$(GNL_DIR)/%_bonus.o : $(GNL_DIR)/%.c $(HEADERS)
+	@echo "\033[0;32m compiling $(NAME) object bonus $<...\033[0m" 🚀
+	@$(CC) $(CFLAGS) $< -c -o $@
 
 all: intro ft_printf $(NAME) emoticon		
 
-l: ft_printf $(NAME) 
+l: ft_printf $(NAME)
 	
 ft_printf: emoticon
 #	@$(MAKE) -s -C $(LIBFT_DIR) bonus 
@@ -67,9 +75,9 @@ $(NAME) : $(OBJECTS)
 bonus: ft_printf $(NAME_BONUS)
 	@echo " 💎 🧯 🔥 😵\n"
 
-#$(NAME_BONUS) : $(OBJECTS_BONUS)
-#	@echo "\n\033[0;32m linking $(NAME) objects with flag and objects bonus with $(LIBFTPRINTF) to $(NAME_BONUS) \033[0m 🚀\n"
-#	@$(CC) $(OBJECTS_BONUS) $(LIBFTPRINTF) -o $@
+$(NAME_BONUS) : $(OBJECTS_BONUS)
+	@echo "\n\033[0;32m linking $(NAME) objects and objects bonus with $(LIBFTPRINTF) to $(NAME_BONUS) \033[0m 🚀\n"
+	@$(CC) $(OBJECTS_BONUS) $(LDFLAGS) $(LIBFTPRINTF) -o $@
 
 emoticon:
 	@echo "\n 💗 😀 😃 😍\n"
