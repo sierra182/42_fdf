@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/22 22:47:06 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 09:02:20 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -571,15 +571,24 @@ void	init_event(t_event *event, t_point **pt_arr)
 	event->znr = 1.0;
 	event->zfr = 100.0;
 }
-
-int key_press(int keycode, void *param[])
+void key_press3(int keycode, t_event *event)
 {
-	t_event *event; 
-		
-    //printf("touche ton boyo: %d\n", keycode);	
-	event = (t_event *) param[1];
-	event->flag = 1;
+	if (keycode == 112)
+		event->persp++;
+	else if (keycode == 109)
+		event->persp--;
+	else if (keycode == 65431)
+		event->znr++;
+	else if (keycode == 65433)
+		event->znr--;
+	else if (keycode == 65432)
+		event->zfr++;
+	else if (keycode == 65430)
+		event->zfr--;
+}
 
+void key_press2(int keycode, t_event *event)
+{
 	if (keycode == 120)
 		event->rx++;
 	else if (keycode == 99)
@@ -592,18 +601,6 @@ int key_press(int keycode, void *param[])
 		event->rz++;
 	else if (keycode == 97)
 		event->rz--;
-	else if (keycode == 65432)
-		event->scl_end += 0.1;
-	else if (keycode == 65430)
-		event->scl_end -= 0.1;
-	else if (keycode == 115)
-		event->scl += 1;
-	else if (keycode == 100)
-		event->scl -= 1;
-	else if (keycode == 102)
-		event->scl_z += 0.1;
-	else if (keycode == 103)
-		event->scl_z -= 0.1;
 	else if (keycode == 65361)
 		event->tx += 10;
 	else if (keycode == 65363)
@@ -616,18 +613,27 @@ int key_press(int keycode, void *param[])
 		event->tz += 2;
 	else if (keycode == 65438)
 		event->tz -= 2;
-	else if (keycode == 112)
-		event->persp++;
-	else if (keycode == 109)
-		event->persp--;
-	else if (keycode == 65431)
-		event->znr++;
-	else if (keycode == 65433)
-		event->znr--;
-	else if (keycode == 65432)
-		event->zfr++;
+}
+int key_press(int keycode, void *param[])
+{
+	t_event *event; 		
+    //printf("touche ton boyo: %d\n", keycode);	
+	event = (t_event *) param[1];
+	event->flag = 1;
+	key_press2(keycode, event);
+	key_press3(keycode, event);
+	if (keycode == 65432)
+		event->scl_end += 0.1;
 	else if (keycode == 65430)
-		event->zfr--;
+		event->scl_end -= 0.1;
+	else if (keycode == 115)
+		event->scl += 1;
+	else if (keycode == 100)
+		event->scl -= 1;
+	else if (keycode == 102)
+		event->scl_z += 0.1;
+	else if (keycode == 103)
+		event->scl_z -= 0.1;
 	else if (keycode == 114)
 		init_event(event, (t_point **) param[0]);
 	else if (keycode == 65307)
