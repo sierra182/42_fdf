@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:18:16 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 13:13:07 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 19:58:12 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,31 +30,14 @@ static void	img_data_handle(void *img_ptr, char	**img_data, int *size_l,
 	}
 }
 
-static unsigned int	get_final_color(int *start, int *end, int z)
+static unsigned int	get_final_color(int z)
 {
-	float	factor;
-	int		r;
-	int		g;
-	int		b;
-
-	factor = (float)(z - 50) / (0 - 50);
-	r = start[0] + factor * (end[0] - start[0]);
-	g = start[1] + factor * (end[1] - start[1]);
-	b = start[2] + factor * (end[2] - start[2]);
-	if (r < 0)
-		r = 0;
-	else if (r > 255)
-		r = 255;
-	if (g < 0)
-		g = 0;
-	else if (g > 255)
-		g = 255;
-	if (b < 0)
-		b = 0;
-	else if (b > 255)
-		b = 255;
-	return (r << 16 | g << 8 | b);
+	if (z > 5)
+		return (47 << 16 | 175 << 8 | 98);
+	else 
+		return (159 << 16 | 165 << 8 | 167);
 }
+
 
 void	put_pxl(int x, int y, int z)
 {
@@ -66,8 +49,7 @@ void	put_pxl(int x, int y, int z)
 
 	if (x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT)
 	{
-		final_color = get_final_color((int []){47, 175, 98},
-				(int []){159, 165, 167}, z);
+		final_color = get_final_color(z);
 		img_data_handle(NULL, &img_data, &size_line, &bpp);
 		pxl_pos = x * bpp / 8 + y * size_line;
 		*(int *)(img_data + pxl_pos) = final_color;

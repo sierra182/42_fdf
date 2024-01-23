@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:21:41 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 16:55:58 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 19:55:52 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,26 +38,18 @@ static void	set_matrix_transform(t_mtrx *mtrx, t_event *event)
 	set_matrix_persp(mtrx->persp, event->persp, WIDTH / HEIGHT);
 }
 
-static void	persp_handle(t_event *event, t_mtrx *mtrx, t_point **pt_cpy,
+static void	persp_handle(t_point **pt_arr, t_mtrx *mtrx, t_point **pt_cpy,
 t_mlx *mlx)
 {
-	if (event->persp)
-	{
-		multiply_matrix(mtrx->persp, mtrx->fnl, mtrx->fnl_tmp);
-		apply_matrix(mtrx->fnl_tmp, pt_cpy);
-		homogenize_pt_arr(pt_cpy);
-		save_new_vect(pt_cpy);
-		multiply_matrix(mtrx->trs_cntr, mtrx->scl3, mtrx->fnl_tmp);
-		apply_matrix(mtrx->fnl_tmp, pt_cpy);
-		print_img(pt_cpy, 1, mlx);
-	}
-	else
-	{
-		multiply_matrix(mtrx->scl3, mtrx->fnl, mtrx->fnl_tmp);
-		multiply_matrix(mtrx->trs_cntr, mtrx->fnl_tmp, mtrx->fnl);
-		apply_matrix(mtrx->fnl, pt_cpy);
-		print_img(pt_cpy, 0, mlx);
-	}
+	int	i;
+
+	multiply_matrix(mtrx->scl3, mtrx->fnl, mtrx->fnl_tmp);
+	multiply_matrix(mtrx->trs_cntr, mtrx->fnl_tmp, mtrx->fnl);
+	apply_matrix(mtrx->fnl, pt_cpy);
+	i = -1;
+	while (pt_arr[++i])
+		pt_cpy[i]->new_vect[3] = pt_arr[i]->init_vect[2];
+	print_img(pt_cpy, 0, mlx);	
 }
 
 int	loop(void *param[])
@@ -80,7 +72,7 @@ int	loop(void *param[])
 	pt_cpy = copy_points(pt_arr);
 	save_new_vect(pt_cpy);
 	set_multiply_matrix(mtrx);
-	persp_handle(event, mtrx, pt_cpy, param[3]);
+	persp_handle(pt_arr, mtrx, pt_cpy, param[3]);
 	free_ptr_arr((void *) pt_cpy);
 	event->flag = 0;
 	return (0);

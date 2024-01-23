@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:07:04 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 12:51:46 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 19:34:32 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,9 @@ void	draw_line(double *vct, double *vct_prm)
 	if (dx > dy)
 		draw_line_action(&(t_draw_act){.greater_delta = dx, .lower_delta = dy,
 			.pos = vct[0], .opp_pos = vct[1], .pos_prim = vct_prm[0],
-			.dir = h_dir, .opp_dir = v_dir, .z = vct[2], .flag = 0});
+			.dir = h_dir, .opp_dir = v_dir, .z = vct[3], .flag = 0});
 	else
 		draw_line_action(&(t_draw_act){.greater_delta = dy, .lower_delta = dx,
 			.pos = vct[1], .opp_pos = vct[0], .pos_prim = vct_prm[1],
-			.dir = v_dir, .opp_dir = h_dir, .z = vct[2], .flag = 1});
+			.dir = v_dir, .opp_dir = h_dir, .z = vct[3], .flag = 1});
 }
