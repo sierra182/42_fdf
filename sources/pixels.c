@@ -6,13 +6,14 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:18:16 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 12:23:44 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 13:13:07 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pixels.h"
 
-static void	img_data_handle(void *img_ptr, char	**img_data, int *size_l, int *bpp)
+static void	img_data_handle(void *img_ptr, char	**img_data, int *size_l,
+	int *bpp)
 {
 	static char	*img_data_lcl;
 	static int	size_l_lcl;
@@ -28,6 +29,7 @@ static void	img_data_handle(void *img_ptr, char	**img_data, int *size_l, int *bp
 		*bpp = bpp_lcl;
 	}
 }
+
 static unsigned int	get_final_color(int *start, int *end, int z)
 {
 	float	factor;
@@ -74,14 +76,14 @@ void	put_pxl(int x, int y, int z)
 
 static void	add_background(int x, int y)
 {
-	char			*img_data;
-	int				pxl_pos;
-	int				bpp;
-	int				size_line;
+	char	*img_data;
+	int		pxl_pos;
+	int		bpp;
+	int		size_line;
 
 	img_data_handle(NULL, &img_data, &size_line, &bpp);
 	while (++x < WIDTH)
-	{	
+	{
 		y = -1;
 		while (++y < HEIGHT)
 		{
@@ -91,13 +93,11 @@ static void	add_background(int x, int y)
 	}
 }
 
-
-
-void	print_img(t_point **pt_arr, int	per, t_mlx *mlx)
-{	
+void	print_img(t_point **pt_arr, int per, t_mlx *mlx)
+{
 	void	*img_ptr;
 	int		len;
-		
+
 	img_ptr = mlx_new_image(mlx->connect, WIDTH, HEIGHT);
 	img_data_handle(img_ptr, NULL, NULL, NULL);
 	add_background(-1, -1);
@@ -105,11 +105,11 @@ void	print_img(t_point **pt_arr, int	per, t_mlx *mlx)
 	while (*pt_arr)
 	{
 		if ((*pt_arr)->line < 2 && (!per || ((*pt_arr)->init_vect[2] <= 0
-				&& (*(pt_arr + len))->init_vect[2] <= 0)))
+					&& (*(pt_arr + len))->init_vect[2] <= 0)))
 			draw_line((*pt_arr)->new_vect, (*(pt_arr + len))->new_vect);
 		if ((!(*pt_arr)->line || (*pt_arr)->line == 2) && (!per
 				|| ((*pt_arr)->init_vect[2] <= 0
-				&& (*(pt_arr + 1))->init_vect[2] <= 0)))
+					&& (*(pt_arr + 1))->init_vect[2] <= 0)))
 			draw_line((*pt_arr)->new_vect, (*(pt_arr + 1))->new_vect);
 		if ((*pt_arr)->line == 1)
 			len = get_line_length(pt_arr + 1);
@@ -118,4 +118,3 @@ void	print_img(t_point **pt_arr, int	per, t_mlx *mlx)
 	mlx_put_image_to_window(mlx->connect, mlx->window, img_ptr, 0, 0);
 	mlx_destroy_image(mlx->connect, img_ptr);
 }
-

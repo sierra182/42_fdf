@@ -6,17 +6,18 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:05:15 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 12:08:23 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 12:55:42 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "setup.h"
 #include "mlx.h"
+
 double	get_initial_scale(t_point **pt_arr);
 
 void	init_event(t_event *event, t_point **pt_arr)
 {
-	event->flag = 1;	
+	event->flag = 1;
 	event->rx = 0.0;
 	event->ry = 0.0;
 	event->rz = 0.0;
@@ -30,7 +31,8 @@ void	init_event(t_event *event, t_point **pt_arr)
 	event->znr = 1.0;
 	event->zfr = 100.0;
 }
-static void key_press3(int keycode, t_event *event)
+
+static void	key_press3(int keycode, t_event *event)
 {
 	if (keycode == 112)
 		event->persp++;
@@ -46,7 +48,7 @@ static void key_press3(int keycode, t_event *event)
 		event->zfr--;
 }
 
-static void key_press2(int keycode, t_event *event)
+static void	key_press2(int keycode, t_event *event)
 {
 	if (keycode == 120)
 		event->rx++;
@@ -55,7 +57,7 @@ static void key_press2(int keycode, t_event *event)
 	else if (keycode == 121)
 		event->ry++;
 	else if (keycode == 117)
-		event->ry--;	
+		event->ry--;
 	else if (keycode == 122)
 		event->rz++;
 	else if (keycode == 97)
@@ -73,10 +75,11 @@ static void key_press2(int keycode, t_event *event)
 	else if (keycode == 65438)
 		event->tz -= 2;
 }
-int key_press(int keycode, void *param[])
+
+int	key_press(int keycode, void *param[])
 {
-	t_event *event; 		
-    //printf("touche ton boyo: %d\n", keycode);	
+	t_event	*event;
+
 	event = (t_event *) param[1];
 	event->flag = 1;
 	key_press2(keycode, event);
@@ -97,5 +100,5 @@ int key_press(int keycode, void *param[])
 		init_event(event, (t_point **) param[0]);
 	else if (keycode == 65307)
 		mlx_loop_end(param[2]);
-    return 0;
+	return (0);
 }

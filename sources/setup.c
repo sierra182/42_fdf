@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/08 21:40:01 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 12:02:52 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 13:26:09 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 #include "setup.h"
 #include "ft_printf.h"
 #include "libft.h"
-//#include "setup.h"//
 
 static int	fill_split(char **split_line, t_point ***pt_arr, int row)
 {
@@ -58,8 +57,8 @@ static int	fill_pt_arr(int fd, t_point **pt_arr, int row)
 			return (get_next_line(42), 1);
 		line = get_next_line(fd);
 		if (!line)
-		while (*(pt_arr - col))
-		 	(*(pt_arr++ - col))->line += 2;
+			while (*(pt_arr - col))
+				(*(pt_arr++ - col))->line += 2;
 	}
 	return (0);
 }

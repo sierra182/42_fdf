@@ -6,22 +6,22 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/08 07:55:53 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/22 19:13:04 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 12:35:55 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SETUP_H
 # define SETUP_H
 
-#define WIDTH 1400
-#define HEIGHT 787
-#define MTX 4
-#define M_PI 3.14159265358979323846 // flag math ...
+# define WIDTH 1400
+# define HEIGHT 787
+# define MTX 4
+# define M_PI 3.14159265358979323846
 
 typedef struct s_mlx
 {
-	void *connect;
-	void *window;
+	void	*connect;
+	void	*window;
 }	t_mlx;
 
 typedef struct s_point
@@ -32,7 +32,7 @@ typedef struct s_point
 }	t_point;
 
 typedef struct s_matrix
-{	
+{
 	double	neutral[MTX][MTX];
 	double	persp[MTX][MTX];
 	double	scl[MTX][MTX];
@@ -51,32 +51,32 @@ typedef struct s_matrix
 
 typedef struct s_event
 {
-	int 	flag;
+	int		flag;
 	double	rx;
-	double 	ry;
-	double 	rz;
-	double 	tx;
-	double 	ty;
-	double 	tz;
+	double	ry;
+	double	rz;
+	double	tx;
+	double	ty;
+	double	tz;
 	double	scl;
-	double 	scl_z;
-	double 	scl_end;
-	double 	persp;
-	double 	znr;
-	double 	zfr;
-} 	t_event;
+	double	scl_z;
+	double	scl_end;
+	double	persp;
+	double	znr;
+	double	zfr;
+}	t_event;
 
 typedef struct s_draw_act
 {
-	int greater_delta;
-	int lower_delta;
-	int pos;
-	int opp_pos;
-	int pos_prim;
-	int dir;
-	int opp_dir;
-	int z;
-	int flag;
+	int	greater_delta;
+	int	lower_delta;
+	int	pos;
+	int	opp_pos;
+	int	pos_prim;
+	int	dir;
+	int	opp_dir;
+	int	z;
+	int	flag;
 }	t_draw_act;
 
 #endif

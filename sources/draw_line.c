@@ -6,11 +6,12 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:07:04 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 12:24:15 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 12:51:46 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "setup.h"
+
 void	put_pxl(int x, int y, int z);
 
 static void	draw_line_action(t_draw_act *act)
@@ -26,15 +27,16 @@ static void	draw_line_action(t_draw_act *act)
 			act->opp_pos += act->opp_dir;
 			error += act->greater_delta * 2;
 		}
-		if (!act->flag)		
+		if (!act->flag)
 			put_pxl(act->pos, act->opp_pos, act->z);
-		else		
+		else
 			put_pxl(act->opp_pos, act->pos, act->z);
 		error -= act->lower_delta * 2;
 	}
 }
 
-static void	draw_line_setup(int **dir, int *delta, int pos_value_a, int pos_value_b)
+static void	draw_line_setup(int **dir, int *delta, int pos_value_a,
+	int pos_value_b)
 {
 	*dir[0] = *dir[1];
 	*delta = pos_value_a - pos_value_b;
