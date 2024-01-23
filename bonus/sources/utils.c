@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:15:33 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 17:05:57 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 18:19:39 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ double	get_initial_scale(t_point **pt_arr)
 	int		line_len;
 	int		n_line;
 
-	coef = 0.55;
+	coef = 0.75;
 	n_line = get_n_line(pt_arr);
 	line_len = get_line_length(pt_arr);
 	if (line_len > n_line)
