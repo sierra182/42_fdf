@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 12:37:26 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 12:40:27 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 23:02:38 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 # define LOOP_H
 # include "setup.h"
 # include "libft.h"
-# include <unistd.h>
 
 void	multiply_matrix(double m1[][MTX], double m2[][MTX], double mf[][MTX]);
 void	apply_matrix(double matrix[][MTX], t_point **pt_arr);

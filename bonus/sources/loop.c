@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:21:41 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 17:53:53 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 23:09:32 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,7 @@ int	loop(void *param[])
 	t_event		*event;
 	t_mtrx		*mtrx;
 
-	usleep(16670);
-	refresh = (refresh + 1) % 80;
+	refresh = (refresh + 1) % 100;
 	event = (t_event *) param[2];
 	if (!event->flag && refresh)
 		return (0);
