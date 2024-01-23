@@ -16,13 +16,13 @@ GNL_DIR = gnl
 SRC_DIR = sources
 HEADERS_DIR = include
 MLX = mlx_linux
-#BONUS_DIR = bonus
-#SRCS_BONUS_DIR = $(BONUS_DIR)/sources
+BONUS_DIR = bonus
+SRCS_BONUS_DIR = $(BONUS_DIR)/sources
 
 CC = cc
-CFLAGS = -I$(LIBFT_DIR) -I$(GNL_DIR) -I$(FT_PRINTF_DIR) -I$(HEADERS_DIR) -I$(MLX) -O3 #-Wall -Wextra -Werror 
+CFLAGS = -I$(LIBFT_DIR) -I$(GNL_DIR) -I$(FT_PRINTF_DIR) -I$(HEADERS_DIR) -I$(MLX) -O3 -Wall -Wextra -Werror 
 LDFLAGS = -L$(MLX) -lmlx_Linux -lXext -lX11 -lm -lz
-#CFLAGS_BONUS = -I$(GNL_DIR)
+#CFLAGS_BONUS = 
 
 SOURCES = $(SRC_DIR)/main.c $(SRC_DIR)/setup.c $(GNL_DIR)/get_next_line.c $(GNL_DIR)/get_next_line_utils.c \
 $(SRC_DIR)/draw_line.c $(SRC_DIR)/event.c $(SRC_DIR)/loop.c $(SRC_DIR)/matrix.c $(SRC_DIR)/pixels.c \
@@ -30,11 +30,11 @@ $(SRC_DIR)/points.c $(SRC_DIR)/set_matrix.c $(SRC_DIR)/utils.c
 #SOURCES_BONUS = 
 
 OBJECTS = $(SOURCES:.c=.o)
-#OBJECTS_BONUS = $(SOURCES_BONUS:.c=_bonus.o)
+OBJECTS_BONUS = $(SOURCES_BONUS:.c=_bonus.o)
 
 LIBFTPRINTF = $(FT_PRINTF_DIR)/libftprintf.a
 NAME = fdf
-#NAME_BONUS = $(BONUS_DIR)/pipex
+#NAME_BONUS = $(BONUS_DIR)/$(NAME)
 
 HEADER = $(GNL_DIR)/get_next_line.h 
 #HEADERS_BONUS = $(GNL_DIR)/get_next_line.h 

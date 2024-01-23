@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/23 12:59:19 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 14:11:08 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void	launch_matrix(t_point **pt_arr, t_mlx *mlx)
 	mlx_loop(mlx->connect);
 }
 
-int	clean_kill(t_point **pt_arr, t_mlx *mlx)
+void	clean_kill(t_point **pt_arr, t_mlx *mlx)
 {
 	free_ptr_arr((void **) pt_arr);
 	mlx_destroy_window(mlx->connect, mlx->window);
