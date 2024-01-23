@@ -6,19 +6,19 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/08 21:40:01 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/15 15:01:36 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 11:29:43 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
+//#include <unistd.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include "get_next_line.h"
-#include "ft_printf.h"
+//#include "ft_printf.h"
 #include "libft.h"
-#include "setup.h"
+//#include "setup.h"//
 
-int	fill_split(char **split_line, t_point ***pt_arr, int row)
+static int	fill_split(char **split_line, t_point ***pt_arr, int row)
 {
 	int	col;
 
@@ -38,7 +38,7 @@ int	fill_split(char **split_line, t_point ***pt_arr, int row)
 	return (col);
 }
 
-int	fill_pt_arr(int fd, t_point **pt_arr, int row)
+static int	fill_pt_arr(int fd, t_point **pt_arr, int row)
 {
 	char	*line;
 	char	**split_line;
@@ -63,7 +63,7 @@ int	fill_pt_arr(int fd, t_point **pt_arr, int row)
 	return (0);
 }
 
-t_point	**create_pt_arr(int fd)
+static t_point	**create_pt_arr(int fd)
 {
 	t_point	**pt_arr;
 	int		pt_arr_len;
@@ -88,7 +88,7 @@ t_point	**create_pt_arr(int fd)
 	return (pt_arr);
 }
 
-int	open_file(char *argv[])
+static int	open_file(char *argv[])
 {
 	int	fd;
 

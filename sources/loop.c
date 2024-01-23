@@ -6,11 +6,17 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:21:41 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 09:22:08 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 11:08:06 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-void	set_multiply_matrix(t_mtrx *mtrx)
+void	multiply_matrix(double m1[][MTX], double m2[][MTX], double mf[][MTX]);
+void	apply_matrix(double matrix[][MTX], t_point **pt_arr);
+void	save_new_vect(t_point **pt_arr);
+t_point **copy_points(t_point **pt_arr);
+void	homogenize_pt_arr(t_point **pt_arr);
+
+static void	set_multiply_matrix(t_mtrx *mtrx)
 {
 	multiply_matrix(mtrx->neutral, mtrx->trs_lp, mtrx->fnl_tmp);
 	multiply_matrix(mtrx->fnl_tmp, mtrx->rtt_y, mtrx->fnl);
@@ -20,7 +26,7 @@ void	set_multiply_matrix(t_mtrx *mtrx)
 	multiply_matrix(mtrx->fnl_tmp, mtrx->trs_ori, mtrx->fnl);	
 }
 
-void	set_matrix_transform(t_mtrx *mtrx, t_event *event)
+static void	set_matrix_transform(t_mtrx *mtrx, t_event *event)
 {
 	set_matrix_scale(mtrx->scl, (double[]){event->scl, event->scl, event->scl});
 	set_matrix_scale(mtrx->scl2, (double[]){1, 1, event->scl_z});
@@ -33,7 +39,7 @@ void	set_matrix_transform(t_mtrx *mtrx, t_event *event)
 	set_matrix_persp(mtrx->persp, event->persp, WIDTH / HEIGHT, event->znr, event->zfr);
 }
 
-void	persp_handle(t_event *event, t_mtrx *mtrx, t_point **pt_cpy, t_mlx * mlx)
+static void	persp_handle(t_event *event, t_mtrx *mtrx, t_point **pt_cpy, t_mlx * mlx)
 {
 	if (event->persp)	
 	{

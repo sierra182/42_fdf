@@ -6,11 +6,13 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:07:04 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 09:07:36 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 11:10:02 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-void	draw_line_action(t_draw_act *act)
+void	put_pxl(int x, int y, int z);
+
+static void	draw_line_action(t_draw_act *act)
 {
 	int	error;
 
@@ -31,7 +33,7 @@ void	draw_line_action(t_draw_act *act)
 	}
 }
 
-void	draw_line_setup(int **dir, int *delta, int pos_value_a, int pos_value_b)
+static void	draw_line_setup(int **dir, int *delta, int pos_value_a, int pos_value_b)
 {
 	*dir[0] = *dir[1];
 	*delta = pos_value_a - pos_value_b;

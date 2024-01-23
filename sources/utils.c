@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:15:33 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 09:40:21 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 10:44:32 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int 	get_line_length(t_point **pt_arr)
 	return (++len);
 }
 
-int 	get_n_line(t_point **pt_arr)
+static int 	get_n_line(t_point **pt_arr)
 {
 	int	n;
 

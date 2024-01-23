@@ -6,9 +6,11 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:05:15 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 09:36:36 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 11:09:37 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+double	get_initial_scale(t_point **pt_arr);
 
 void	init_event(t_event *event, t_point **pt_arr)
 {
@@ -26,7 +28,7 @@ void	init_event(t_event *event, t_point **pt_arr)
 	event->znr = 1.0;
 	event->zfr = 100.0;
 }
-void key_press3(int keycode, t_event *event)
+static void key_press3(int keycode, t_event *event)
 {
 	if (keycode == 112)
 		event->persp++;
@@ -42,7 +44,7 @@ void key_press3(int keycode, t_event *event)
 		event->zfr--;
 }
 
-void key_press2(int keycode, t_event *event)
+static void key_press2(int keycode, t_event *event)
 {
 	if (keycode == 120)
 		event->rx++;

@@ -6,12 +6,30 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:18:16 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 09:38:30 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 11:15:04 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+void	draw_line(double *vct, double *vct_prm);
+int 	get_line_length(t_point **pt_arr);
 
-unsigned int	get_final_color(int *start, int *end, int z)
+static void	img_data_handle(void *img_ptr, char	**img_data, int *size_l, int *bpp)
+{
+	static char	*img_data_lcl;
+	static int	size_l_lcl;
+	static int	bpp_lcl;
+
+	if (img_ptr)
+		img_data_lcl = mlx_get_data_addr(img_ptr, &bpp_lcl, &size_l_lcl,
+				&(int){0});
+	else
+	{
+		*img_data = img_data_lcl;
+		*size_l = size_l_lcl;
+		*bpp = bpp_lcl;
+	}
+}
+static unsigned int	get_final_color(int *start, int *end, int z)
 {
 	float	factor;
 	int		r;
@@ -55,7 +73,7 @@ void	put_pxl(int x, int y, int z)
 	}
 }
 
-void	add_background(int x, int y)
+static void	add_background(int x, int y)
 {
 	char			*img_data;
 	int				pxl_pos;
@@ -74,22 +92,7 @@ void	add_background(int x, int y)
 	}
 }
 
-void	img_data_handle(void *img_ptr, char	**img_data, int *size_l, int *bpp)
-{
-	static char	*img_data_lcl;
-	static int	size_l_lcl;
-	static int	bpp_lcl;
 
-	if (img_ptr)
-		img_data_lcl = mlx_get_data_addr(img_ptr, &bpp_lcl, &size_l_lcl,
-				&(int){0});
-	else
-	{
-		*img_data = img_data_lcl;
-		*size_l = size_l_lcl;
-		*bpp = bpp_lcl;
-	}
-}
 
 void	print_img(t_point **pt_arr, int	per, t_mlx *mlx)
 {	
@@ -99,7 +102,7 @@ void	print_img(t_point **pt_arr, int	per, t_mlx *mlx)
 	img_ptr = mlx_new_image(mlx->connect, WIDTH, HEIGHT);
 	img_data_handle(img_ptr, NULL, NULL, NULL);
 	add_background(-1, -1);
-	len = get_line_length(pt_arr);//!!
+	len = get_line_length(pt_arr);
 	while (*pt_arr)
 	{
 		if ((*pt_arr)->line < 2 && (!per || ((*pt_arr)->init_vect[2] <= 0

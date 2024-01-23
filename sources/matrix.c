@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:11:11 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 09:11:33 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 10:27:14 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	init_matrix(double matrix[][MTX])
 	}
 }
 
-void	reset_matrix(t_point **pt_arr)
+static void	reset_matrix(t_point **pt_arr)
 {	
 	int i;
 
@@ -59,7 +59,7 @@ void	apply_matrix(double matrix[][MTX], t_point **pt_arr)
 	}
 }
 	
-double	multiply_rowbycol(double row[], double m2[][MTX], int col)
+static double	multiply_rowbycol(double row[], double m2[][MTX], int col)
 {
 	double	rslt;
 	int		i;

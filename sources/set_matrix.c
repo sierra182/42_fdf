@@ -6,9 +6,11 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:08:30 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 09:39:26 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 10:57:57 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include <math.h>
 
 void	set_matrix_persp(double matrix[][MTX], double fov, double aspect, double z_near, double z_far)
 {

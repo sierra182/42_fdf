@@ -6,21 +6,26 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/23 09:25:11 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 11:24:50 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include "ft_printf.h"
+//#include <stdlib.h>
+//#include "ft_printf.h"
 #include "libft.h"
 #include "mlx.h"
-#include "setup.h"
-#include <math.h>
+//#include "setup.h"//
+//#include <unistd.h>
 
-#include <stdio.h>
+
+//#include <stdio.h>
 t_point	**input_handle(char *argv[]);
-
-#include <unistd.h>
+int key_press(int keycode, void *param[]);
+int	loop(void *param[]);
+void	set_matrix_translate(double matrix[][MTX], double trans[]);
+void	init_matrix(double matrix[][MTX]);
+void	init_event(t_event *event, t_point **pt_arr);
+double	get_average(t_point **pt_arr, int axe);
 
 void	launch_matrix(t_point **pt_arr, t_mlx *mlx)
 {	
