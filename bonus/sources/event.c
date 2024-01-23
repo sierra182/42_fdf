@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:05:15 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 18:10:39 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 22:21:28 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ void	init_event(t_event *event, t_point **pt_arr)
 	event->scl_end = 1.0;
 	event->persp = 0.0;
 }
+
 static void	key_press3(int keycode, t_event *event)
 {
 	if (keycode == 112)
@@ -80,7 +81,7 @@ int	key_press(int keycode, void *param[])
 	else if (keycode == 115)
 		event->scl += 1;
 	else if (keycode == 100)
-		event->scl -= 1;	
+		event->scl -= 1;
 	else if (keycode == 65432)
 		event->scl_end += 0.1;
 	else if (keycode == 65430)

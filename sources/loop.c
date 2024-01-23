@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:21:41 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 19:55:52 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 22:23:06 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ t_mlx *mlx)
 	i = -1;
 	while (pt_arr[++i])
 		pt_cpy[i]->new_vect[3] = pt_arr[i]->init_vect[2];
-	print_img(pt_cpy, 0, mlx);	
+	print_img(pt_cpy, 0, mlx);
 }
 
 int	loop(void *param[])

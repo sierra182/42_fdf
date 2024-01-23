@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:05:15 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 17:32:37 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 22:23:24 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	key_press(int keycode, void *param[])
 
 	event = (t_event *) param[1];
 	event->flag = 1;
-	 if (keycode == 65307)
+	if (keycode == 65307)
 		mlx_loop_end(param[2]);
 	return (0);
 }

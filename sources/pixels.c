@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:18:16 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 19:58:12 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 22:22:46 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,9 @@ static unsigned int	get_final_color(int z)
 {
 	if (z > 5)
 		return (47 << 16 | 175 << 8 | 98);
-	else 
+	else
 		return (159 << 16 | 165 << 8 | 167);
 }
-
 
 void	put_pxl(int x, int y, int z)
 {
