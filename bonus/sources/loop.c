@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:21:41 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 14:19:31 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 16:55:58 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,7 @@ static void	set_multiply_matrix(t_mtrx *mtrx)
 
 static void	set_matrix_transform(t_mtrx *mtrx, t_event *event)
 {
-	set_matrix_scale(mtrx->scl, (double []){event->scl, event->scl,
-		event->scl});
+	set_matrix_scale(mtrx->scl, (double []){event->scl, event->scl, 1});
 	set_matrix_scale(mtrx->scl2, (double []){1, 1, event->scl_z});
 	set_matrix_scale(mtrx->scl3, (double []){event->scl_end,
 		event->scl_end, event->scl_end});

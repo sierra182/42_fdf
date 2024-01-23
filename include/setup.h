@@ -6,15 +6,15 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/08 07:55:53 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/23 12:35:55 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 16:46:01 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SETUP_H
 # define SETUP_H
 
-# define WIDTH 1400
-# define HEIGHT 787
+# define WIDTH 1355
+# define HEIGHT 735
 # define MTX 4
 # define M_PI 3.14159265358979323846
 
@@ -62,8 +62,6 @@ typedef struct s_event
 	double	scl_z;
 	double	scl_end;
 	double	persp;
-	double	znr;
-	double	zfr;
 }	t_event;
 
 typedef struct s_draw_act
