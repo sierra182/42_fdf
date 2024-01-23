@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:08:30 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 09:09:10 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 09:39:26 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,6 @@ void	set_matrix_persp(double matrix[][MTX], double fov, double aspect, double z_
 	matrix[2][3] = 0;//-z_far * z_near / z_len;//-2 * z_far * z_near / z_len; //(2 * z_near * z_far) / (z_near - z_far);// ; 
 	matrix[3][2] = -1.0;// -0.1
 	matrix[MTX - 1][MTX - 1] = 0;	
-}
-
-void	set_matrix_translate(double matrix[][MTX], double trans[])
-{
-	int	i;
-	
-	i = -1;
-	while (++i < MTX - 1)	
-		matrix[i][MTX - 1] = trans[i];	
 }
 
 void	set_matrix_rotation(double matrix[][MTX], double angle, int *axe)
@@ -61,6 +52,15 @@ void	set_matrix_rotation(double matrix[][MTX], double angle, int *axe)
 		matrix[1][0] = sin(angle);
 		matrix[1][1] = cos(angle);
 	}
+}
+
+void	set_matrix_translate(double matrix[][MTX], double trans[])
+{
+	int	i;
+	
+	i = -1;
+	while (++i < MTX - 1)	
+		matrix[i][MTX - 1] = trans[i];	
 }
 
 void	set_matrix_scale(double matrix[][MTX], double scale[])

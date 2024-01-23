@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 11:40:02 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/23 09:24:10 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 09:25:11 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,6 @@
 t_point	**input_handle(char *argv[]);
 
 #include <unistd.h>
-
-
 
 void	launch_matrix(t_point **pt_arr, t_mlx *mlx)
 {	

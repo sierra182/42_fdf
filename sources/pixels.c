@@ -6,27 +6,10 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:18:16 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 09:18:47 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 09:38:30 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
-void	img_data_handle(void *img_ptr, char	**img_data, int *size_l, int *bpp)
-{
-	static char	*img_data_lcl;
-	static int	size_l_lcl;
-	static int	bpp_lcl;
-
-	if (img_ptr)
-		img_data_lcl = mlx_get_data_addr(img_ptr, &bpp_lcl, &size_l_lcl,
-				&(int){0});
-	else
-	{
-		*img_data = img_data_lcl;
-		*size_l = size_l_lcl;
-		*bpp = bpp_lcl;
-	}
-}
 
 unsigned int	get_final_color(int *start, int *end, int z)
 {
@@ -88,6 +71,23 @@ void	add_background(int x, int y)
 			pxl_pos = x * bpp / 8 + y * size_line;
 			*(int *)(img_data + pxl_pos) = 0x373224;
 		}
+	}
+}
+
+void	img_data_handle(void *img_ptr, char	**img_data, int *size_l, int *bpp)
+{
+	static char	*img_data_lcl;
+	static int	size_l_lcl;
+	static int	bpp_lcl;
+
+	if (img_ptr)
+		img_data_lcl = mlx_get_data_addr(img_ptr, &bpp_lcl, &size_l_lcl,
+				&(int){0});
+	else
+	{
+		*img_data = img_data_lcl;
+		*size_l = size_l_lcl;
+		*bpp = bpp_lcl;
 	}
 }
 
