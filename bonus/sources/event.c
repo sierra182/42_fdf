@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:05:15 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 22:21:28 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/23 22:32:09 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ double	get_initial_scale(t_point **pt_arr);
 void	init_event(t_event *event, t_point **pt_arr)
 {
 	event->flag = 1;
-	event->rx = 0.0;
-	event->ry = 0.0;
+	event->rx = 10.0;
+	event->ry = 10.0;
 	event->rz = 0.0;
 	event->tx = 0.0;
 	event->ty = 0.0;
@@ -27,7 +27,7 @@ void	init_event(t_event *event, t_point **pt_arr)
 	event->scl = get_initial_scale(pt_arr);
 	event->scl_z = 1.0;
 	event->scl_end = 1.0;
-	event->persp = 0.0;
+	event->persp = 1.0;
 }
 
 static void	key_press3(int keycode, t_event *event)
