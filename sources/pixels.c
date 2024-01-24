@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pixels.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:18:16 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/23 22:22:46 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/24 12:17:10 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,9 @@ static void	img_data_handle(void *img_ptr, char	**img_data, int *size_l,
 static unsigned int	get_final_color(int z)
 {
 	if (z > 5)
-		return (47 << 16 | 175 << 8 | 98);
+		return (250 << 16 | 142 << 8 | 115);
 	else
-		return (159 << 16 | 165 << 8 | 167);
+		return (47 << 16 | 175 << 8 | 98);
 }
 
 void	put_pxl(int x, int y, int z)
@@ -69,7 +69,7 @@ static void	add_background(int x, int y)
 		while (++y < HEIGHT)
 		{
 			pxl_pos = x * bpp / 8 + y * size_line;
-			*(int *)(img_data + pxl_pos) = 0x373224;
+			*(int *)(img_data + pxl_pos) = 0xF0DEB4;
 		}
 	}
 }

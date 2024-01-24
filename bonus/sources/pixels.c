@@ -6,7 +6,7 @@
 /*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:18:16 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/24 11:15:00 by svidot           ###   ########.fr       */
+/*   Updated: 2024/01/24 12:18:44 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static unsigned int	get_final_color(int *start, int *end, int z)
 	int		g;
 	int		b;
 
-	factor = (float)(z - 50) / (0 - 50);
+	factor = (float)(z - 250) / (0 - 250);
 	r = start[0] + factor * (end[0] - start[0]);
 	g = start[1] + factor * (end[1] - start[1]);
 	b = start[2] + factor * (end[2] - start[2]);
@@ -67,7 +67,7 @@ void	put_pxl(int x, int y, int z)
 	if (x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT)
 	{
 		final_color = get_final_color((int []){47, 175, 98},
-				(int []){159, 165, 167}, z);
+				(int []){250, 142, 115}, z);
 		img_data_handle(NULL, &img_data, &size_line, &bpp);
 		pxl_pos = x * bpp / 8 + y * size_line;
 		*(int *)(img_data + pxl_pos) = final_color;
