@@ -6,7 +6,7 @@
 /*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:21:41 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/24 09:17:33 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/24 09:34:08 by seblin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@ static void	set_multiply_matrix(t_mtrx *mtrx, t_point **pt_cpy)
 	multiply_matrix(mtrx->fnl_tmp, mtrx->trs_ori, mtrx->fnl);
 	apply_matrix(mtrx->fnl, pt_cpy);
 	save_new_vect(pt_cpy);
+	apply_matrix(mtrx->rtt_x, pt_cpy);
+	save_new_vect(pt_cpy);
 	multiply_matrix(mtrx->neutral, mtrx->trs_lp, mtrx->fnl_tmp);
 	multiply_matrix(mtrx->fnl_tmp, mtrx->rtt_y, mtrx->fnl);
-	multiply_matrix(mtrx->fnl, mtrx->rtt_x, mtrx->fnl_tmp);
-	multiply_matrix(mtrx->fnl_tmp, mtrx->neutral, mtrx->fnl);
 }
 
 static void	set_matrix_transform(t_mtrx *mtrx, t_event *event)
