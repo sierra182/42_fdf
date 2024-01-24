@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   setup.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seblin <seblin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/08 07:55:53 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/23 18:14:38 by seblin           ###   ########.fr       */
+/*   Updated: 2024/01/24 10:39:37 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SETUP_H
 # define SETUP_H
 
-# define WIDTH 1000
-# define HEIGHT 700
+# define WIDTH 1650
+# define HEIGHT 1150
 # define MTX 4
 # define M_PI 3.14159265358979323846
 
