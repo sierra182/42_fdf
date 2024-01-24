@@ -6,7 +6,7 @@
 /*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 09:18:16 by seblin            #+#    #+#             */
-/*   Updated: 2024/01/24 12:17:10 by svidot           ###   ########.fr       */
+/*   Updated: 2024/01/24 12:41:38 by svidot           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ static void	add_background(int x, int y)
 		while (++y < HEIGHT)
 		{
 			pxl_pos = x * bpp / 8 + y * size_line;
-			*(int *)(img_data + pxl_pos) = 0xF0DEB4;
+			*(int *)(img_data + pxl_pos) = 0xFFEDCB;
 		}
 	}
 }
