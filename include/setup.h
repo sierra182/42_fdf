@@ -13,8 +13,8 @@
 #ifndef SETUP_H
 # define SETUP_H
 
-# define WIDTH 1650
-# define HEIGHT 1150
+# define WIDTH 1000
+# define HEIGHT 600
 # define MTX 4
 # define M_PI 3.14159265358979323846
 
