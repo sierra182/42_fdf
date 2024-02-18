@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svidot <svidot@student.42.fr>              +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 14:15:23 by svidot            #+#    #+#             */
-/*   Updated: 2024/01/08 13:41:17 by svidot           ###   ########.fr       */
+/*   Updated: 2024/02/18 20:06:06 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,5 +71,6 @@ int		ft_isspace(int c);
 size_t	ft_wc(char *s);
 char	*ft_delchar(char *s);
 void	free_ptr_arr(void **arr);
+char	*ft_strjoin_up(char *s1, char *s2, int s1_free, int s2_free);
 
 #endif
