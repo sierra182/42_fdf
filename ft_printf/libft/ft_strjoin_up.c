@@ -13,7 +13,7 @@
 #include "libft.h"
 #include <stdlib.h>
 
-void	free_str(char *s1, char *s2, int s1_free, int s2_free)
+static void	free_str(char *s1, char *s2, int s1_free, int s2_free)
 {
 	if (s1_free)
 		free(s1);
