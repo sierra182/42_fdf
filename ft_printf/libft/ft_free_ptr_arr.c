@@ -12,7 +12,7 @@
 
 #include <stdlib.h>
 
-void	free_ptr_arr(void **arr)
+void	ft_free_ptr_arr(void **arr)
 {
 	int	i;
 

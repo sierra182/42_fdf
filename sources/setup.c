@@ -52,7 +52,7 @@ static int	fill_pt_arr(int fd, t_point **pt_arr, int row)
 			return (free(line), get_next_line(42), 1);
 		col = fill_split(split_line, &pt_arr, row++);
 		free(line);
-		free_ptr_arr((void **) split_line);
+		ft_free_ptr_arr((void **) split_line);
 		if (col < 0)
 			return (get_next_line(42), 1);
 		line = get_next_line(fd);
@@ -117,6 +117,6 @@ t_point	**input_handle(char *argv[])
 	fill_stat = fill_pt_arr(fd, pt_arr, 0);
 	close(fd);
 	if (fill_stat)
-		return (free_ptr_arr((void **) pt_arr), exit(1), NULL);
+		return (ft_free_ptr_arr((void **) pt_arr), exit(1), NULL);
 	return (pt_arr);
 }

@@ -70,7 +70,7 @@ int		ft_strcmp(const char *s1, const char *s2);
 int		ft_isspace(int c);
 size_t	ft_wc(char *s);
 char	*ft_delchar(char *s);
-void	free_ptr_arr(void **arr);
+void	ft_free_ptr_arr(void **arr);
 char	*ft_strjoin_up(char *s1, char *s2, int s1_free, int s2_free);
 
 #endif

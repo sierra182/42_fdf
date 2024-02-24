@@ -84,7 +84,7 @@ int	loop(void *param[])
 	save_new_vect(pt_cpy);
 	set_multiply_matrix(mtrx, pt_cpy);
 	persp_handle(event, mtrx, pt_cpy, param[3]);
-	free_ptr_arr((void *) pt_cpy);
+	ft_free_ptr_arr((void *) pt_cpy);
 	event->flag = 0;
 	return (0);
 }

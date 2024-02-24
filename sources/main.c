@@ -41,7 +41,7 @@ void	launch_matrix(t_point **pt_arr, t_mlx *mlx)
 
 void	clean_kill(t_point **pt_arr, t_mlx *mlx)
 {
-	free_ptr_arr((void **) pt_arr);
+	ft_free_ptr_arr((void **) pt_arr);
 	mlx_destroy_window(mlx->connect, mlx->window);
 	mlx_destroy_display(mlx->connect);
 	free(mlx->connect);
@@ -57,10 +57,10 @@ int	main(int argc, char *argv[])
 	pt_arr = input_handle(argv);
 	mlx.connect = mlx_init();
 	if (!mlx.connect)
-		return (free_ptr_arr((void **) pt_arr), 1);
+		return (ft_free_ptr_arr((void **) pt_arr), 1);
 	mlx.window = mlx_new_window(mlx.connect, WIDTH, HEIGHT, "fdf");
 	if (!mlx.window)
-		return (free_ptr_arr((void **) pt_arr),
+		return (ft_free_ptr_arr((void **) pt_arr),
 			mlx_destroy_display(mlx.connect), free(mlx.connect), 1);
 	launch_matrix(pt_arr, &mlx);
 	clean_kill(pt_arr, &mlx);
